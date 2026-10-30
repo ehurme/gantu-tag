@@ -2,4 +2,4 @@ Comment,Designator,Footprint,LCSC
 IN100-Q1-R-RC1I,U1,insect_tag:InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm,C6062024
 26MHz 7pF,Y1,insect_tag:Crystal_SMD_1612-4Pin_1.6x1.2mm,C5203638
 100nF,C1,insect_tag:C_0402_1005Metric,C1525
-22uF 6.3V,"C2,C3,C4",insect_tag:C_0402_1005Metric,C105226
+100uF 6.3V,C2,insect_tag:C_0805_2012Metric,C141660

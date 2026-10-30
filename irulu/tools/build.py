@@ -309,13 +309,13 @@ def build_schematic():
         power_symbol(net, x, y + 2.54, 270)
 
     notes = [
-        "IN100 insect tag v5: 7.5 mm round tag, wire antenna, cut-off programming tab",
+        "IN100 insect tag v5: 8 mm round tag, wire antenna, cut-off programming tab",
         "- U1 IN100 QFN18 (JLC C6062024). CHIP_EN, VDDQ and VCC tied together; unused GPIOs, switches and RTC pins left open.",
         "- Supply 3.3 V on the tab pads while burning the OTP; never with the cell fitted.",
         "- Y1 26 MHz 1612, 7 pF load: the IN100's on-chip load capacitance replaces external caps.",
-        "- C1 100 nF at VCC. C2-C4 3 x 22 uF: the 337 cell (~80 ohm) cannot supply 9-14 mA TX bursts alone.",
+        "- C1 100 nF at VCC. C2 100 uF 0805: the 337 cell (~80 ohm) cannot supply 9-14 mA TX bursts alone.",
         "- AE1: ~30 mm enamelled wire in a plated hole, fed straight from RF_TX (trim to tune).",
-        "- BT1: 337 / SR416SW cell under the tag on Kapton; welded tabs onto the rim pads (+ top, - right).",
+        "- BT1: 337 / SR416SW cell under the tag: - cap silver-epoxied to the underside pad, + wire to the top rim pad.",
         "- J1: 2 x 2 plated pads on the tab (R T / + G); cut the neck after programming.",
         "Derived from the IN100 datasheet reference design and SparkFun's NanoBeacon Lite board (CC BY-SA 4.0).",
     ]

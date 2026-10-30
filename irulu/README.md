@@ -1,8 +1,8 @@
-# IN100 insect tag v5 (7.5 mm round, wire antenna)
+# IN100 insect tag v5 (8 mm round, wire antenna)
 
 This is an open Bluetooth LE beacon tag for insects, built around the InPlay **IN100 NanoBeacon**.
 You choose **Hubble** or Apple **Find My** (OpenHaystack-style keys) when you burn the IN100's OTP.
-JLCPCB fits all six parts from its own stock, and you add the 337 cell, a 30 mm wire and epoxy.
+JLCPCB fits all four parts from its own stock, all on the top side. You add the 337 cell underneath, a 30 mm wire and epoxy.
 A programming tab hangs off a neck, and you cut the neck once the tag is programmed.
 
 ![KiCad 10 3D render](docs/pcb_3d_kicad10.png)
@@ -12,33 +12,34 @@ A programming tab hangs off a neck, and you cut the neck once the tag is program
 | | v5 (this) | v4 |
 |---|---|---|
 | IN100 package | **QFN18, IN100-Q1-R-RC1I, JLC/LCSC C6062024 (in JLC stock)** | DFN8, not stocked by JLC (Global Sourcing) |
-| Bulk capacitance | **3 × 22 µF** (≈ 50 µF effective at 1.5 V) | 10 µF: too small for a 337 cell |
+| Bulk capacitance | **one 100 µF 0805** (≈ 80 µF effective at 1.5 V) | 10 µF: too small for a 337 cell |
 | Antenna | 30 mm enamelled wire in a plated hole | 30 mm trace on an FR-4 arm |
-| Tag | 7.5 mm round, 0.6 mm FR-4 | 6.4 mm round + 30 mm arm |
-| Panel | **20 tags**, 93 × 46 mm | 12 tags, 92 × 89 mm |
+| Tag | 8 mm round, 0.6 mm FR-4; about 3.6 mm tall with the cell | 6.4 mm round + 30 mm arm |
+| Panel | **20 tags**, 98 × 47 mm | 12 tags, 92 × 89 mm |
 | 3D models | every part, stored in the project | IN100 and crystal missing |
 
-### Why the capacitors matter
+### Why the big capacitor matters
 
 A 337 (SR416SW) is a low-drain silver-oxide cell with an internal resistance of about **80 Ω** (Energizer: 75–85 Ω at 40 Hz).
 Its resistance rises in the cold and as the cell runs down.
 The IN100 draws **9.1 mA** while transmitting at 0 dBm and **13.8 mA** at +5 dBm (datasheet Table 19), and needs at least **1.1 V**.
-On its own the cell would drop to about 0.8 V during every transmission, so the capacitors have to carry each advertising burst.
+On its own the cell would drop to about 0.8 V during every transmission, so a capacitor has to carry each advertising burst.
 
 `tools/burst_sim.py` models one advertising event: crystal start-up, then three channels of about 0.5 ms each.
 It reports the lowest supply voltage the IN100 sees during the event:
 
 | Bulk capacitance | Fresh cell (80 Ω) | Cold or half used (150 Ω) | Nearly flat (250 Ω) |
 |---|---|---|---|
-| 10 µF (v4) | 0.92 V ✗ | 0.56 V ✗ | 0.25 V ✗ |
-| 2 × 22 µF | 1.22 V | 1.14 V | 1.08 V ✗ |
-| **3 × 22 µF (v5), 0 dBm** | **1.31 V** | **1.26 V** | **1.21 V** |
-| 3 × 22 µF (v5), +5 dBm | 1.20 V | 1.14 V | 1.09 V ✗ |
+| 10 µF (v4), 0 dBm | 0.92 V ✗ | 0.56 V ✗ | 0.25 V ✗ |
+| 3 × 22 µF 0402, 0 dBm | 1.31 V | 1.26 V | 1.21 V |
+| 3 × 22 µF 0402, +5 dBm | 1.20 V | 1.14 V | 1.09 V ✗ |
+| **100 µF 0805 (v5), 0 dBm** | **1.38 V** | **1.35 V** | **1.31 V** |
+| **100 µF 0805 (v5), +5 dBm** | **1.30 V** | **1.26 V** | **1.22 V** |
 
-**Use 0 dBm or less, and keep the 1 Mbps PHY.** +5 dBm is fine only while the cell is fresh.
-The 125 kbps coded PHY transmits for about 8× longer per packet and would need far more capacitance.
-The capacitors are Samsung CL05A226MQ5QUNC, 22 µF 6.3 V X5R 0402 (LCSC C105226), 66 µF nominal in total. The simulation assumes they lose about 20 % to DC bias at 1.5 V.
-C1 is 100 nF (C1525) right at the VCC pin.
+With the 100 µF capacitor, **anything up to +5 dBm works for the whole life of the cell.** Keep the **1 Mbps PHY**:
+the 125 kbps coded PHY transmits for about 8× longer per packet and would need far more capacitance.
+C2 is a Murata GRM21BR60J107ME15L, 100 µF 6.3 V X5R 0805 (LCSC C141660), 2.0 × 1.25 × 1.25 mm. The simulation assumes it loses about 20 % to DC bias at 1.5 V.
+It sits at 45° at the lower left, the only place on the round tag long enough for it. C1 is 100 nF (C1525) right at the VCC pin.
 
 ### Battery life (estimate)
 
@@ -59,13 +60,13 @@ They ignore self-discharge and the cell's rising resistance near the end, so tre
   - The UART is on GPIO0 (RXD) and GPIO1 (TXD).
   - The other GPIOs, the two load switches and the RTC crystal pins are left open; the internal 32 kHz RC oscillator is used.
 - **CHIP_EN** is tied straight to VCC. InPlay's and SparkFun's reference designs put a 10 kΩ/100 nF (1 kΩ on SparkFun's) RC on it, which gives a reset button and a short enable delay.
-  On this tag the supply already rises slowly through the cell's resistance and 66 µF (τ ≈ 5 ms), and the IN100 has its own power-on reset, so the RC would add little.
+  On this tag the supply already rises slowly through the cell's resistance and the 100 µF capacitor (τ ≈ 8 ms), and the IN100 has its own power-on reset, so the RC would add little.
 - **Y1** TXC 8Q26000008: 26 MHz, 7 pF, ±16 ppm, 1.6 × 1.2 mm (C5203638). The IN100's on-chip load capacitors replace external ones.
 - **AE1** is a plated hole (0.4 mm drill) for about 30 mm of fine enamelled wire, which is a quarter wave at 2.44 GHz. It's fed straight from RF_TX.
 - **BT1:** a bare gold **Ø2 mm pad on the underside**, centred on the cell's negative cap, takes a dot of silver epoxy. Two top rim pads take the + wire, or welded tabs if you prefer: **+ at the top**, **− at the right**.
 - **J1** is on the cut-off tab: **R** = RXD (into the IN100), **T** = TXD (out of the IN100), **+** = VCC, **G** = GND, on a 2 × 2, 2.54 mm grid.
 
-Layers: the top carries the parts and signals. The bottom is a ground plane with the VCC traces, and it sits against the cell.
+Layers: every part is on the top. The bottom is a ground plane with the VCC traces, and it sits flat against the cell.
 Apart from the central epoxy pad, **keep Kapton between the board and the cell**: the cell's can is +, and the ground plane under the solder mask is −.
 The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper burr from cutting can't easily short the supply.
 
@@ -88,8 +89,8 @@ The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper b
    - For "Mark on PCB", specify the location: the bottom rail carries a `JLCJLCJLCJLC` marker.
 2. Turn on PCB Assembly, top side. Upload `insect_tag_panel_bom.csv` and `insect_tag_panel_pos.csv`.
    - All four line items have LCSC numbers.
-   - U1 (C6062024), Y1 (C5203638) and the 22 µF capacitors (C105226) are **extended** parts. C1 is basic.
-3. In the placement preview, check that the pin-1 marks on **U1** and **Y1** match the silkscreen dot and the board.
+   - U1 (C6062024), Y1 (C5203638) and C2 (C141660) are **extended** parts. C1 is basic.
+3. In the placement preview, check that the pin-1 marks on **U1** and **Y1** match the silkscreen dot and the board, and that **C2** sits at 45° on its pads.
 
 ![panel](docs/panel_top.png)
 
@@ -107,12 +108,12 @@ The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper b
    Use 3.3 V because VDDQ needs it (up to 50 mA) while the OTP is burned.
 3. **Program with InPlay's NanoBeacon Config Tool.**
    - Load the configuration into RAM first and check it with a phone scanner, then burn the OTP. **The OTP can be written only once.**
-   - Set TX power to **0 dBm or lower**, keep the **1 Mbps** PHY, and use an interval of 1 s or longer.
+   - Set TX power to **+5 dBm or lower**, keep the **1 Mbps** PHY, and use an interval of 1 s or longer.
    - *Hubble:* follow Hubble's IN100 guide.
    - *Find My (OpenHaystack-style):* non-connectable advertising with the payload `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`.
      The static random address is `key[0] | 0xC0, key[1..5]`.
 4. **Cut the neck** at the silkscreen line, flush to the tag, with sharp flush cutters. Sand the stub.
-5. **Check for shorts:** measure across the + and − rim pads. You should see the 66 µF charging, not a dead short. Measure again once the cell is fitted: you should read about 1.55 V.
+5. **Check for shorts:** measure across the + and − rim pads. You should see the 100 µF charging, not a dead short. Measure again once the cell is fitted: you should read about 1.55 V.
 6. **Antenna:** strip about 0.5 mm of a ~0.1 mm enamelled copper wire. Push it through the hole by RF_TX, solder it, and trim the wire to 30 mm.
    Trimming shortens it and raises its resonant frequency. Epoxy lowers it.
 7. **Fit the cell with silver epoxy** (no soldering on the cell, no welded tabs). The cell's small raised cap (−) faces the board and the can (+) faces away.
@@ -130,14 +131,16 @@ The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper b
 
 | Part | Mass |
 |---|---|
-| Board, 7.5 mm × 0.6 mm FR-4 | 49 mg |
-| Copper, mask and finish | ~26 mg |
-| IN100, crystal, four capacitors, solder | ~30 mg |
+| Board, 8 mm × 0.6 mm FR-4 | 56 mg |
+| Copper, mask and finish | ~29 mg |
+| IN100, crystal, 100 nF, solder | ~27 mg |
+| 100 µF 0805 capacitor | ~17 mg |
 | Antenna wire (30 mm, 0.1 mm) | ~2 mg |
 | 337 cell (0.13 g) | 130 mg |
-| **Total before epoxy** | **≈ 0.24 g** |
+| **Total before epoxy** | **≈ 0.26 g** |
 
-A 0.4 mm board saves about 16 mg, but JLC treats 0.4 mm as special (no HASL, manual review). Weigh your first tags rather than relying on these numbers.
+Height: cell 1.65 mm + Kapton and epoxy dot about 0.1 mm + board 0.6 mm + capacitor 1.25 mm (the tallest part) ≈ **3.6 mm** before the epoxy coat.
+A 0.4 mm board saves about 18 mg and 0.2 mm, but JLC treats 0.4 mm as special (no HASL, manual review). Weigh your first tags rather than relying on these numbers.
 
 ## Checks done
 
@@ -151,6 +154,8 @@ A 0.4 mm board saves about 16 mg, but JLC treats 0.4 mm as special (no HASL, man
 
 - **QFN18 land pattern:** built from InPlay's package drawing (datasheet v1.3, Figure 22). Compare it with the LCSC/JLC footprint preview before ordering.
 - **Crystal land pattern:** the 1612 pads (0.6 × 0.5 mm on a 1.05 × 0.75 mm grid) come from the NDK NX1612SA layout. Check them against TXC's 8Q drawing.
+- **Sleep current:** large ceramic capacitors are specified for leakage only loosely, up to a few µA at worst. Real parts at 1.5 V usually leak far less.
+  Measure one finished tag's average current: if it's well above about 1 µA between advertisements, the capacitor is the cause.
 - **RF and battery life** are estimates; nothing here has been tested on air yet. **Order one panel and bring up one tag end to end before you order more.**
 
 ## Rebuilding

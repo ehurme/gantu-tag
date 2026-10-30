@@ -20,8 +20,9 @@ def vmin(voc, r, c, i_tx, dt=1e-6):
     return lo, q
 
 # effective capacitance at ~1.5 V after X5R DC-bias derating
-caps = [("10 uF 0402 (v4)", 8e-6), ("1 x 22 uF 0402", 17e-6), ("2 x 22 uF 0402", 34e-6),
-        ("3 x 22 uF 0402 (v5)", 52e-6), ("47 uF 0603", 38e-6), ("2 x 47 uF 0603", 76e-6)]
+# (assumes roughly 20 % DC-bias loss for 6.3 V X5R parts)
+caps = [("10 uF 0402 (v4)", 8e-6), ("1 x 22 uF 0402", 17e-6), ("3 x 22 uF 0402", 52e-6),
+        ("47 uF 0603", 38e-6), ("100 uF 0805 (v5)", 80e-6)]
 cells = [("fresh, 20 C (80 ohm)", 1.55, 80), ("cold / half used (150 ohm)", 1.53, 150),
          ("near end of life (250 ohm)", 1.50, 250)]
 for i_tx, name in ((9.1e-3, "0 dBm, 9.1 mA"), (13.8e-3, "+5 dBm, 13.8 mA")):
@@ -33,7 +34,7 @@ for i_tx, name in ((9.1e-3, "0 dBm, 9.1 mA"), (13.8e-3, "+5 dBm, 13.8 mA")):
             lo, q = vmin(voc, r, c, i_tx)
             row += f"{lo:>26.2f} V {'ok' if lo >= 1.2 else ('!!' if lo < 1.1 else ' ~')}"
         print(f"{cname:24s}{row}")
-lo, q = vmin(1.55, 80, 52e-6, 9.1e-3)
+lo, q = vmin(1.55, 80, 80e-6, 9.1e-3)
 print(f"\ncharge per event at 0 dBm: {q*1e6:.1f} uC")
 for T in (1, 2, 5, 10, 60, 600, 86400):
     i_avg = 0.625e-6 + q / T

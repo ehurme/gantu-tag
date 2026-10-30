@@ -3,7 +3,7 @@
 Footprints:
   InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm  IN100-Q1-R-RC1I (InPlay datasheet v1.3, Figure 22)
   Crystal_SMD_1612-4Pin_1.6x1.2mm                    TXC 8Q26000008 (1.6 x 1.2 mm, 4 pads)
-  C_0402_1005Metric                                  KiCad's 0402 land pattern, with a project-local 3D model
+  C_0402_1005Metric, C_0805_2012Metric               KiCad's land patterns, with project-local 3D models
   Antenna_WirePad_THT_D0.8mm_Drill0.4mm              plated hole for the wire antenna
   Cell_337_TopTabPads                                two rim pads for the 337 cell's welded tabs (+ cell 3D model)
   ProgPads_2x02_P2.54mm_THT_Tab                      2 x 2 programming pads on the cut-off tab
@@ -213,6 +213,22 @@ def c0402():
                ("tin", mesh_box(0.35, -0.25, 0.0, 0.5, 0.25, 0.5))])
 
 
+# ------------------------------------------------------------------ 0805 capacitor (KiCad land pattern)
+def c0805():
+    name = "C_0805_2012Metric"
+    b = txt("reference", "REF**", 0, -1.5, "F.Fab", 0.4, 0.06)
+    b += txt("value", name, 0, 1.5, "F.Fab", 0.3, 0.05, hide=True)
+    b += smd("1", -0.95, 0, 1.0, 1.45)
+    b += smd("2", 0.95, 0, 1.0, 1.45)
+    b += rect(-1.0, -0.625, 1.0, 0.625, "F.Fab", 0.1)
+    b += rect(-1.5, -0.775, 1.5, 0.775, "F.CrtYd", 0.05)
+    b += model(name)
+    write(name, footprint(name, b, "Capacitor SMD 0805 (2012 metric), KiCad land pattern", "capacitor 0805", "smd"))
+    wrl(name, [("cap", mesh_box(-0.75, -0.625, 0.0, 0.75, 0.625, 1.25)),
+               ("tin", mesh_box(-1.0, -0.625, 0.0, -0.75, 0.625, 1.25)),
+               ("tin", mesh_box(0.75, -0.625, 0.0, 1.0, 0.625, 1.25))])
+
+
 # ------------------------------------------------------------------ wire antenna pad
 def wire_pad():
     """Plated hole for the quarter-wave wire. The 3D model shows 30 mm of wire leaving along the footprint's +x."""
@@ -279,7 +295,7 @@ def kikit_tab(width):
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    in100_qfn18(); xtal1612(); c0402(); wire_pad(); cell_pads(); prog2x2()
+    in100_qfn18(); xtal1612(); c0402(); c0805(); wire_pad(); cell_pads(); prog2x2()
     for w in (1.0, 1.2):
         kikit_tab(w)
     print(sorted(os.listdir(OUT)))

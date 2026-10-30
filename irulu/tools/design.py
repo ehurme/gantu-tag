@@ -1,17 +1,18 @@
-"""IN100 insect tag v5: 7.5 mm round tag, wire antenna, cut-off programming tab.
+"""IN100 insect tag v5: 8 mm round tag, wire antenna, cut-off programming tab.
 
 Tag coordinates: origin at the centre of the round tag, x right, y down (top view), mm. build.py adds an offset.
 
 Changes from v4:
   - IN100 in QFN18 (IN100-Q1-R-RC1I, LCSC C6062024), the package JLC stocks, so the order is fully turnkey.
   - Bulk capacitance sized for the 337 silver-oxide cell: about 80 ohm internal resistance (Energizer datasheet:
-    75-85 ohm at 40 Hz) against 9.1 mA TX bursts (IN100 datasheet, 0 dBm). 3 x 22 uF keeps the supply above
-    1.2 V through an advertising event even at 250 ohm (cold or nearly flat cell). See tools/burst_sim.py.
+    75-85 ohm at 40 Hz) against 9.1-13.8 mA TX bursts (IN100 datasheet). One 100 uF 0805 keeps the supply above
+    1.2 V through an advertising event even at 250 ohm (cold or nearly flat cell), at 0 dBm and +5 dBm.
+    See tools/burst_sim.py.
   - Wire antenna in a plated hole instead of the printed arm: lighter, flexible, and 20 tags per panel instead of 12.
   - Own 3D models for every part (insect_tag.3dshapes), so KiCad's 3D viewer shows the whole tag.
 
 Layout (top view): U1 in the middle; crystal at the upper left beside the XO pins; 100 nF and the + rim pad
-at the top; the antenna hole at the upper right beside RF_TX; three 22 uF caps at the lower left;
+at the top; the antenna hole at the upper right beside RF_TX; the 100 uF cap at 45 deg at the lower left;
 - rim pad at the right; the neck and programming tab below (UART pins face down).
 """
 
@@ -34,18 +35,10 @@ PARTS = [
          fp="insect_tag:C_0402_1005Metric",
          fields={"MPN": "CL05B104KO5NNNC", "Manufacturer": "Samsung", "LCSC": "C1525"},
          sch=(146, 98, 0), pcb=(0.85, -2.15, 0, "F")),
-    dict(ref="C2", sym="Device:C", value="22uF 6.3V",
-         fp="insect_tag:C_0402_1005Metric",
-         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
-         sch=(160, 98, 0), pcb=(-2.3, 0.35, 180, "F")),
-    dict(ref="C3", sym="Device:C", value="22uF 6.3V",
-         fp="insect_tag:C_0402_1005Metric",
-         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
-         sch=(174, 98, 0), pcb=(-2.3, 1.15, 180, "F")),
-    dict(ref="C4", sym="Device:C", value="22uF 6.3V",
-         fp="insect_tag:C_0402_1005Metric",
-         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
-         sch=(188, 98, 0), pcb=(-1.9, 1.95, 180, "F")),
+    dict(ref="C2", sym="Device:C", value="100uF 6.3V",
+         fp="insect_tag:C_0805_2012Metric",
+         fields={"MPN": "GRM21BR60J107ME15L", "Manufacturer": "Murata", "LCSC": "C141660"},
+         sch=(160, 98, 0), pcb=(-1.99, 1.99, 315, "F")),
     dict(ref="AE1", sym="Device:Antenna", value="Wire 30mm",
          fp="insect_tag:Antenna_WirePad_THT_D0.8mm_Drill0.4mm",
          fields={"Note": "Builder fits ~30 mm of fine enamelled wire (quarter wave at 2.44 GHz); trim to tune"},
@@ -53,21 +46,19 @@ PARTS = [
     dict(ref="BT1", sym="Device:Battery_Cell", value="337 SR416SW",
          fp="insect_tag:Cell_337_TopTabPads",
          fields={"MPN": "SR416SW", "Note": "Fitted by the builder: cell under the tag on Kapton, welded tabs onto the rim pads"},
-         sch=(203, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
+         sch=(176, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
     dict(ref="J1", sym="Connector_Generic:Conn_01x04", value="PROG",
          fp="insect_tag:ProgPads_2x02_P2.54mm_THT_Tab",
          fields={"Note": "2 x 2 plated pads on the cut-off tab: R(XD) T(XD) / + G"},
-         sch=(70, 110, 0), pcb=(0.45, 8.27, 0, "F"), in_bom=False, mirror="x",
+         sch=(70, 110, 0), pcb=(0.45, 8.57, 0, "F"), in_bom=False, mirror="x",
          ref_at=(2, -5, "left"), val_at=(2, 3.5, "left")),
 ]
 
 # U1 (QFN18) pins: 1 XO_N, 2 XO_P, 3 MGPIO7, 4 MGPIO6, 5 MGPIO5, 6 SW0, 7 SW1, 8 GPIO0 (UART RXD), 9 GPIO1 (UART TXD),
 # 10 GPIO2, 11 GPIO3, 12 MGPIO4, 13 VDDQ, 14 RTC_XO_P, 15 RTC_XO_N, 16 RF_TX, 17 VCC, 18 CHIP_EN, 19 EP/GND
 NETS = {
-    "VCC":  [("U1", "17"), ("U1", "18"), ("U1", "13"), ("C1", "1"), ("C2", "1"), ("C3", "1"), ("C4", "1"),
-             ("BT1", "1"), ("J1", "4")],
-    "GND":  [("U1", "19"), ("Y1", "2"), ("Y1", "4"), ("C1", "2"), ("C2", "2"), ("C3", "2"), ("C4", "2"),
-             ("BT1", "2"), ("J1", "1")],
+    "VCC":  [("U1", "17"), ("U1", "18"), ("U1", "13"), ("C1", "1"), ("C2", "1"), ("BT1", "1"), ("J1", "4")],
+    "GND":  [("U1", "19"), ("Y1", "2"), ("Y1", "4"), ("C1", "2"), ("C2", "2"), ("BT1", "2"), ("J1", "1")],
     "XO_N": [("U1", "1"), ("Y1", "3")],
     "XO_P": [("U1", "2"), ("Y1", "1")],
     "TXD":  [("U1", "9"), ("J1", "2")],
@@ -79,10 +70,10 @@ POWER_NETS = {"VCC", "GND"}
 FLAG_AT = (40, 95)
 
 # ---------------------------------------------------------------- outline
-R_TAG = 3.75
-NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = -0.45, 1.35, 2.8, 5.3     # 1.8 mm neck, cut after programming
-TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -1.95, 2.85, 5.3, 11.2        # programming tab
-CUT_Y = 3.95                                                    # silkscreen cut line across the neck
+R_TAG = 4.0
+NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = -0.45, 1.35, 2.8, 5.6     # 1.8 mm neck, cut after programming
+TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -1.95, 2.85, 5.6, 11.5        # programming tab
+CUT_Y = 4.25                                                    # silkscreen cut line across the neck
 BT_PADS = {"1": (-0.35, -3.0), "2": (2.85, 1.1)}                # rim pads for the cell tabs: + top, - right
 BT_PAD_D = 0.7
 BT_NEG_D = 2.0      # bare gold pad on the underside, centred on the cell's negative cap (silver-epoxy option)
@@ -120,7 +111,7 @@ ZONE_CLEARANCE = 0.15
 W_SIG, W_XO, W_PWR, W_RF = 0.13, 0.15, 0.2, 0.25
 V_TOP = (-0.45, -2.15)   # VCC via by C1 and the + pad
 V_DQ = (2.7, 0.15)       # VCC via for VDDQ
-V_LEFT = (-1.0, 2.6)     # VCC via for the bulk caps
+V_LEFT = (-1.84, 0.5)    # VCC via beside the bulk cap
 G_N = (0.45, 2.8)        # GND via feeding the neck's GND lane
 X_RXD, X_GND, X_TXD = -0.1, 0.45, 1.0      # neck lanes, top layer
 X_VCC_B = -0.1                             # neck lane, bottom layer (VCC alone)
@@ -139,27 +130,23 @@ def static_tracks():
     yield ("VCC", "F", W_PWR, [("C1", "1"), V_TOP])
     yield ("VCC", "F", W_PWR, [V_TOP, ("BT1", "1")])
     yield ("VCC", "F", W_PWR, [("U1", "13"), V_DQ])
-    # VCC bulk caps (right-hand pads) to the left via.
-    yield ("VCC", "F", W_PWR, [("C2", "1"), ("C3", "1")])
-    yield ("VCC", "F", W_PWR, [("C3", "1"), ("C4", "1")])
-    yield ("VCC", "F", W_PWR, [("C4", "1"), V_LEFT])
+    # VCC bulk cap (upper-left pad) to the left via.
+    yield ("VCC", "F", W_PWR, [("C2", "1"), V_LEFT])
     # VCC bottom spine: top via -> VDDQ via -> under U1 -> neck; left via -> neck. Only the neck reaches the edge.
     yield ("VCC", "B", W_PWR, [V_TOP, (0.0, -1.4), (1.2, -1.4), V_DQ])
     yield ("VCC", "B", W_PWR, [V_DQ, (1.3, 1.55), (1.3, 2.3), (X_VCC_B, 2.3)])
-    yield ("VCC", "B", W_PWR, [V_LEFT, (X_VCC_B, 2.6)])
-    yield ("VCC", "B", W_PWR, [(X_VCC_B, 2.3), (X_VCC_B, 6.0), (X_VCC_TAB, 6.25), (X_VCC_TAB, 8.9), ("J1", "4")])
+    yield ("VCC", "B", W_PWR, [V_LEFT, (-0.6, 1.9), (X_VCC_B, 2.3)])
+    yield ("VCC", "B", W_PWR, [(X_VCC_B, 2.3), (X_VCC_B, 6.3), (X_VCC_TAB, 6.55), (X_VCC_TAB, 9.2), ("J1", "4")])
     # GND top: C1 to its via; crystal ground pads to the bulk caps' ground column and vias; - pad to its via.
     yield ("GND", "F", W_PWR, [("C1", "2"), (1.85, -1.85)])
     yield ("GND", "F", W_PWR, [("Y1", "2"), (-1.5, -2.35)])
-    yield ("GND", "F", W_PWR, [("Y1", "4"), ("C2", "2")])
-    yield ("GND", "F", W_PWR, [("C2", "2"), ("C3", "2")])
-    yield ("GND", "F", W_PWR, [("C3", "2"), (-2.78, 1.6), ("C4", "2")])
-    yield ("GND", "F", W_PWR, [("C4", "2"), (-1.85, 2.7)])
+    yield ("GND", "F", W_PWR, [("Y1", "4"), (-3.1, -0.4)])
+    yield ("GND", "F", W_PWR, [("C2", "2"), (-0.75, 3.1)])
     yield ("GND", "F", W_PWR, [("BT1", "2"), (2.4, 1.9)])
-    yield ("GND", "F", W_PWR, [G_N, (X_GND, 8.8), (1.0, 9.54), ("J1", "1")])
+    yield ("GND", "F", W_PWR, [G_N, (X_GND, 9.1), (1.0, 9.84), ("J1", "1")])
     # UART on top through the neck, either side of GND.
-    yield ("RXD", "F", W_SIG, [("U1", "8"), (0.2, 2.0), (X_RXD, 2.3), (X_RXD, 6.0), ("J1", "3")])
-    yield ("TXD", "F", W_SIG, [("U1", "9"), (0.7, 2.0), (X_TXD, 2.3), (X_TXD, 6.0), ("J1", "2")])
+    yield ("RXD", "F", W_SIG, [("U1", "8"), (0.2, 2.0), (X_RXD, 2.3), (X_RXD, 6.3), ("J1", "3")])
+    yield ("TXD", "F", W_SIG, [("U1", "9"), (0.7, 2.0), (X_TXD, 2.3), (X_TXD, 6.3), ("J1", "2")])
 
 
 def static_vias():
@@ -170,13 +157,14 @@ def static_vias():
     yield ("GND", 0.85, -0.3)
     yield ("GND", 1.85, -1.85)    # C1 ground
     yield ("GND", -1.5, -2.35)    # crystal pad 2
-    yield ("GND", -1.85, 2.7)     # bulk caps' ground column
+    yield ("GND", -0.75, 3.1)     # bulk cap ground
+    yield ("GND", -3.1, -0.4)     # crystal pad 4
     yield ("GND", 2.4, 1.9)       # - pad
     yield ("GND",) + G_N          # neck GND lane
 
 
 # Silkscreen (text, x, y, size, side, angle) and lines ((x1, y1), (x2, y2), side)
-SILK_TEXT = [("CUT", 0.45, 4.62, 0.6, "F", 0),
-             ("R", -0.82, 5.92, 0.6, "F", 0), ("T", 1.72, 5.92, 0.6, "F", 0),
-             ("+", -0.82, 10.62, 0.6, "F", 0), ("G", 1.72, 10.62, 0.6, "F", 0)]
+SILK_TEXT = [("CUT", 0.45, 4.92, 0.6, "F", 0),
+             ("R", -0.82, 6.22, 0.6, "F", 0), ("T", 1.72, 6.22, 0.6, "F", 0),
+             ("+", -0.82, 10.92, 0.6, "F", 0), ("G", 1.72, 10.92, 0.6, "F", 0)]
 SILK_LINES = [((NECK_X0, CUT_Y), (NECK_X1, CUT_Y), "F")]
