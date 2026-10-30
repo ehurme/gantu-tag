@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "insect_tag")(type "KiCad")(uri "${KIPRJMOD}/insect_tag.kicad_sym")(options "")(descr "IN100 tag symbols"))
+)
