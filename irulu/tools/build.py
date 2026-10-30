@@ -339,7 +339,8 @@ def build_board(root_uuid, sym_uuid):
 
     nets = {}
     for n in D.NETS:
-        ni = pcbnew.NETINFO_ITEM(board, n)
+        # Power nets take the power symbol's global name; the others come from local labels, which KiCad names "/NET".
+        ni = pcbnew.NETINFO_ITEM(board, n if n in D.POWER_NETS else "/" + n)
         board.Add(ni)
         nets[n] = ni
 
@@ -371,6 +372,8 @@ def build_board(root_uuid, sym_uuid):
         fp.Reference().SetTextSize(VECTOR2I(FromMM(0.5), FromMM(0.5)))
         fp.Reference().SetTextThickness(FromMM(0.08))
         fp.Value().SetVisible(False)
+        for k, v in p.get("fields", {}).items():   # carry the symbol fields onto the footprint (KiCad 8+ checks this)
+            fp.SetProperty(k, v)
         if p.get("dnp"):
             fp.SetAttributes(fp.GetAttributes() | pcbnew.FP_EXCLUDE_FROM_POS_FILES | pcbnew.FP_EXCLUDE_FROM_BOM)
         for pad in fp.Pads():

@@ -34,7 +34,7 @@ def parity(board):
     want = {}
     for net, pins in D.NETS.items():
         for r, p in pins:
-            want[(r, p)] = net
+            want[(r, p)] = net if net in D.POWER_NETS else "/" + net
     bad = []
     for fp in board.GetFootprints():
         ref = fp.GetReference()

@@ -43,7 +43,7 @@ PARTS = [
     dict(ref="BT1", sym="Device:Battery_Cell", value="337 SR416SW",
          fp="insect_tag:Cell_337_TopTabPads",
          fields={"MPN": "SR416SW", "Note": "Fitted by the builder: cell under the tag on Kapton, welded tabs onto the rim pads"},
-         sch=(176, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False, dnp=True),
+         sch=(176, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
     dict(ref="J1", sym="Connector_Generic:Conn_01x04", value="PROG",
          fp="insect_tag:ProgPads_2x02_P2.54mm_THT_Tab",
          fields={"Note": "2 x 2 plated pads on the cut-off tab: R(XD) + / T(XD) G"},
@@ -107,8 +107,8 @@ BOARD_ONLY = [
 VIA_D, VIA_DRILL = 0.5, 0.3
 ZONE_CLEARANCE = 0.15
 W_SIG, W_XO, W_PWR, W_RF = 0.13, 0.15, 0.2, 0.25
-V_TOP = (-1.05, -2.4)    # VCC via beside C1 (VCC/VDDQ pins)
-V_LEFT = (-2.5, -0.45)  # VCC via on the left (CHIP_EN, C2, + pad)
+V_TOP = (-0.95, -2.2)    # VCC via beside C1 (VCC/VDDQ pins); >= 0.5 mm from the edge so the bottom pour flows round it
+V_LEFT = (-2.3, -0.7)    # VCC via on the left (CHIP_EN, C2, + pad); likewise clear of the edge
 Y_RXD, Y_GND, Y_TXD, Y_VCC_B = -0.55, 0.0, 0.55, -0.3     # neck lanes
 
 
