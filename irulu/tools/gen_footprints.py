@@ -229,6 +229,51 @@ def c0805():
                ("tin", mesh_box(0.75, -0.625, 0.0, 1.0, 0.625, 1.25))])
 
 
+# ------------------------------------------------------------------ 0603 capacitor (KiCad land pattern)
+def c0603():
+    name = "C_0603_1608Metric"
+    b = txt("reference", "REF**", 0, -1.2, "F.Fab", 0.4, 0.06)
+    b += txt("value", name, 0, 1.2, "F.Fab", 0.3, 0.05, hide=True)
+    b += smd("1", -0.775, 0, 0.9, 0.95)
+    b += smd("2", 0.775, 0, 0.9, 0.95)
+    b += rect(-0.8, -0.4, 0.8, 0.4, "F.Fab", 0.1)
+    b += rect(-1.275, -0.525, 1.275, 0.525, "F.CrtYd", 0.05)
+    b += model(name)
+    write(name, footprint(name, b, "Capacitor SMD 0603 (1608 metric), KiCad land pattern", "capacitor 0603", "smd"))
+    wrl(name, [("cap", mesh_box(-0.55, -0.4, 0.0, 0.55, 0.4, 0.8)),
+               ("tin", mesh_box(-0.8, -0.4, 0.0, -0.55, 0.4, 0.8)),
+               ("tin", mesh_box(0.55, -0.4, 0.0, 0.8, 0.4, 0.8))])
+
+
+# ------------------------------------------------------------------ 0402 resistor (KiCad land pattern)
+def r0402():
+    name = "R_0402_1005Metric"
+    b = txt("reference", "REF**", 0, -1.16, "F.Fab", 0.4, 0.06)
+    b += txt("value", name, 0, 1.16, "F.Fab", 0.3, 0.05, hide=True)
+    b += smd("1", -0.51, 0, 0.54, 0.64)
+    b += smd("2", 0.51, 0, 0.54, 0.64)
+    b += rect(-0.5, -0.25, 0.5, 0.25, "F.Fab", 0.1)
+    b += rect(-0.83, -0.37, 0.83, 0.37, "F.CrtYd", 0.05)
+    b += model(name)
+    write(name, footprint(name, b, "Resistor SMD 0402 (1005 metric), KiCad land pattern", "resistor 0402", "smd"))
+    wrl(name, [("body", mesh_box(-0.35, -0.25, 0.0, 0.35, 0.25, 0.35)),
+               ("tin", mesh_box(-0.5, -0.25, 0.0, -0.35, 0.25, 0.35)),
+               ("tin", mesh_box(0.35, -0.25, 0.0, 0.5, 0.25, 0.35))])
+
+
+# ------------------------------------------------------------------ OFF solder jumper on the tail
+def off_jumper():
+    """Two bare pads 0.3 mm apart: bridge them with solder to hold CHIP_EN low. 1 = CHIP_EN (right), 2 = GND (left)."""
+    name = "SolderJumper_OFF_Tail"
+    b = txt("reference", "REF**", 0, -0.9, "F.Fab", 0.4, 0.06)
+    b += txt("value", "OFF", 0, 0.9, "F.Fab", 0.3, 0.05, hide=True)
+    b += smd("1", 0.55, 0, 0.8, 1.0, "rect", '"F.Cu" "F.Mask"')
+    b += smd("2", -0.55, 0, 0.8, 1.0, "rect", '"F.Cu" "F.Mask"')
+    b += rect(-1.05, -0.6, 1.05, 0.6, "F.CrtYd", 0.05)
+    write(name, footprint(name, b, "Open solder jumper, 0.3 mm gap: bridge to hold the tag off until the tail is cut",
+                          "solder jumper", "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+
+
 # ------------------------------------------------------------------ wire antenna pad
 def wire_pad():
     """Plated hole for the quarter-wave wire. The 3D model shows 30 mm of wire leaving along the footprint's +x."""
@@ -245,19 +290,19 @@ def wire_pad():
 
 # ------------------------------------------------------------------ cell rim pads (+ the cell, for the 3D view)
 def cell_pads():
-    name = "Cell_337_TopTabPads"
+    """337 cell under the tag: pad 1 (+) is a plated hole for a thin wire from the can's side wall,
+    pad 2 (-) a bare gold pad on the underside for a dot of silver epoxy on the negative cap."""
+    name = "Cell_337_EpoxyPad_PlusHole"
     b = txt("reference", "REF**", 0, 3.3, "F.Fab", 0.4, 0.06)
     b += txt("value", "337", 0, 3.8, "F.Fab", 0.3, 0.05, hide=True)
-    for num in ("1", "2"):
-        x, y = D.BT_PADS[num]
-        b += smd(num, round(x, 4), round(y, 4), D.BT_PAD_D, D.BT_PAD_D, "circle", '"F.Cu" "F.Mask"')
-    # Underside pad for the cell's negative cap (silver epoxy), plus a silkscreen ring to centre the cell
-    b += smd("2", 0, 0, D.BT_NEG_D, D.BT_NEG_D, "circle", '"B.Cu" "B.Mask"')
+    hx, hy = D.PLUS_HOLE
+    b += tht("1", hx, hy, 0.8, 0.4)
+    b += smd("2", 0, 0, D.NEG_PAD_D, D.NEG_PAD_D, "circle", '"B.Cu" "B.Mask"')
     b += circle(0, 0, 2.45, "B.SilkS", 0.1)
     b += circle(0, 0, 2.4, "F.Fab", 0.05)
     b += model(name)
-    write(name, footprint(name, b, "337 (SR416SW) cell: top rim pads for welded tabs, and an underside pad for the negative cap (silver epoxy)",
-                          "battery 337 tab", "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+    write(name, footprint(name, b, "337 (SR416SW) cell under the tag: plated hole for the + wire, underside pad for the - cap (silver epoxy)",
+                          "battery 337", "through_hole exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
     board_t, kapton = 0.6, 0.05
     z_top = -board_t - kapton
     wrl(name, [("kapton", mesh_cyl(0, 0, z_top, -board_t, 2.5, 48)),
@@ -266,16 +311,16 @@ def cell_pads():
 
 # ------------------------------------------------------------------ programming tab
 def prog2x2():
-    """Origin = centre of the 2 x 2 grid. 3 RXD top-left, 2 TXD top-right, 4 VCC bottom-left, 1 GND bottom-right."""
+    """Origin = centre of the 2 x 2 grid. 3 RXD top-left, 2 TXD top-right, 1 GND bottom-left, 4 VCC bottom-right."""
     name = "ProgPads_2x02_P2.54mm_THT_Tab"
     b = txt("reference", "REF**", 0, -3.2, "F.Fab", 0.5, 0.08)
     b += txt("value", name, 0, 3.2, "F.Fab", 0.3, 0.05, hide=True)
     b += tht("3", -1.27, -1.27, 1.4, 0.7)
     b += tht("2", 1.27, -1.27, 1.4, 0.7)
-    b += tht("4", -1.27, 1.27, 1.4, 0.7)
-    b += tht("1", 1.27, 1.27, 1.4, 0.7, "rect")
+    b += tht("1", -1.27, 1.27, 1.4, 0.7, "rect")
+    b += tht("4", 1.27, 1.27, 1.4, 0.7)
     b += rect(-2.17, -2.17, 2.17, 2.17, "F.CrtYd", 0.05)
-    write(name, footprint(name, b, "Programming pads on the cut-off tab, 2 x 2 at 2.54 mm: RXD TXD / VCC GND",
+    write(name, footprint(name, b, "Programming pads on the cut-off tail, 2 x 2 at 2.54 mm: RXD TXD / GND VCC",
                           "programming pogo pads", "through_hole exclude_from_pos_files exclude_from_bom"))
 
 
@@ -295,7 +340,7 @@ def kikit_tab(width):
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    in100_qfn18(); xtal1612(); c0402(); c0805(); wire_pad(); cell_pads(); prog2x2()
+    in100_qfn18(); xtal1612(); c0402(); c0603(); r0402(); off_jumper(); wire_pad(); cell_pads(); prog2x2()
     for w in (1.0, 1.2):
         kikit_tab(w)
     print(sorted(os.listdir(OUT)))

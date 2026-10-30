@@ -16,6 +16,7 @@ $KIKIT panelize -p tools/panel.json insect_tag.kicad_pcb fab/insect_tag_panel.ki
 # BT1, J1 and AE1 are excluded by their footprint attributes (builder-fitted / no part).
 $KIKIT fab jlcpcb --no-drc --assembly --schematic insect_tag.kicad_sch --field LCSC --missingWarn \
     --nametemplate "insect_tag_panel_{}" fab/insect_tag_panel.kicad_pcb fab/jlcpcb_panel
+python3 tools/unique_designators.py fab/jlcpcb_panel/insect_tag_panel_bom.csv fab/jlcpcb_panel/insect_tag_panel_pos.csv
 
 # Single-unit Gerbers (bare boards for hand assembly).
 $KIKIT fab jlcpcb --no-drc --nametemplate "insect_tag_single_{}" insect_tag.kicad_pcb fab/jlcpcb_single

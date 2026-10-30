@@ -309,14 +309,15 @@ def build_schematic():
         power_symbol(net, x, y + 2.54, 270)
 
     notes = [
-        "IN100 insect tag v5: 8 mm round tag, wire antenna, cut-off programming tab",
-        "- U1 IN100 QFN18 (JLC C6062024). CHIP_EN, VDDQ and VCC tied together; unused GPIOs, switches and RTC pins left open.",
-        "- Supply 3.3 V on the tab pads while burning the OTP; never with the cell fitted.",
+        "IN100 insect tag v6: 7 mm round tag, wire antenna, cut-to-start tail",
+        "- U1 IN100 QFN18 (JLC C6062024). VDDQ tied to VCC; unused GPIOs, switches and RTC pins left open.",
+        "- CHIP_EN: R1 1 Mohm pull-up on the tag. JP1 (OFF) on the tail, bridged after programming, holds it low;",
+        "  cutting the tail releases CHIP_EN after VCC is up (datasheet power sequence). C2 10 nF (tail) delays it while programming.",
+        "- C1 47 uF 0603: carries the 9 mA TX bursts the 337 cell (~80 ohm) cannot supply alone. Use 0 dBm or less.",
         "- Y1 26 MHz 1612, 7 pF load: the IN100's on-chip load capacitance replaces external caps.",
-        "- C1 100 nF at VCC. C2 100 uF 0805: the 337 cell (~80 ohm) cannot supply 9-14 mA TX bursts alone.",
         "- AE1: ~30 mm enamelled wire in a plated hole, fed straight from RF_TX (trim to tune).",
-        "- BT1: 337 / SR416SW cell under the tag: - cap silver-epoxied to the underside pad, + wire to the top rim pad.",
-        "- J1: 2 x 2 plated pads on the tab (R T / + G); cut the neck after programming.",
+        "- BT1: 337 / SR416SW under the tag: - cap silver-epoxied to the underside pad, + wire in the plated hole.",
+        "- J1: 2 x 2 plated pads on the tail (R T / G +). Program with 3.3 V before the cell is fitted.",
         "Derived from the IN100 datasheet reference design and SparkFun's NanoBeacon Lite board (CC BY-SA 4.0).",
     ]
     for i, t in enumerate(notes):
@@ -326,7 +327,7 @@ def build_schematic():
     lib_block = "(lib_symbols\n" + "\n".join("  " + dump(libsyms[l], 1) for l in lib_ids) + ")"
     sch = (f'(kicad_sch (version 20230121) (generator eeschema)\n'
            f'(uuid {root})\n(paper "A4")\n'
-           f'(title_block (title "IN100 insect tracking tag v5") (date "2026-10-30") (rev "E")\n'
+           f'(title_block (title "IN100 insect tracking tag v6") (date "2026-10-30") (rev "F")\n'
            f'  (comment 1 "Open hardware. Hubble or Apple Find My, chosen when the IN100 is programmed")\n'
            f'  (comment 2 "Derived from the InPlay IN100 reference design and SparkFun NanoBeacon (CC BY-SA 4.0)"))\n'
            f'{lib_block}\n' + "\n".join(items) +

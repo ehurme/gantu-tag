@@ -5,13 +5,13 @@
   (attr through_hole exclude_from_pos_files exclude_from_bom allow_missing_courtyard)
   (fp_text reference "REF**" (at 0 -0.9) (layer "F.Fab")
     (effects (font (size 0.4 0.4) (thickness 0.06)))
-    (tstamp db76a6c7-6e38-44fe-9dc4-5c63491f78e7)
+    (tstamp d5bbf9eb-4952-4ae6-90d9-b7abb4ecade2)
   )
   (fp_text value "ANT" (at 0 0.9) (layer "F.Fab") hide
     (effects (font (size 0.3 0.3) (thickness 0.05)))
-    (tstamp 08322e85-40a3-4e64-bfaf-097468394d85)
+    (tstamp e5ef6a76-51bf-4094-8545-a2c400d3884e)
   )
-  (pad "1" thru_hole circle (at 0 0) (size 0.8 0.8) (drill 0.4) (layers "*.Cu" "*.Mask") (tstamp 6177efc7-e703-4083-90e3-d0d3898c67d8))
+  (pad "1" thru_hole circle (at 0 0) (size 0.8 0.8) (drill 0.4) (layers "*.Cu" "*.Mask") (tstamp a29c7094-811d-499b-a300-04ebbd6b19fa))
   (model "${KIPRJMOD}/insect_tag.3dshapes/Antenna_WirePad_THT_D0.8mm_Drill0.4mm.wrl"
     (offset (xyz 0 0 0.0))
     (scale (xyz 1 1 1))
