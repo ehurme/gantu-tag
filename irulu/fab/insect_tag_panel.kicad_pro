@@ -433,7 +433,11 @@
       },
       {
         "netclass": "Board_0-Default",
-        "pattern": "Board_0-XO_N"
+        "pattern": "Board_0-/TXD"
+      },
+      {
+        "netclass": "Board_0-Default",
+        "pattern": "Board_0-/XO_P"
       },
       {
         "netclass": "Board_0-Default",
@@ -441,23 +445,15 @@
       },
       {
         "netclass": "Board_0-Default",
-        "pattern": "Board_0-RF"
+        "pattern": "Board_0-/RF"
       },
       {
         "netclass": "Board_0-Default",
-        "pattern": "Board_0-XO_P"
+        "pattern": "Board_0-/XO_N"
       },
       {
         "netclass": "Board_0-Default",
-        "pattern": "Board_0-TXD"
-      },
-      {
-        "netclass": "Board_0-Default",
-        "pattern": "Board_0-RXD"
-      },
-      {
-        "netclass": "Board_1-Default",
-        "pattern": "Board_1-GND"
+        "pattern": "Board_0-/RXD"
       },
       {
         "netclass": "Board_1-Default",
@@ -465,35 +461,35 @@
       },
       {
         "netclass": "Board_1-Default",
-        "pattern": "Board_1-RXD"
+        "pattern": "Board_1-/RXD"
       },
       {
         "netclass": "Board_1-Default",
-        "pattern": "Board_1-TXD"
+        "pattern": "Board_1-/TXD"
       },
       {
         "netclass": "Board_1-Default",
-        "pattern": "Board_1-XO_N"
+        "pattern": "Board_1-/RF"
       },
       {
         "netclass": "Board_1-Default",
-        "pattern": "Board_1-XO_P"
+        "pattern": "Board_1-/XO_N"
       },
       {
         "netclass": "Board_1-Default",
-        "pattern": "Board_1-RF"
+        "pattern": "Board_1-GND"
+      },
+      {
+        "netclass": "Board_1-Default",
+        "pattern": "Board_1-/XO_P"
       },
       {
         "netclass": "Board_2-Default",
-        "pattern": "Board_2-GND"
+        "pattern": "Board_2-/TXD"
       },
       {
         "netclass": "Board_2-Default",
-        "pattern": "Board_2-XO_P"
-      },
-      {
-        "netclass": "Board_2-Default",
-        "pattern": "Board_2-RF"
+        "pattern": "Board_2-/XO_P"
       },
       {
         "netclass": "Board_2-Default",
@@ -501,31 +497,39 @@
       },
       {
         "netclass": "Board_2-Default",
-        "pattern": "Board_2-RXD"
+        "pattern": "Board_2-/XO_N"
       },
       {
         "netclass": "Board_2-Default",
-        "pattern": "Board_2-TXD"
+        "pattern": "Board_2-/RXD"
       },
       {
         "netclass": "Board_2-Default",
-        "pattern": "Board_2-XO_N"
+        "pattern": "Board_2-/RF"
+      },
+      {
+        "netclass": "Board_2-Default",
+        "pattern": "Board_2-GND"
       },
       {
         "netclass": "Board_3-Default",
-        "pattern": "Board_3-XO_N"
+        "pattern": "Board_3-/RF"
       },
       {
         "netclass": "Board_3-Default",
-        "pattern": "Board_3-RF"
+        "pattern": "Board_3-/TXD"
       },
       {
         "netclass": "Board_3-Default",
-        "pattern": "Board_3-TXD"
+        "pattern": "Board_3-GND"
       },
       {
         "netclass": "Board_3-Default",
-        "pattern": "Board_3-XO_P"
+        "pattern": "Board_3-/RXD"
+      },
+      {
+        "netclass": "Board_3-Default",
+        "pattern": "Board_3-/XO_N"
       },
       {
         "netclass": "Board_3-Default",
@@ -533,27 +537,7 @@
       },
       {
         "netclass": "Board_3-Default",
-        "pattern": "Board_3-RXD"
-      },
-      {
-        "netclass": "Board_3-Default",
-        "pattern": "Board_3-GND"
-      },
-      {
-        "netclass": "Board_4-Default",
-        "pattern": "Board_4-TXD"
-      },
-      {
-        "netclass": "Board_4-Default",
-        "pattern": "Board_4-XO_P"
-      },
-      {
-        "netclass": "Board_4-Default",
-        "pattern": "Board_4-RXD"
-      },
-      {
-        "netclass": "Board_4-Default",
-        "pattern": "Board_4-RF"
+        "pattern": "Board_3-/XO_P"
       },
       {
         "netclass": "Board_4-Default",
@@ -561,15 +545,27 @@
       },
       {
         "netclass": "Board_4-Default",
+        "pattern": "Board_4-/RXD"
+      },
+      {
+        "netclass": "Board_4-Default",
+        "pattern": "Board_4-/RF"
+      },
+      {
+        "netclass": "Board_4-Default",
+        "pattern": "Board_4-/TXD"
+      },
+      {
+        "netclass": "Board_4-Default",
+        "pattern": "Board_4-/XO_N"
+      },
+      {
+        "netclass": "Board_4-Default",
         "pattern": "Board_4-GND"
       },
       {
         "netclass": "Board_4-Default",
-        "pattern": "Board_4-XO_N"
-      },
-      {
-        "netclass": "Board_5-Default",
-        "pattern": "Board_5-RXD"
+        "pattern": "Board_4-/XO_P"
       },
       {
         "netclass": "Board_5-Default",
@@ -577,11 +573,15 @@
       },
       {
         "netclass": "Board_5-Default",
-        "pattern": "Board_5-XO_P"
+        "pattern": "Board_5-/RF"
       },
       {
         "netclass": "Board_5-Default",
-        "pattern": "Board_5-RF"
+        "pattern": "Board_5-/RXD"
+      },
+      {
+        "netclass": "Board_5-Default",
+        "pattern": "Board_5-/XO_P"
       },
       {
         "netclass": "Board_5-Default",
@@ -589,15 +589,23 @@
       },
       {
         "netclass": "Board_5-Default",
-        "pattern": "Board_5-XO_N"
+        "pattern": "Board_5-/XO_N"
       },
       {
         "netclass": "Board_5-Default",
-        "pattern": "Board_5-TXD"
+        "pattern": "Board_5-/TXD"
       },
       {
         "netclass": "Board_6-Default",
-        "pattern": "Board_6-RF"
+        "pattern": "Board_6-GND"
+      },
+      {
+        "netclass": "Board_6-Default",
+        "pattern": "Board_6-/RF"
+      },
+      {
+        "netclass": "Board_6-Default",
+        "pattern": "Board_6-/XO_P"
       },
       {
         "netclass": "Board_6-Default",
@@ -605,43 +613,15 @@
       },
       {
         "netclass": "Board_6-Default",
-        "pattern": "Board_6-XO_P"
+        "pattern": "Board_6-/TXD"
       },
       {
         "netclass": "Board_6-Default",
-        "pattern": "Board_6-RXD"
+        "pattern": "Board_6-/RXD"
       },
       {
         "netclass": "Board_6-Default",
-        "pattern": "Board_6-TXD"
-      },
-      {
-        "netclass": "Board_6-Default",
-        "pattern": "Board_6-XO_N"
-      },
-      {
-        "netclass": "Board_6-Default",
-        "pattern": "Board_6-GND"
-      },
-      {
-        "netclass": "Board_7-Default",
-        "pattern": "Board_7-GND"
-      },
-      {
-        "netclass": "Board_7-Default",
-        "pattern": "Board_7-RF"
-      },
-      {
-        "netclass": "Board_7-Default",
-        "pattern": "Board_7-XO_P"
-      },
-      {
-        "netclass": "Board_7-Default",
-        "pattern": "Board_7-XO_N"
-      },
-      {
-        "netclass": "Board_7-Default",
-        "pattern": "Board_7-RXD"
+        "pattern": "Board_6-/XO_N"
       },
       {
         "netclass": "Board_7-Default",
@@ -649,7 +629,31 @@
       },
       {
         "netclass": "Board_7-Default",
-        "pattern": "Board_7-TXD"
+        "pattern": "Board_7-/XO_P"
+      },
+      {
+        "netclass": "Board_7-Default",
+        "pattern": "Board_7-/RXD"
+      },
+      {
+        "netclass": "Board_7-Default",
+        "pattern": "Board_7-/XO_N"
+      },
+      {
+        "netclass": "Board_7-Default",
+        "pattern": "Board_7-GND"
+      },
+      {
+        "netclass": "Board_7-Default",
+        "pattern": "Board_7-/RF"
+      },
+      {
+        "netclass": "Board_7-Default",
+        "pattern": "Board_7-/TXD"
+      },
+      {
+        "netclass": "Board_8-Default",
+        "pattern": "Board_8-/XO_P"
       },
       {
         "netclass": "Board_8-Default",
@@ -657,7 +661,11 @@
       },
       {
         "netclass": "Board_8-Default",
-        "pattern": "Board_8-TXD"
+        "pattern": "Board_8-/XO_N"
+      },
+      {
+        "netclass": "Board_8-Default",
+        "pattern": "Board_8-/RXD"
       },
       {
         "netclass": "Board_8-Default",
@@ -665,31 +673,11 @@
       },
       {
         "netclass": "Board_8-Default",
-        "pattern": "Board_8-XO_N"
+        "pattern": "Board_8-/TXD"
       },
       {
         "netclass": "Board_8-Default",
-        "pattern": "Board_8-RF"
-      },
-      {
-        "netclass": "Board_8-Default",
-        "pattern": "Board_8-XO_P"
-      },
-      {
-        "netclass": "Board_8-Default",
-        "pattern": "Board_8-RXD"
-      },
-      {
-        "netclass": "Board_9-Default",
-        "pattern": "Board_9-GND"
-      },
-      {
-        "netclass": "Board_9-Default",
-        "pattern": "Board_9-XO_N"
-      },
-      {
-        "netclass": "Board_9-Default",
-        "pattern": "Board_9-RF"
+        "pattern": "Board_8-/RF"
       },
       {
         "netclass": "Board_9-Default",
@@ -697,23 +685,39 @@
       },
       {
         "netclass": "Board_9-Default",
-        "pattern": "Board_9-RXD"
+        "pattern": "Board_9-/RF"
       },
       {
         "netclass": "Board_9-Default",
-        "pattern": "Board_9-TXD"
+        "pattern": "Board_9-GND"
       },
       {
         "netclass": "Board_9-Default",
-        "pattern": "Board_9-XO_P"
+        "pattern": "Board_9-/XO_N"
+      },
+      {
+        "netclass": "Board_9-Default",
+        "pattern": "Board_9-/XO_P"
+      },
+      {
+        "netclass": "Board_9-Default",
+        "pattern": "Board_9-/RXD"
+      },
+      {
+        "netclass": "Board_9-Default",
+        "pattern": "Board_9-/TXD"
       },
       {
         "netclass": "Board_10-Default",
-        "pattern": "Board_10-XO_N"
+        "pattern": "Board_10-/XO_P"
       },
       {
         "netclass": "Board_10-Default",
-        "pattern": "Board_10-XO_P"
+        "pattern": "Board_10-/XO_N"
+      },
+      {
+        "netclass": "Board_10-Default",
+        "pattern": "Board_10-/RXD"
       },
       {
         "netclass": "Board_10-Default",
@@ -721,27 +725,27 @@
       },
       {
         "netclass": "Board_10-Default",
-        "pattern": "Board_10-RXD"
-      },
-      {
-        "netclass": "Board_10-Default",
-        "pattern": "Board_10-RF"
-      },
-      {
-        "netclass": "Board_10-Default",
-        "pattern": "Board_10-TXD"
-      },
-      {
-        "netclass": "Board_10-Default",
         "pattern": "Board_10-GND"
       },
       {
-        "netclass": "Board_11-Default",
-        "pattern": "Board_11-TXD"
+        "netclass": "Board_10-Default",
+        "pattern": "Board_10-/RF"
+      },
+      {
+        "netclass": "Board_10-Default",
+        "pattern": "Board_10-/TXD"
       },
       {
         "netclass": "Board_11-Default",
-        "pattern": "Board_11-GND"
+        "pattern": "Board_11-/XO_P"
+      },
+      {
+        "netclass": "Board_11-Default",
+        "pattern": "Board_11-/TXD"
+      },
+      {
+        "netclass": "Board_11-Default",
+        "pattern": "Board_11-/RXD"
       },
       {
         "netclass": "Board_11-Default",
@@ -749,19 +753,15 @@
       },
       {
         "netclass": "Board_11-Default",
-        "pattern": "Board_11-XO_N"
+        "pattern": "Board_11-GND"
       },
       {
         "netclass": "Board_11-Default",
-        "pattern": "Board_11-RXD"
+        "pattern": "Board_11-/RF"
       },
       {
         "netclass": "Board_11-Default",
-        "pattern": "Board_11-XO_P"
-      },
-      {
-        "netclass": "Board_11-Default",
-        "pattern": "Board_11-RF"
+        "pattern": "Board_11-/XO_N"
       }
     ]
   },
