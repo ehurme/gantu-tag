@@ -126,25 +126,35 @@ def sym_pins(symtree):
 
 # ============================================================ custom symbol
 IN100_SYM = """(kicad_symbol_lib (version 20220914) (generator insect_tag_build)
-  (symbol "IN100" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
-    (property "Reference" "U" (at 0 10.16 0) (effects (font (size 1.27 1.27))))
-    (property "Value" "IN100-D1-R-YC1I" (at 0 -17.78 0) (effects (font (size 1.27 1.27))))
-    (property "Footprint" "insect_tag:InPlay_IN100_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.3x1.9mm" (at 0 -16.51 0) (effects (font (size 1.27 1.27)) hide))
+  (symbol "IN100_QFN18" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+    (property "Reference" "U" (at 0 12.7 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "IN100-Q1-R-RC1I" (at 0 -22.86 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "insect_tag:InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm" (at 0 -25.4 0) (effects (font (size 1.27 1.27)) hide))
     (property "Datasheet" "https://www.inplay-tech.com/in100" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "ki_keywords" "BLE beacon NanoBeacon InPlay" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (property "ki_description" "InPlay IN100 NanoBeacon BLE 5.3 beacon SoC, DFN8 2.5x2.5mm, 1.1-3.6V" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (symbol "IN100_0_1"
-      (rectangle (start -13.97 7.62) (end 13.97 -12.7) (stroke (width 0.254) (type default)) (fill (type background))))
-    (symbol "IN100_1_1"
-      (pin input line (at -16.51 5.08 0) (length 2.54) (name "CHIP_EN" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
-      (pin passive line (at -16.51 2.54 0) (length 2.54) (name "XO_N" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
-      (pin passive line (at -16.51 0 0) (length 2.54) (name "XO_P" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
-      (pin bidirectional line (at -16.51 -2.54 0) (length 2.54) (name "MGPIO5/TXD" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
-      (pin power_in line (at 16.51 5.08 180) (length 2.54) (name "VCC" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
-      (pin power_in line (at 16.51 2.54 180) (length 2.54) (name "VDDQ" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
-      (pin passive line (at 16.51 0 180) (length 2.54) (name "RF_TX" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
-      (pin bidirectional line (at 16.51 -2.54 180) (length 2.54) (name "MGPIO4/RXD" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
-      (pin power_in line (at 0 -15.24 90) (length 2.54) (name "GND/EP" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27))))))))
+    (property "ki_description" "InPlay IN100 NanoBeacon BLE beacon SoC, QFN18 3x3mm, 1.1-3.6V" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (symbol "IN100_QFN18_0_1"
+      (rectangle (start -13.97 10.16) (end 13.97 -17.78) (stroke (width 0.254) (type default)) (fill (type background))))
+    (symbol "IN100_QFN18_1_1"
+      (pin input line (at -16.51 7.62 0) (length 2.54) (name "CHIP_EN" (effects (font (size 1.27 1.27)))) (number "18" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at -16.51 5.08 0) (length 2.54) (name "XO_N" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at -16.51 2.54 0) (length 2.54) (name "XO_P" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 0.00 0) (length 2.54) (name "GPIO0/RXD" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 -2.54 0) (length 2.54) (name "GPIO1/TXD" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 -5.08 0) (length 2.54) (name "MGPIO4" (effects (font (size 1.27 1.27)))) (number "12" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 -7.62 0) (length 2.54) (name "MGPIO5" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 -10.16 0) (length 2.54) (name "MGPIO6" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at -16.51 -12.70 0) (length 2.54) (name "MGPIO7" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+      (pin power_in line (at 16.51 7.62 180) (length 2.54) (name "VCC" (effects (font (size 1.27 1.27)))) (number "17" (effects (font (size 1.27 1.27)))))
+      (pin power_in line (at 16.51 5.08 180) (length 2.54) (name "VDDQ" (effects (font (size 1.27 1.27)))) (number "13" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at 16.51 2.54 180) (length 2.54) (name "RF_TX" (effects (font (size 1.27 1.27)))) (number "16" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at 16.51 0.00 180) (length 2.54) (name "RTC_XO_P" (effects (font (size 1.27 1.27)))) (number "14" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at 16.51 -2.54 180) (length 2.54) (name "RTC_XO_N" (effects (font (size 1.27 1.27)))) (number "15" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at 16.51 -5.08 180) (length 2.54) (name "GPIO2" (effects (font (size 1.27 1.27)))) (number "10" (effects (font (size 1.27 1.27)))))
+      (pin bidirectional line (at 16.51 -7.62 180) (length 2.54) (name "GPIO3" (effects (font (size 1.27 1.27)))) (number "11" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at 16.51 -10.16 180) (length 2.54) (name "SW0" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+      (pin passive line (at 16.51 -12.70 180) (length 2.54) (name "SW1" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+      (pin power_in line (at 0 -20.32 90) (length 2.54) (name "GND/EP" (effects (font (size 1.27 1.27)))) (number "19" (effects (font (size 1.27 1.27))))))))
 """
 
 
@@ -245,13 +255,17 @@ def build_schematic():
         side_power = {}   # (net, outward) -> list of stub ends, for power pins leaving sideways
         for num, (px, py, pang) in pins.items():
             net = pin_net.get((p["ref"], num))
-            if net is None:
+            nc = (p["ref"], num) in set(getattr(D, "NO_CONNECT", []))
+            if net is None and not nc:
                 raise SystemExit(f"unconnected pin {p['ref']}.{num}")
             if mirror == "x":
                 py, pang = -py, (-pang) % 360
             rx, ry = rot_ccw(px, py, ang)
             cx, cy = X + rx, Y - ry                     # connection point (screen coords)
             outward = int(round((pang + 180 + ang) % 360))
+            if nc:
+                items.append(f"(no_connect (at {r2(cx)} {r2(cy)}) (uuid {U()}))")
+                continue
             dx, dy = {0: (1, 0), 90: (0, -1), 180: (-1, 0), 270: (0, 1)}[outward]
             if net in D.POWER_NETS and outward in (0, 180):
                 ex, ey = cx + dx * 5.08, cy
@@ -295,14 +309,15 @@ def build_schematic():
         power_symbol(net, x, y + 2.54, 270)
 
     notes = [
-        "IN100 insect tag v4: 6.4 mm round tag, printed antenna arm, cut-off programming tab",
-        "- CHIP_EN, VDDQ and VCC tied together. Supply 3.3 V on the tab pads while burning the OTP; never with the cell fitted.",
+        "IN100 insect tag v5: 7.5 mm round tag, wire antenna, cut-off programming tab",
+        "- U1 IN100 QFN18 (JLC C6062024). CHIP_EN, VDDQ and VCC tied together; unused GPIOs, switches and RTC pins left open.",
+        "- Supply 3.3 V on the tab pads while burning the OTP; never with the cell fitted.",
         "- Y1 26 MHz 1612, 7 pF load: the IN100's on-chip load capacitance replaces external caps.",
-        "- C1 100 nF at the VCC/VDDQ pins; C2 10 uF bulk for TX bursts from the 337 cell.",
-        "- AE1: 29.75 mm quarter-wave trace up the 0.8 mm FR-4 arm, fed straight from RF_TX (trim the arm to tune).",
-        "- BT1: 337 / SR416SW cell under the tag on Kapton; welded tabs onto the two rim pads (+ left, - lower right).",
-        "- J1: 2 x 2 plated pads on the tab (R + / T G); cut the neck after programming.",
-        "Derived from the IN100 datasheet reference design and SparkFun's NanoBeacon board (CC BY-SA 4.0).",
+        "- C1 100 nF at VCC. C2-C4 3 x 22 uF: the 337 cell (~80 ohm) cannot supply 9-14 mA TX bursts alone.",
+        "- AE1: ~30 mm enamelled wire in a plated hole, fed straight from RF_TX (trim to tune).",
+        "- BT1: 337 / SR416SW cell under the tag on Kapton; welded tabs onto the rim pads (+ top, - right).",
+        "- J1: 2 x 2 plated pads on the tab (R T / + G); cut the neck after programming.",
+        "Derived from the IN100 datasheet reference design and SparkFun's NanoBeacon Lite board (CC BY-SA 4.0).",
     ]
     for i, t in enumerate(notes):
         items.append(f'(text "{t}" (at {r2(20 * G)} {r2((132 + 2.2 * i) * G)} 0) '
@@ -311,7 +326,7 @@ def build_schematic():
     lib_block = "(lib_symbols\n" + "\n".join("  " + dump(libsyms[l], 1) for l in lib_ids) + ")"
     sch = (f'(kicad_sch (version 20230121) (generator eeschema)\n'
            f'(uuid {root})\n(paper "A4")\n'
-           f'(title_block (title "IN100 insect tracking tag v4") (date "2026-10-30") (rev "D")\n'
+           f'(title_block (title "IN100 insect tracking tag v5") (date "2026-10-30") (rev "E")\n'
            f'  (comment 1 "Open hardware. Hubble or Apple Find My, chosen when the IN100 is programmed")\n'
            f'  (comment 2 "Derived from the InPlay IN100 reference design and SparkFun NanoBeacon (CC BY-SA 4.0)"))\n'
            f'{lib_block}\n' + "\n".join(items) +
@@ -345,6 +360,14 @@ def build_board(root_uuid, sym_uuid):
         nets[n] = ni
 
     pin_net = {(r, p): n for n, pins in D.NETS.items() for r, p in pins}
+    # Unused pins: KiCad names their nets "unconnected-(REF-PIN-PadN)"; give the pads the same names for parity.
+    pin_names = dict((num, name) for name, num in re.findall(r'\(name "([^"]+)".*?\(number "([^"]+)"', IN100_SYM))
+    for ref, num in getattr(D, "NO_CONNECT", []):
+        n = f"unconnected-({ref}-{pin_names[num]}-Pad{num})"
+        ni = pcbnew.NETINFO_ITEM(board, n)
+        board.Add(ni)
+        nets[n] = ni
+        pin_net[(ref, num)] = n
 
     def load(fpid):
         lib, name = fpid.split(":")

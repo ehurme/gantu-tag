@@ -2,7 +2,7 @@
     "layout": {
         "type": "grid",
         "rows": 2,
-        "cols": 6,
+        "cols": 10,
         "hspace": "2mm",
         "vspace": "2mm",
         "renameref": "{orig}",
@@ -14,7 +14,7 @@
     },
     "tabs": {
         "type": "annotation",
-        "tabfootprints": "insect_tag:KiKit_Tab_0p6mm, insect_tag:KiKit_Tab_1p0mm, insect_tag:KiKit_Tab_1p2mm"
+        "tabfootprints": "insect_tag:KiKit_Tab_1p0mm, insect_tag:KiKit_Tab_1p2mm"
     },
     "cuts": {
         "type": "mousebites",
@@ -45,7 +45,7 @@
     },
     "text": {
         "type": "simple",
-        "text": "IN100 insect tag v4  CC BY-SA 4.0",
+        "text": "IN100 insect tag v5  CC BY-SA 4.0",
         "anchor": "mt",
         "voffset": "2.5mm",
         "hjustify": "center",

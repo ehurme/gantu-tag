@@ -1,23 +1,36 @@
-"""Generate the project footprint library insect_tag.pretty (KiCad 7 format).
+"""Generate the project footprint library (insect_tag.pretty) and 3D models (insect_tag.3dshapes).
 
 Footprints:
-  InPlay_IN100_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.3x1.9mm  IN100-D1-R-YC1I land pattern
-  Crystal_SMD_1612-4Pin_1.6x1.2mm                       TXC 8Q26000008 (1.6 x 1.2 mm, 4 pads)
-  Antenna_Arm_Feed                                      feed point of the printed antenna arm
-  Cell_337_TopTabPads                                   two rim pads for the 337 cell's welded tabs
-  ProgPads_2x02_P2.54mm_THT_Tab                         2 x 2 programming pads on the cut-off tab
-  KiKit_Tab_*mm                                         KiKit panel tab annotations
+  InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm  IN100-Q1-R-RC1I (InPlay datasheet v1.3, Figure 22)
+  Crystal_SMD_1612-4Pin_1.6x1.2mm                    TXC 8Q26000008 (1.6 x 1.2 mm, 4 pads)
+  C_0402_1005Metric                                  KiCad's 0402 land pattern, with a project-local 3D model
+  Antenna_WirePad_THT_D0.8mm_Drill0.4mm              plated hole for the wire antenna
+  Cell_337_TopTabPads                                two rim pads for the 337 cell's welded tabs (+ cell 3D model)
+  ProgPads_2x02_P2.54mm_THT_Tab                      2 x 2 programming pads on the cut-off tab
+  KiKit_Tab_*mm                                      KiKit panel tab annotations
+
+3D models are VRML 2.0 in KiCad's 0.1-inch units, referenced as ${KIPRJMOD}/insect_tag.3dshapes/<name>.wrl,
+so the 3D viewer shows every part without any library setup.
 """
+import math
 import os
+import sys
 import uuid
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "insect_tag.pretty")
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import design as D  # noqa: E402
+
+OUT = os.path.join(HERE, "..", "insect_tag.pretty")
+OUT3D = os.path.join(HERE, "..", "insect_tag.3dshapes")
+MODEL = "${KIPRJMOD}/insect_tag.3dshapes/%s.wrl"
 
 
 def u():
     return str(uuid.uuid4())
 
 
+# ------------------------------------------------------------------ footprint primitives
 def txt(kind, text, x, y, layer, size=0.5, thick=0.08, hide=False):
     h = " hide" if hide else ""
     return (f'  (fp_text {kind} "{text}" (at {x} {y}) (layer "{layer}"){h}\n'
@@ -40,9 +53,9 @@ def circle(cx, cy, r, layer, w=0.1):
             f'(fill none) (layer "{layer}") (tstamp {u()}))\n')
 
 
-def smd(num, x, y, w, h, shape="roundrect", layers='"F.Cu" "F.Paste" "F.Mask"', extra=""):
-    rr = " (roundrect_rratio 0.25)" if shape == "roundrect" else ""
-    return (f'  (pad "{num}" smd {shape} (at {x} {y}) (size {w} {h}) (layers {layers}){rr}{extra} '
+def smd(num, x, y, w, h, shape="roundrect", layers='"F.Cu" "F.Paste" "F.Mask"', rr=0.25):
+    rrs = f" (roundrect_rratio {rr})" if shape == "roundrect" else ""
+    return (f'  (pad "{num}" smd {shape} (at {round(x, 4)} {round(y, 4)}) (size {w} {h}) (layers {layers}){rrs} '
             f'(tstamp {u()}))\n')
 
 
@@ -51,14 +64,14 @@ def tht(num, x, y, d, drill, shape="circle"):
             f'(layers "*.Cu" "*.Mask") (tstamp {u()}))\n')
 
 
-def npth(x, y, d):
-    return (f'  (pad "" np_thru_hole circle (at {x} {y}) (size {d} {d}) (drill {d}) '
-            f'(layers "*.Cu" "*.Mask") (tstamp {u()}))\n')
+def model(name, z=0.0):
+    return (f'  (model "{MODEL % name}"\n    (offset (xyz 0 0 {z}))\n    (scale (xyz 1 1 1))\n'
+            f'    (rotate (xyz 0 0 0))\n  )\n')
 
 
-def footprint(name, body, descr, tags, attr, layer="F.Cu"):
+def footprint(name, body, descr, tags, attr):
     return (f'(footprint "{name}" (version 20221018) (generator pcbnew)\n'
-            f'  (layer "{layer}")\n  (descr "{descr}")\n  (tags "{tags}")\n'
+            f'  (layer "F.Cu")\n  (descr "{descr}")\n  (tags "{tags}")\n'
             f'  (attr {attr})\n{body})\n')
 
 
@@ -67,88 +80,185 @@ def write(name, text):
         f.write(text)
 
 
-import math, sys
-sys.path.insert(0, os.path.dirname(__file__))
-import design as D
+# ------------------------------------------------------------------ VRML (mm in, 0.1 inch out; y flipped to model space)
+S = 1 / 2.54
+COL = {"body": (0.08, 0.08, 0.09), "metal": (0.82, 0.82, 0.84), "tin": (0.75, 0.75, 0.76),
+       "ceramic": (0.86, 0.80, 0.66), "cap": (0.62, 0.48, 0.32), "mark": (0.9, 0.9, 0.9),
+       "cell": (0.78, 0.79, 0.82), "copper": (0.80, 0.45, 0.20), "kapton": (0.9, 0.55, 0.1)}
 
 
-# --- IN100 DFN8 (YC1I: 2.5 x 2.5, e 0.5, b 0.2, L 0.3, exposed pad 1.3 x 1.9).
-def in100(ep_h=1.9):
-    name = f"InPlay_IN100_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.3x{ep_h}mm"
-    b = txt("reference", "REF**", 0, -1.9, "F.Fab", 0.4, 0.06)
-    b += txt("value", name, 0, 1.9, "F.Fab", 0.3, 0.05, hide=True)
-    ys = [-0.75, -0.25, 0.25, 0.75]
-    for i, y in enumerate(ys):
-        b += smd(str(i + 1), -1.2, y, 0.65, 0.25)
-    for i, y in enumerate(reversed(ys)):
-        b += smd(str(i + 5), 1.2, y, 0.65, 0.25)
-    b += smd("9", 0, 0, 1.3, ep_h, "rect", '"F.Cu" "F.Mask"')
-    b += smd("", 0, 0, 0.9, min(1.2, ep_h - 0.5), "roundrect", '"F.Paste"')
-    b += rect(-1.25, -1.25, 1.25, 1.25, "F.Fab", 0.08)
-    b += line(-1.25, -0.75, -0.75, -1.25, "F.Fab", 0.08)
-    b += rect(-1.6, -1.3, 1.6, 1.3, "F.CrtYd", 0.05)
-    b += circle(-1.5, -1.1, 0.05, "F.SilkS", 0.1)
-    write(name, footprint(name, b, f"InPlay IN100 DFN8 2.5x2.5 (IN100-D1-R-YC1I), EP 1.3x{ep_h}",
-                          "IN100 NanoBeacon DFN8", "smd"))
+def mesh_box(x0, y0, z0, x1, y1, z1):
+    """Axis-aligned box in footprint mm (y down)."""
+    v = [(x, y, z) for z in (z0, z1) for y in (y0, y1) for x in (x0, x1)]
+    f = [(0, 2, 3, 1), (4, 5, 7, 6), (0, 1, 5, 4), (2, 6, 7, 3), (0, 4, 6, 2), (1, 3, 7, 5)]
+    return v, f
 
 
-# --- 1612 four-pad crystal (TXC 8Q / NDK NX1612SA class): pads 0.6 x 0.5 on a 1.05 x 0.75 grid.
-#     Pin 1 bottom-left, 2 bottom-right, 3 top-right, 4 top-left (1/3 crystal, 2/4 lid ground).
+def mesh_cyl(cx, cy, z0, z1, r, n=40, axis="z", length_dir=None):
+    """Cylinder along z (default) or along +x from (cx, cy) with length z1 - z0 at height z0 (axis='x')."""
+    v, f = [], []
+    for i in range(n):
+        a = 2 * math.pi * i / n
+        if axis == "z":
+            v += [(cx + r * math.cos(a), cy + r * math.sin(a), z0), (cx + r * math.cos(a), cy + r * math.sin(a), z1)]
+        else:  # along +x, centred on (cy, z0)
+            v += [(cx, cy + r * math.cos(a), z0 + r * math.sin(a)), (cx + z1, cy + r * math.cos(a), z0 + r * math.sin(a))]
+    for i in range(n):
+        j = (i + 1) % n
+        f.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
+    f.append(tuple(2 * i for i in range(n))[::-1])
+    f.append(tuple(2 * i + 1 for i in range(n)))
+    return v, f
+
+
+def wrl(name, parts):
+    """parts: list of (colour key, (vertices, faces))."""
+    out = ["#VRML V2.0 utf8", f"# {name}: generated by insect_tag tools/gen_footprints.py"]
+    for key, (v, f) in parts:
+        r, g, b = COL[key]
+        pts = ", ".join(f"{x * S:.5f} {-y * S:.5f} {z * S:.5f}" for x, y, z in v)
+        # every face in both windings, so no viewer back-face-culls the top of a part
+        idx = ", ".join(" ".join(str(i) for i in face) + " -1, " + " ".join(str(i) for i in face[::-1]) + " -1"
+                        for face in f)
+        out.append(f"Shape {{ appearance Appearance {{ material Material {{ diffuseColor {r} {g} {b} "
+                   f"specularColor 0.3 0.3 0.3 shininess 0.4 }} }}\n"
+                   f"  geometry IndexedFaceSet {{ solid FALSE coord Coordinate {{ point [ {pts} ] }}\n"
+                   f"    coordIndex [ {idx} ] }} }}")
+    os.makedirs(OUT3D, exist_ok=True)
+    with open(os.path.join(OUT3D, name + ".wrl"), "w") as fh:
+        fh.write("\n".join(out) + "\n")
+
+
+# ------------------------------------------------------------------ IN100 QFN18
+QFN_PADS = []   # (num, x, y, w, h)
+for i in range(7):                       # pins 1-7 down the left side, 0.4 mm pitch
+    QFN_PADS.append((str(1 + i), -1.4, -1.2 + 0.4 * i, 0.7, 0.2))
+QFN_PADS += [("8", -0.25, 1.4, 0.25, 0.7), ("9", 0.25, 1.4, 0.25, 0.7)]          # bottom side, 0.5 mm pitch
+for i in range(7):                       # pins 10-16 up the right side
+    QFN_PADS.append((str(10 + i), 1.4, 1.2 - 0.4 * i, 0.7, 0.2))
+QFN_PADS += [("17", 0.25, -1.4, 0.25, 0.7), ("18", -0.25, -1.4, 0.25, 0.7)]       # top side
+
+
+def in100_qfn18():
+    name = "InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm"
+    b = txt("reference", "REF**", 0, -2.3, "F.Fab", 0.4, 0.06)
+    b += txt("value", name, 0, 2.3, "F.Fab", 0.3, 0.05, hide=True)
+    for num, x, y, w, h in QFN_PADS:
+        b += smd(num, x, y, w, h, rr=0.2)
+    b += smd("19", 0, 0, 1.5, 1.7, "rect", '"F.Cu" "F.Mask"')
+    for px in (-0.36, 0.36):                       # four paste windows, ~50 % of the exposed pad
+        for py in (-0.41, 0.41):
+            b += smd("", px, py, 0.6, 0.68, "roundrect", '"F.Paste"')
+    b += rect(-1.5, -1.5, 1.5, 1.5, "F.Fab", 0.08)
+    b += line(-1.5, -0.9, -0.9, -1.5, "F.Fab", 0.08)
+    cy = [(-1.52, -1.52), (-0.43, -1.52), (-0.43, -1.8), (0.43, -1.8), (0.43, -1.52), (1.52, -1.52), (1.52, -1.35),
+          (1.8, -1.35), (1.8, 1.35), (1.52, 1.35), (1.52, 1.52), (0.43, 1.52), (0.43, 1.8), (-0.43, 1.8),
+          (-0.43, 1.52), (-1.52, 1.52), (-1.52, 1.35), (-1.8, 1.35), (-1.8, -1.35), (-1.52, -1.35)]
+    for (x1, y1), (x2, y2) in zip(cy, cy[1:] + cy[:1]):
+        b += line(x1, y1, x2, y2, "F.CrtYd", 0.05)
+    b += circle(-1.95, -1.7, 0.05, "F.SilkS", 0.1)
+    b += model(name)
+    write(name, footprint(name, b, "InPlay IN100 QFN18 3x3 mm (IN100-Q1-R-RC1I): 0.4 mm pitch on the 7-pin sides, "
+                          "0.5 mm on the 2-pin sides, EP 1.7 x 1.5 mm", "IN100 NanoBeacon QFN18", "smd"))
+    parts = [("body", mesh_box(-1.5, -1.5, 0.0, 1.5, 1.5, 0.75)),
+             ("mark", mesh_cyl(-1.0, -1.0, 0.75, 0.77, 0.18, 24))]
+    for num, x, y, w, h in QFN_PADS:            # leads exposed at the package edge
+        lw = 0.2
+        if w > h:   # left/right side
+            x0 = -1.5 if x < 0 else 1.15
+            parts.append(("tin", mesh_box(x0, y - lw / 2, 0.0, x0 + 0.35, y + lw / 2, 0.2)))
+        else:
+            y0 = -1.5 if y < 0 else 1.15
+            parts.append(("tin", mesh_box(x - lw / 2, y0, 0.0, x + lw / 2, y0 + 0.35, 0.2)))
+    wrl(name, parts)
+
+
+# ------------------------------------------------------------------ 1612 crystal
+XTAL_PADS = [("1", -0.525, 0.375), ("2", 0.525, 0.375), ("3", 0.525, -0.375), ("4", -0.525, -0.375)]
+
+
 def xtal1612():
+    """Pads 0.6 x 0.5 on the NX1612SA / TXC 8Q 1.05 x 0.75 mm grid. Pin 1 bottom-left, 2 bottom-right,
+    3 top-right, 4 top-left (1/3 crystal, 2/4 lid ground)."""
     name = "Crystal_SMD_1612-4Pin_1.6x1.2mm"
     b = txt("reference", "REF**", 0, -1.1, "F.Fab", 0.4, 0.06)
     b += txt("value", name, 0, 1.1, "F.Fab", 0.3, 0.05, hide=True)
-    for num, x, y in [("1", -0.525, 0.375), ("2", 0.525, 0.375), ("3", 0.525, -0.375), ("4", -0.525, -0.375)]:
+    for num, x, y in XTAL_PADS:
         b += smd(num, x, y, 0.6, 0.5, "rect")
     b += rect(-0.8, -0.6, 0.8, 0.6, "F.Fab", 0.08)
-    b += rect(-0.95, -0.75, 0.95, 0.75, "F.CrtYd", 0.05)
-    write(name, footprint(name, b, "1.6 x 1.2 mm four-pad crystal; land pattern from the NDK NX1612SA terminal grid",
+    b += rect(-0.875, -0.675, 0.875, 0.675, "F.CrtYd", 0.05)
+    b += model(name)
+    write(name, footprint(name, b, "1.6 x 1.2 mm four-pad crystal (TXC 8Q); pads 0.6 x 0.5 on a 1.05 x 0.75 mm grid",
                           "crystal 1612", "smd"))
+    parts = [("ceramic", mesh_box(-0.8, -0.6, 0.0, 0.8, 0.6, 0.12)),
+             ("metal", mesh_box(-0.72, -0.52, 0.12, 0.72, 0.52, 0.35))]
+    for num, x, y in XTAL_PADS:
+        parts.append(("tin", mesh_box(x - 0.2, y - 0.17, -0.005, x + 0.2, y + 0.17, 0.02)))
+    wrl(name, parts)
 
 
-# --- antenna feed point at the root of the arm (the trace up the arm is a track on the RF net)
-def ant_feed():
-    """Feed point plus end point of the printed antenna. Both pads are number 1, so the antenna track up the arm
-    connects pad to pad (no dangling-track warning)."""
-    name = "Antenna_Arm_Feed"
-    feed = next(p for p in D.PARTS if p["ref"] == "AE1")["pcb"]
-    tip = round(D.ARM_TIP_Y + 0.5 - feed[1], 4)        # arm-tip end of the trace, relative to the feed
-    b = txt("reference", "REF**", 0, tip / 2, "F.Fab", 0.4, 0.06)
-    b += txt("value", "ANT", 0.6, 0.5, "F.Fab", 0.3, 0.05, hide=True)
-    b += smd("1", 0, 0, 0.2, 0.2, "rect", '"F.Cu"')
-    b += smd("1", 0, tip, 0.2, 0.2, "rect", '"F.Cu"')
-    b += line(0, 0, 0, tip, "F.Fab", 0.25)
-    write(name, footprint(name, b, "Printed quarter-wave antenna on the arm: feed and end points", "antenna",
-                          "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+# ------------------------------------------------------------------ 0402 capacitor (KiCad land pattern)
+def c0402():
+    name = "C_0402_1005Metric"
+    b = txt("reference", "REF**", 0, -1.16, "F.Fab", 0.4, 0.06)
+    b += txt("value", name, 0, 1.16, "F.Fab", 0.3, 0.05, hide=True)
+    b += smd("1", -0.48, 0, 0.56, 0.62)
+    b += smd("2", 0.48, 0, 0.56, 0.62)
+    b += rect(-0.5, -0.25, 0.5, 0.25, "F.Fab", 0.1)
+    b += rect(-0.81, -0.36, 0.81, 0.36, "F.CrtYd", 0.05)
+    b += model(name)
+    write(name, footprint(name, b, "Capacitor SMD 0402 (1005 metric), KiCad land pattern", "capacitor 0402", "smd"))
+    wrl(name, [("cap", mesh_box(-0.35, -0.25, 0.0, 0.35, 0.25, 0.5)),
+               ("tin", mesh_box(-0.5, -0.25, 0.0, -0.35, 0.25, 0.5)),
+               ("tin", mesh_box(0.35, -0.25, 0.0, 0.5, 0.25, 0.5))])
 
 
-# --- battery ear pads (origin = tag centre): round pads centred on the two outline ears
-def cell_ears():
+# ------------------------------------------------------------------ wire antenna pad
+def wire_pad():
+    """Plated hole for the quarter-wave wire. The 3D model shows 30 mm of wire leaving along the footprint's +x."""
+    name = "Antenna_WirePad_THT_D0.8mm_Drill0.4mm"
+    b = txt("reference", "REF**", 0, -0.9, "F.Fab", 0.4, 0.06)
+    b += txt("value", "ANT", 0, 0.9, "F.Fab", 0.3, 0.05, hide=True)
+    b += tht("1", 0, 0, 0.8, 0.4)
+    b += model(name)
+    write(name, footprint(name, b, "Solder point for a ~30 mm enamelled wire antenna", "antenna wire",
+                          "through_hole exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+    wrl(name, [("copper", mesh_cyl(0, 0, -0.75, 0.15, 0.08, 16)),
+               ("copper", mesh_cyl(0, 0, 0.15, 30.0, 0.08, 16, axis="x"))])
+
+
+# ------------------------------------------------------------------ cell rim pads (+ the cell, for the 3D view)
+def cell_pads():
     name = "Cell_337_TopTabPads"
     b = txt("reference", "REF**", 0, 3.3, "F.Fab", 0.4, 0.06)
     b += txt("value", "337", 0, 3.8, "F.Fab", 0.3, 0.05, hide=True)
     for num in ("1", "2"):
         x, y = D.BT_PADS[num]
         b += smd(num, round(x, 4), round(y, 4), D.BT_PAD_D, D.BT_PAD_D, "circle", '"F.Cu" "F.Mask"')
-        b += txt("user", "+" if num == "1" else "-", round(x, 3), round(y - 0.6, 3), "F.Fab", 0.4, 0.06)
     b += circle(0, 0, 2.4, "F.Fab", 0.05)
-    write(name, footprint(name, b, "Top-side pads at the rim for a 337 (SR416SW) cell's welded tabs. Cell sits under the tag on Kapton.",
+    b += model(name)
+    write(name, footprint(name, b, "Top-side rim pads for a 337 (SR416SW) cell's welded tabs; the cell sits under the tag on Kapton",
                           "battery 337 tab", "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+    board_t, kapton = 0.6, 0.05
+    z_top = -board_t - kapton
+    wrl(name, [("kapton", mesh_cyl(0, 0, z_top, -board_t, 2.5, 48)),
+               ("cell", mesh_cyl(0, 0, z_top - 1.65, z_top, 2.4, 48))])
 
 
-
+# ------------------------------------------------------------------ programming tab
 def prog2x2():
+    """Origin = centre of the 2 x 2 grid. 3 RXD top-left, 2 TXD top-right, 4 VCC bottom-left, 1 GND bottom-right."""
     name = "ProgPads_2x02_P2.54mm_THT_Tab"
-    # Origin = centre of the 2 x 2 grid. 3 RXD top-left, 4 VCC top-right, 2 TXD bottom-left, 1 GND bottom-right.
     b = txt("reference", "REF**", 0, -3.2, "F.Fab", 0.5, 0.08)
     b += txt("value", name, 0, 3.2, "F.Fab", 0.3, 0.05, hide=True)
     b += tht("3", -1.27, -1.27, 1.4, 0.7)
-    b += tht("4", 1.27, -1.27, 1.4, 0.7)
-    b += tht("2", -1.27, 1.27, 1.4, 0.7)
+    b += tht("2", 1.27, -1.27, 1.4, 0.7)
+    b += tht("4", -1.27, 1.27, 1.4, 0.7)
     b += tht("1", 1.27, 1.27, 1.4, 0.7, "rect")
     b += rect(-2.17, -2.17, 2.17, 2.17, "F.CrtYd", 0.05)
-    write(name, footprint(name, b, "Programming pads on the cut-off tab, 2 x 2 at 2.54 mm: RXD VCC / TXD GND",
+    write(name, footprint(name, b, "Programming pads on the cut-off tab, 2 x 2 at 2.54 mm: RXD TXD / VCC GND",
                           "programming pogo pads", "through_hole exclude_from_pos_files exclude_from_bom"))
+
 
 def kikit_tab(width):
     name = f"KiKit_Tab_{width}mm".replace(".", "p")
@@ -166,7 +276,8 @@ def kikit_tab(width):
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    in100(1.9); xtal1612(); ant_feed(); cell_ears(); prog2x2()
-    for w in (0.6, 1.0, 1.2):
+    in100_qfn18(); xtal1612(); c0402(); wire_pad(); cell_pads(); prog2x2()
+    for w in (1.0, 1.2):
         kikit_tab(w)
     print(sorted(os.listdir(OUT)))
+    print(sorted(os.listdir(OUT3D)))

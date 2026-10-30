@@ -1,79 +1,89 @@
-"""IN100 insect tag v4: 6.4 mm round tag, printed antenna arm, cut-off programming tab (Blu Bat-style).
+"""IN100 insect tag v5: 7.5 mm round tag, wire antenna, cut-off programming tab.
 
 Tag coordinates: origin at the centre of the round tag, x right, y down (top view), mm. build.py adds an offset.
 
-Layout (top view):
-  - IN100 (U1) in the middle, rotated 90 deg: top pad row RF, VCC, VDDQ, RXD; bottom row CHIP_EN, XO_N, XO_P, TXD.
-  - 26 MHz 1612 crystal (Y1) just below the XO pins; 100 nF (C1) right above the VCC/VDDQ pins;
-    10 uF (C2) on the left beside CHIP_EN.
-  - The RF pin feeds a quarter-wave trace that runs up a 0.8 mm FR-4 arm leaving the tag at the upper left.
-  - A neck on the right carries RXD, GND, TXD (top) and VCC (bottom, alone) to a 2 x 2 pad programming tab.
-    The neck is cut after programming.
-  - Two rim pads take the 337 cell's welded tabs: + on the left, - at the lower right.
-All copper follows JLCPCB's standard 2-layer rules (>= 0.13 mm track and gap, 0.3 mm via drill, >= 0.2 mm to the edge).
+Changes from v4:
+  - IN100 in QFN18 (IN100-Q1-R-RC1I, LCSC C6062024), the package JLC stocks, so the order is fully turnkey.
+  - Bulk capacitance sized for the 337 silver-oxide cell: about 80 ohm internal resistance (Energizer datasheet:
+    75-85 ohm at 40 Hz) against 9.1 mA TX bursts (IN100 datasheet, 0 dBm). 3 x 22 uF keeps the supply above
+    1.2 V through an advertising event even at 250 ohm (cold or nearly flat cell). See tools/burst_sim.py.
+  - Wire antenna in a plated hole instead of the printed arm: lighter, flexible, and 20 tags per panel instead of 12.
+  - Own 3D models for every part (insect_tag.3dshapes), so KiCad's 3D viewer shows the whole tag.
+
+Layout (top view): U1 in the middle; crystal at the upper left beside the XO pins; 100 nF and the + rim pad
+at the top; the antenna hole at the upper right beside RF_TX; three 22 uF caps at the lower left;
+- rim pad at the right; the neck and programming tab below (UART pins face down).
 """
 
 PROJECT = "insect_tag"
+LCSC_IN100 = "C6062024"
 
 # ---------------------------------------------------------------- parts
 PARTS = [
-    dict(ref="U1", sym="insect_tag:IN100", value="IN100-D1-R-YC1I",
-         fp="insect_tag:InPlay_IN100_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.3x1.9mm",
-         fields={"MPN": "IN100-D1-R-YC1I", "Manufacturer": "InPlay",
-                 "LCSC": "", "Sourcing": "JLC global sourcing or consigned (Mouser 73-IN100-D1-R-YC1I)"},
-         sch=(118, 76, 0), pcb=(0.0, -0.25, 90, "F"),
-         ref_at=(-11, -7.5, "left"), val_at=(3, 13, "left")),
+    dict(ref="U1", sym="insect_tag:IN100_QFN18", value="IN100-Q1-R-RC1I",
+         fp="insect_tag:InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm",
+         fields={"MPN": "IN100-Q1-R-RC1I", "Manufacturer": "InPlay", "LCSC": LCSC_IN100},
+         sch=(118, 76, 0), pcb=(0.45, 0.15, 0, "F"),
+         ref_at=(-11, -10, "left"), val_at=(3, 16, "left")),
     dict(ref="Y1", sym="Device:Crystal_GND24", value="26MHz 7pF",
          fp="insect_tag:Crystal_SMD_1612-4Pin_1.6x1.2mm",
          fields={"MPN": "8Q26000008", "Manufacturer": "TXC", "LCSC": "C5203638"},
-         sch=(80, 74, 0), pcb=(-0.25, 2.1, 0, "F"),
+         sch=(80, 74, 0), pcb=(-2.075, -1.05, 90, "F"),
          ref_at=(2.5, -3, "left"), val_at=(2.5, 3.5, "left")),
     dict(ref="C1", sym="Device:C", value="100nF",
-         fp="Capacitor_SMD:C_0402_1005Metric",
+         fp="insect_tag:C_0402_1005Metric",
          fields={"MPN": "CL05B104KO5NNNC", "Manufacturer": "Samsung", "LCSC": "C1525"},
-         sch=(146, 98, 0), pcb=(0.2, -2.4, 0, "F")),
-    dict(ref="C2", sym="Device:C", value="10uF 6.3V",
-         fp="Capacitor_SMD:C_0402_1005Metric",
-         fields={"MPN": "CL05A106MQ5NUNC", "Manufacturer": "Samsung", "LCSC": "C15525"},
-         sch=(156, 98, 0), pcb=(-1.78, 0.5, 90, "F")),
-    dict(ref="AE1", sym="Device:Antenna", value="PCB arm",
-         fp="insect_tag:Antenna_Arm_Feed",
-         fields={"Note": "Printed quarter-wave trace up the 0.8 mm FR-4 arm; trim the arm to tune"},
-         sch=(150, 52, 0), pcb=(-2.05, -2.95, 0, "F"), in_bom=False),
+         sch=(146, 98, 0), pcb=(0.85, -2.15, 0, "F")),
+    dict(ref="C2", sym="Device:C", value="22uF 6.3V",
+         fp="insect_tag:C_0402_1005Metric",
+         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
+         sch=(160, 98, 0), pcb=(-2.3, 0.35, 180, "F")),
+    dict(ref="C3", sym="Device:C", value="22uF 6.3V",
+         fp="insect_tag:C_0402_1005Metric",
+         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
+         sch=(174, 98, 0), pcb=(-2.3, 1.15, 180, "F")),
+    dict(ref="C4", sym="Device:C", value="22uF 6.3V",
+         fp="insect_tag:C_0402_1005Metric",
+         fields={"MPN": "CL05A226MQ5QUNC", "Manufacturer": "Samsung", "LCSC": "C105226"},
+         sch=(188, 98, 0), pcb=(-1.9, 1.95, 180, "F")),
+    dict(ref="AE1", sym="Device:Antenna", value="Wire 30mm",
+         fp="insect_tag:Antenna_WirePad_THT_D0.8mm_Drill0.4mm",
+         fields={"Note": "Builder fits ~30 mm of fine enamelled wire (quarter wave at 2.44 GHz); trim to tune"},
+         sch=(150, 52, 0), pcb=(2.6, -1.45, 30, "F"), in_bom=False),
     dict(ref="BT1", sym="Device:Battery_Cell", value="337 SR416SW",
          fp="insect_tag:Cell_337_TopTabPads",
          fields={"MPN": "SR416SW", "Note": "Fitted by the builder: cell under the tag on Kapton, welded tabs onto the rim pads"},
-         sch=(176, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
+         sch=(203, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
     dict(ref="J1", sym="Connector_Generic:Conn_01x04", value="PROG",
          fp="insect_tag:ProgPads_2x02_P2.54mm_THT_Tab",
-         fields={"Note": "2 x 2 plated pads on the cut-off tab: R(XD) + / T(XD) G"},
-         sch=(70, 110, 0), pcb=(8.0, 0.0, 0, "F"), in_bom=False, mirror="x",
+         fields={"Note": "2 x 2 plated pads on the cut-off tab: R(XD) T(XD) / + G"},
+         sch=(70, 110, 0), pcb=(0.45, 8.27, 0, "F"), in_bom=False, mirror="x",
          ref_at=(2, -5, "left"), val_at=(2, 3.5, "left")),
 ]
 
-# U1 pins: 1 CHIP_EN, 2 XO_N, 3 XO_P, 4 MGPIO5/TXD, 5 MGPIO4/RXD, 6 VDDQ, 7 VCC, 8 RF_TX, 9 EP/GND
+# U1 (QFN18) pins: 1 XO_N, 2 XO_P, 3 MGPIO7, 4 MGPIO6, 5 MGPIO5, 6 SW0, 7 SW1, 8 GPIO0 (UART RXD), 9 GPIO1 (UART TXD),
+# 10 GPIO2, 11 GPIO3, 12 MGPIO4, 13 VDDQ, 14 RTC_XO_P, 15 RTC_XO_N, 16 RF_TX, 17 VCC, 18 CHIP_EN, 19 EP/GND
 NETS = {
-    "VCC":  [("U1", "1"), ("U1", "6"), ("U1", "7"), ("C1", "1"), ("C2", "1"), ("BT1", "1"), ("J1", "4")],
-    "GND":  [("U1", "9"), ("Y1", "2"), ("Y1", "4"), ("C1", "2"), ("C2", "2"), ("BT1", "2"), ("J1", "1")],
-    "XO_N": [("U1", "2"), ("Y1", "1")],
-    "XO_P": [("U1", "3"), ("Y1", "3")],
-    "TXD":  [("U1", "4"), ("J1", "2")],
-    "RXD":  [("U1", "5"), ("J1", "3")],
-    "RF":   [("U1", "8"), ("AE1", "1")],
+    "VCC":  [("U1", "17"), ("U1", "18"), ("U1", "13"), ("C1", "1"), ("C2", "1"), ("C3", "1"), ("C4", "1"),
+             ("BT1", "1"), ("J1", "4")],
+    "GND":  [("U1", "19"), ("Y1", "2"), ("Y1", "4"), ("C1", "2"), ("C2", "2"), ("C3", "2"), ("C4", "2"),
+             ("BT1", "2"), ("J1", "1")],
+    "XO_N": [("U1", "1"), ("Y1", "3")],
+    "XO_P": [("U1", "2"), ("Y1", "1")],
+    "TXD":  [("U1", "9"), ("J1", "2")],
+    "RXD":  [("U1", "8"), ("J1", "3")],
+    "RF":   [("U1", "16"), ("AE1", "1")],
 }
+NO_CONNECT = [("U1", n) for n in ("3", "4", "5", "6", "7", "10", "11", "12", "14", "15")]   # RTC pins: internal 32 kHz RC
 POWER_NETS = {"VCC", "GND"}
 FLAG_AT = (40, 95)
 
 # ---------------------------------------------------------------- outline
-R_TAG = 3.2
-ARM_X0, ARM_X1 = -2.45, -1.65          # 0.8 mm wide FR-4 arm carrying the antenna trace
-ARM_LEN = 30.0                          # from the tag's top edge to the arm tip
-ARM_TIP_Y = -(R_TAG + ARM_LEN)
-ARM_CX = (ARM_X0 + ARM_X1) / 2
-NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = 2.5, 5.6, -0.9, 0.9   # 1.8 mm wide neck, cut after programming
-TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = 5.6, 10.4, -2.8, 2.8      # programming tab
-CUT_X = 3.45                                                 # silkscreen cut line across the neck
-BT_PADS = {"1": (-2.45, 0.95), "2": (1.75, 1.95)}              # rim pads for the cell tabs: + left, - lower right
+R_TAG = 3.75
+NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = -0.45, 1.35, 2.8, 5.3     # 1.8 mm neck, cut after programming
+TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -1.95, 2.85, 5.3, 11.2        # programming tab
+CUT_Y = 3.95                                                    # silkscreen cut line across the neck
+BT_PADS = {"1": (-0.35, -3.0), "2": (2.85, 1.1)}                # rim pads for the cell tabs: + top, - right
 BT_PAD_D = 0.7
 
 
@@ -81,78 +91,91 @@ def outline_polygon():
     from shapely.geometry import Point, box
     from shapely.ops import unary_union
     return unary_union([Point(0, 0).buffer(R_TAG, 256),
-                        box(ARM_X0, ARM_TIP_Y, ARM_X1, -1.5),
                         box(NECK_X0, NECK_Y0, NECK_X1, NECK_Y1),
                         box(TAB_X0, TAB_Y0, TAB_X1, TAB_Y1)])
 
 
 def pour_polygon():
-    """GND pour area on both layers: the round tag only (not the arm, neck or tab)."""
+    """GND pour area on both layers: the round tag only (not the neck or tab)."""
     from shapely.geometry import Point
     return Point(0, 0).buffer(R_TAG, 128)
 
 
-# PCB-only footprints: KiKit tab annotations, placed just outside an edge with the arrow pointing into the board.
-# The panel (tools/panel.json) alternates rows by 180 deg, so the tag-bottom tab (x 0) and the programming-tab
-# bottom tab (x 7.2 = 2 x the unit's bounding-box centre) line up with their mates on the rotated row.
+# KiKit tab annotations, just outside an edge, arrow pointing into the board. The panel turns every second row
+# by 180 deg about the unit's bounding-box centre (x = 0), so the tab-bottom annotation sits at x = 0 to meet
+# its mate on the turned row.
+_xt = 1.5
 BOARD_ONLY = [
-    dict(ref="KT1", fp="insect_tag:KiKit_Tab_0p6mm", pcb=(ARM_CX, ARM_TIP_Y - 0.05, 270, "F")),   # arm tip -> rail
-    dict(ref="KT2", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(-3.25, -1.1, 0, "F")),                  # tag left
-    dict(ref="KT3", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(TAB_X1 + 0.05, -1.1, 180, "F")),        # tab right (mates KT2)
-    dict(ref="KT4", fp="insect_tag:KiKit_Tab_1p2mm", pcb=(0.0, R_TAG + 0.05, 90, "F")),           # tag bottom
-    dict(ref="KT5", fp="insect_tag:KiKit_Tab_1p2mm", pcb=(7.2, TAB_Y1 + 0.05, 90, "F")),          # tab bottom
+    # tag top -> rail; the annotation must clear the curved edge across the whole 1 mm tab width
+    dict(ref="KT1", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(_xt, -(R_TAG ** 2 - (_xt - 0.5) ** 2) ** 0.5 - 0.05, 270, "F")),
+    dict(ref="KT2", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(-(R_TAG + 0.04), -0.5, 0, "F")),                        # tag left
+    dict(ref="KT3", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(R_TAG + 0.04, -0.5, 180, "F")),                        # tag right (mates KT2)
+    dict(ref="KT4", fp="insect_tag:KiKit_Tab_1p2mm", pcb=(0.0, TAB_Y1 + 0.05, 90, "F")),                         # tab bottom
 ]
 
 # ---------------------------------------------------------------- routing (all hand-placed)
 VIA_D, VIA_DRILL = 0.5, 0.3
 ZONE_CLEARANCE = 0.15
 W_SIG, W_XO, W_PWR, W_RF = 0.13, 0.15, 0.2, 0.25
-V_TOP = (-0.95, -2.2)    # VCC via beside C1 (VCC/VDDQ pins); >= 0.5 mm from the edge so the bottom pour flows round it
-V_LEFT = (-2.3, -0.7)    # VCC via on the left (CHIP_EN, C2, + pad); likewise clear of the edge
-Y_RXD, Y_GND, Y_TXD, Y_VCC_B = -0.55, 0.0, 0.55, -0.3     # neck lanes
+V_TOP = (-0.45, -2.15)   # VCC via by C1 and the + pad
+V_DQ = (2.7, 0.15)       # VCC via for VDDQ
+V_LEFT = (-1.0, 2.6)     # VCC via for the bulk caps
+G_N = (0.45, 2.8)        # GND via feeding the neck's GND lane
+X_RXD, X_GND, X_TXD = -0.1, 0.45, 1.0      # neck lanes, top layer
+X_VCC_B = -0.1                             # neck lane, bottom layer (VCC alone)
+X_VCC_TAB = 0.15                           # VCC lane inside the tab, clear of the RXD pad
 
 
 def static_tracks():
-    # RF: pin 8 left, then diagonally into the arm and up it as the antenna.
-    yield ("RF", "F", W_RF, [("U1", "8"), (-1.35, -1.45), (ARM_CX, -2.15), ("AE1", "1")])
-    yield ("RF", "F", W_RF, [("AE1", "1"), (ARM_CX, ARM_TIP_Y + 0.5)])
-    # Crystal: XO_P straight down; XO_N down the channel between the crystal's pad columns, into pad 1.
-    yield ("XO_P", "F", W_XO, [("U1", "3"), ("Y1", "3")])
-    yield ("XO_N", "F", W_XO, [("U1", "2"), (-0.25, 2.475), ("Y1", "1")])
-    # VCC top: VCC + VDDQ joined, up to C1 and the top via.
-    yield ("VCC", "F", W_PWR, [("U1", "6"), ("U1", "7")])
-    yield ("VCC", "F", W_PWR, [("U1", "7"), ("C1", "1")])
-    yield ("VCC", "F", W_PWR, [V_TOP, ("C1", "1")])
-    # VCC left: CHIP_EN - C2 - (+) pad - left via.
-    yield ("VCC", "F", W_PWR, [("U1", "1"), ("C2", "1")])
-    yield ("VCC", "F", W_PWR, [("C2", "1"), ("BT1", "1")])
-    yield ("VCC", "F", W_PWR, [("BT1", "1"), V_LEFT])
-    # VCC bottom: top via to left via, and top via out through the neck to the tab's + pad.
-    yield ("VCC", "B", W_PWR, [V_TOP, V_LEFT])
-    yield ("VCC", "B", W_PWR, [V_TOP, (-0.2, -1.55), (1.65, -1.55), (2.9, Y_VCC_B), (8.4, Y_VCC_B), ("J1", "4")])
-    # GND top: C1 to its via; C2 to the exposed pad; crystal ground pads to vias and the (-) pad; EP out to the tab.
-    yield ("GND", "F", W_PWR, [("C1", "2"), (1.3, -2.15)])
-    yield ("GND", "F", W_PWR, [("C2", "2"), (-0.7, 0.02)])
-    yield ("GND", "F", W_PWR, [("Y1", "4"), (-1.5, 1.85)])
-    yield ("GND", "F", W_PWR, [("Y1", "2"), ("BT1", "2")])
-    yield ("GND", "F", W_PWR, [(0.6, Y_GND), (9.27, Y_GND), ("J1", "1")])
+    # Crystal: XO_P straight across to Y1 pad 1; XO_N through the gap between the crystal's pad rows to pad 3.
+    yield ("XO_P", "F", W_XO, [("U1", "2"), (-1.6, -0.65), ("Y1", "1")])
+    yield ("XO_N", "F", W_XO, [("U1", "1"), (-2.45, -1.05), ("Y1", "3")])
+    # RF straight to the antenna hole.
+    yield ("RF", "F", W_RF, [("U1", "16"), ("AE1", "1")])
+    # VCC top: CHIP_EN tied to VCC between the pads, up to C1, the top via and the + pad.
+    yield ("VCC", "F", W_PWR, [("U1", "18"), ("U1", "17")])
+    yield ("VCC", "F", W_PWR, [("U1", "17"), (0.45, -1.75), ("C1", "1")])
+    yield ("VCC", "F", W_PWR, [("C1", "1"), V_TOP])
+    yield ("VCC", "F", W_PWR, [V_TOP, ("BT1", "1")])
+    yield ("VCC", "F", W_PWR, [("U1", "13"), V_DQ])
+    # VCC bulk caps (right-hand pads) to the left via.
+    yield ("VCC", "F", W_PWR, [("C2", "1"), ("C3", "1")])
+    yield ("VCC", "F", W_PWR, [("C3", "1"), ("C4", "1")])
+    yield ("VCC", "F", W_PWR, [("C4", "1"), V_LEFT])
+    # VCC bottom spine: top via -> VDDQ via -> under U1 -> neck; left via -> neck. Only the neck reaches the edge.
+    yield ("VCC", "B", W_PWR, [V_TOP, (0.0, -1.4), (1.2, -1.4), V_DQ])
+    yield ("VCC", "B", W_PWR, [V_DQ, (1.3, 1.55), (1.3, 2.3), (X_VCC_B, 2.3)])
+    yield ("VCC", "B", W_PWR, [V_LEFT, (X_VCC_B, 2.6)])
+    yield ("VCC", "B", W_PWR, [(X_VCC_B, 2.3), (X_VCC_B, 6.0), (X_VCC_TAB, 6.25), (X_VCC_TAB, 8.9), ("J1", "4")])
+    # GND top: C1 to its via; crystal ground pads to the bulk caps' ground column and vias; - pad to its via.
+    yield ("GND", "F", W_PWR, [("C1", "2"), (1.85, -1.85)])
+    yield ("GND", "F", W_PWR, [("Y1", "2"), (-1.5, -2.35)])
+    yield ("GND", "F", W_PWR, [("Y1", "4"), ("C2", "2")])
+    yield ("GND", "F", W_PWR, [("C2", "2"), ("C3", "2")])
+    yield ("GND", "F", W_PWR, [("C3", "2"), (-2.78, 1.6), ("C4", "2")])
+    yield ("GND", "F", W_PWR, [("C4", "2"), (-1.85, 2.7)])
+    yield ("GND", "F", W_PWR, [("BT1", "2"), (2.4, 1.9)])
+    yield ("GND", "F", W_PWR, [G_N, (X_GND, 8.8), (1.0, 9.54), ("J1", "1")])
     # UART on top through the neck, either side of GND.
-    yield ("RXD", "F", W_SIG, [("U1", "5"), (1.4, -1.45), (2.3, Y_RXD), (5.9, Y_RXD), ("J1", "3")])
-    yield ("TXD", "F", W_SIG, [("U1", "4"), (1.4, 0.95), (1.8, Y_TXD), (5.9, Y_TXD), ("J1", "2")])
+    yield ("RXD", "F", W_SIG, [("U1", "8"), (0.2, 2.0), (X_RXD, 2.3), (X_RXD, 6.0), ("J1", "3")])
+    yield ("TXD", "F", W_SIG, [("U1", "9"), (0.7, 2.0), (X_TXD, 2.3), (X_TXD, 6.0), ("J1", "2")])
 
 
 def static_vias():
     yield ("VCC",) + V_TOP
+    yield ("VCC",) + V_DQ
     yield ("VCC",) + V_LEFT
-    yield ("GND", -0.72, -0.25)   # exposed-pad vias, outside the paste opening
-    yield ("GND", 0.72, -0.25)
-    yield ("GND", 1.3, -2.15)     # C1 ground
-    yield ("GND", -1.5, 1.85)     # crystal pad 4
-    yield ("GND", 1.1, 2.18)      # crystal pad 2 / (-) pad
+    yield ("GND", 0.05, 0.6)      # exposed-pad vias, outside the paste windows
+    yield ("GND", 0.85, -0.3)
+    yield ("GND", 1.85, -1.85)    # C1 ground
+    yield ("GND", -1.5, -2.35)    # crystal pad 2
+    yield ("GND", -1.85, 2.7)     # bulk caps' ground column
+    yield ("GND", 2.4, 1.9)       # - pad
+    yield ("GND",) + G_N          # neck GND lane
 
 
 # Silkscreen (text, x, y, size, side, angle) and lines ((x1, y1), (x2, y2), side)
-SILK_TEXT = [("CUT", 4.55, 0.0, 0.6, "F", 0),
-             ("R", 6.73, -2.32, 0.6, "F", 0), ("+", 9.27, -2.32, 0.6, "F", 0),
-             ("T", 6.73, 2.32, 0.6, "F", 0), ("G", 9.27, 2.32, 0.6, "F", 0)]
-SILK_LINES = [((CUT_X, NECK_Y0), (CUT_X, NECK_Y1), "F")]
+SILK_TEXT = [("CUT", 0.45, 4.62, 0.6, "F", 0),
+             ("R", -0.82, 5.92, 0.6, "F", 0), ("T", 1.72, 5.92, 0.6, "F", 0),
+             ("+", -0.82, 10.62, 0.6, "F", 0), ("G", 1.72, 10.62, 0.6, "F", 0)]
+SILK_LINES = [((NECK_X0, CUT_Y), (NECK_X1, CUT_Y), "F")]

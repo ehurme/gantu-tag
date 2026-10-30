@@ -1,5 +1,5 @@
 Comment,Designator,Footprint,LCSC
-IN100-D1-R-YC1I,U1,insect_tag:InPlay_IN100_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.3x1.9mm,
+IN100-Q1-R-RC1I,U1,insect_tag:InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm,C6062024
 26MHz 7pF,Y1,insect_tag:Crystal_SMD_1612-4Pin_1.6x1.2mm,C5203638
-100nF,C1,Capacitor_SMD:C_0402_1005Metric,C1525
-10uF 6.3V,C2,Capacitor_SMD:C_0402_1005Metric,C15525
+100nF,C1,insect_tag:C_0402_1005Metric,C1525
+22uF 6.3V,"C2,C3,C4",insect_tag:C_0402_1005Metric,C105226

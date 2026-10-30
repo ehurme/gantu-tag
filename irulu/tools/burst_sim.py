@@ -1,0 +1,40 @@
+"""Supply droop during one IN100 advertising event on a 337 silver-oxide cell (run: python3 tools/burst_sim.py).
+Cell = Voc behind R_int; bulk cap (effective value after DC-bias derating) across the IN100.
+Event model (IN100 datasheet gives only TX currents): 0.8 ms crystal start at 1.5 mA, then
+3 channels x (0.5 ms at TX current incl. PLL ramp + 0.15 ms gap at 3 mA)."""
+import numpy as np
+
+def profile(i_tx):
+    seg = [(0.8e-3, 1.5e-3)]
+    for _ in range(3):
+        seg += [(0.5e-3, i_tx), (0.15e-3, 3e-3)]
+    return seg
+
+def vmin(voc, r, c, i_tx, dt=1e-6):
+    v, lo, q = voc, voc, 0.0
+    for dur, i in profile(i_tx):
+        for _ in range(int(round(dur / dt))):
+            v += ((voc - v) / r - i) / c * dt
+            lo = min(lo, v)
+            q += i * dt
+    return lo, q
+
+# effective capacitance at ~1.5 V after X5R DC-bias derating
+caps = [("10 uF 0402 (v4)", 8e-6), ("1 x 22 uF 0402", 17e-6), ("2 x 22 uF 0402", 34e-6),
+        ("3 x 22 uF 0402 (v5)", 52e-6), ("47 uF 0603", 38e-6), ("2 x 47 uF 0603", 76e-6)]
+cells = [("fresh, 20 C (80 ohm)", 1.55, 80), ("cold / half used (150 ohm)", 1.53, 150),
+         ("near end of life (250 ohm)", 1.50, 250)]
+for i_tx, name in ((9.1e-3, "0 dBm, 9.1 mA"), (13.8e-3, "+5 dBm, 13.8 mA")):
+    print(f"\nTX {name}: minimum supply voltage during one advertising event (IN100 needs >= 1.1 V)")
+    print(f"{'bulk cap (effective)':24s}" + "".join(f"{c[0]:>30s}" for c in cells))
+    for cname, c in caps:
+        row = ""
+        for _, voc, r in cells:
+            lo, q = vmin(voc, r, c, i_tx)
+            row += f"{lo:>26.2f} V {'ok' if lo >= 1.2 else ('!!' if lo < 1.1 else ' ~')}"
+        print(f"{cname:24s}{row}")
+lo, q = vmin(1.55, 80, 52e-6, 9.1e-3)
+print(f"\ncharge per event at 0 dBm: {q*1e6:.1f} uC")
+for T in (1, 2, 5, 10, 60, 600, 86400):
+    i_avg = 0.625e-6 + q / T
+    print(f"interval {T:>6d} s: average {i_avg*1e6:6.2f} uA -> {8.3e-3/i_avg/24:7.0f} days on 8.3 mAh (ignoring self-discharge)")

@@ -8,8 +8,8 @@ cd "$(dirname "$0")/.."
 KIKIT=${KIKIT:-kikit}
 mkdir -p fab
 
-# 2 x 6 panel (12 tags, 92 x 89 mm). The second row is turned 180 deg so each tag is tabbed to the
-# programming tab of the tag opposite; arm tips are tabbed to the top and bottom rails.
+# 2 x 10 panel (20 tags). The second row is turned 180 deg so the programming tabs meet in the middle;
+# each tag is tabbed to its neighbours and to the top or bottom rail.
 $KIKIT panelize -p tools/panel.json insect_tag.kicad_pcb fab/insect_tag_panel.kicad_pcb
 
 # Gerbers + drill + BOM + CPL for JLC assembly of the panel (this is what you upload).

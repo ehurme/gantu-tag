@@ -44,7 +44,7 @@ def parity(board):
                 continue
             got = pad.GetNetname()
             exp = want.get((ref, num))
-            if exp is None and got:
+            if exp is None and got and not got.startswith("unconnected-"):
                 bad.append(f"{ref}.{num} has net {got} but design has none")
             elif exp is not None and got != exp:
                 bad.append(f"{ref}.{num} net {got!r} != design {exp!r}")

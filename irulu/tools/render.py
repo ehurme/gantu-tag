@@ -129,21 +129,13 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
 
 if __name__ == "__main__":
     data = load()
-    xlim, ylim = (-3.6, 10.8), (-4.6, 3.6)
-    fig, axes = plt.subplots(3, 1, figsize=(9, 15.5), facecolor=COL["bg"])
-    # points per mm at this figure size: axis width in inches * 72 / span in mm
-    fig.subplots_adjust(left=0.02, right=0.98, top=0.97, bottom=0.01, hspace=0.12)
-    PT = (axes[0].get_position().width * 9 * 72) / (xlim[1] - xlim[0])
+    xlim, ylim = (-4.3, 4.3), (-4.3, 11.8)
+    fig, axes = plt.subplots(1, 3, figsize=(15, 9.6), facecolor=COL["bg"])
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.95, bottom=0.01, wspace=0.04)
+    PT = (axes[0].get_position().width * 15 * 72) / (xlim[1] - xlim[0])
     draw(axes[0], data, ["F"], "F", "Top (parts side)", xlim, ylim)
     draw(axes[1], data, ["B", "F"], None, "Both copper layers (orange top, blue bottom)", xlim, ylim)
     draw(axes[2], data, ["B"], "B", "Bottom (mirrored, against the cell)", xlim, ylim, mirror=True)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    fig.savefig(OUT, dpi=140, facecolor=COL["bg"])
-    # full unit with the antenna arm
-    fig2, ax2 = plt.subplots(figsize=(4.2, 9), facecolor=COL["bg"])
-    fig2.subplots_adjust(left=0.02, right=0.98, top=0.95, bottom=0.01)
-    xl2, yl2 = (-4.0, 11.2), (D.ARM_TIP_Y - 1.0, 4.0)
-    PT = (ax2.get_position().width * 4.2 * 72) / (xl2[1] - xl2[0])
-    draw(ax2, data, ["B", "F"], "F", "Whole unit (arm, tag, neck, tab)", xl2, yl2)
-    fig2.savefig(OUT.replace(".png", "_unit.png"), dpi=140, facecolor=COL["bg"])
+    fig.savefig(OUT, dpi=110, facecolor=COL["bg"])
     print(OUT)
