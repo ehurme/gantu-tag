@@ -62,10 +62,11 @@ They ignore self-discharge and the cell's rising resistance near the end, so tre
   On this tag the supply already rises slowly through the cell's resistance and 66 µF (τ ≈ 5 ms), and the IN100 has its own power-on reset, so the RC would add little.
 - **Y1** TXC 8Q26000008: 26 MHz, 7 pF, ±16 ppm, 1.6 × 1.2 mm (C5203638). The IN100's on-chip load capacitors replace external ones.
 - **AE1** is a plated hole (0.4 mm drill) for about 30 mm of fine enamelled wire, which is a quarter wave at 2.44 GHz. It's fed straight from RF_TX.
-- **BT1** has two top rim pads for the cell's welded tabs: **+ at the top**, **− at the right**.
+- **BT1:** a bare gold **Ø2 mm pad on the underside**, centred on the cell's negative cap, takes a dot of silver epoxy. Two top rim pads take the + wire, or welded tabs if you prefer: **+ at the top**, **− at the right**.
 - **J1** is on the cut-off tab: **R** = RXD (into the IN100), **T** = TXD (out of the IN100), **+** = VCC, **G** = GND, on a 2 × 2, 2.54 mm grid.
 
-Layers: the top carries the parts and signals. The bottom is a ground plane with the VCC traces, and it sits against the cell, so you **need a Kapton disc between the board and the cell**.
+Layers: the top carries the parts and signals. The bottom is a ground plane with the VCC traces, and it sits against the cell.
+Apart from the central epoxy pad, **keep Kapton between the board and the cell**: the cell's can is +, and the ground plane under the solder mask is −.
 The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper burr from cutting can't easily short the supply.
 
 ## What's in the folder
@@ -111,14 +112,19 @@ The neck carries RXD, GND and TXD on top and VCC alone underneath, so a copper b
    - *Find My (OpenHaystack-style):* non-connectable advertising with the payload `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`.
      The static random address is `key[0] | 0xC0, key[1..5]`.
 4. **Cut the neck** at the silkscreen line, flush to the tag, with sharp flush cutters. Sand the stub.
-5. **Check for shorts:** measure across the + and − rim pads. You should see the 66 µF charging, not a dead short.
+5. **Check for shorts:** measure across the + and − rim pads. You should see the 66 µF charging, not a dead short. Measure again once the cell is fitted: you should read about 1.55 V.
 6. **Antenna:** strip about 0.5 mm of a ~0.1 mm enamelled copper wire. Push it through the hole by RF_TX, solder it, and trim the wire to 30 mm.
    Trimming shortens it and raises its resonant frequency. Epoxy lowers it.
-7. **Fit the cell.** Use a 337 (SR416SW) with welded tabs, or have 0.1 mm nickel strip spot-welded on.
-   - Put a Kapton disc on the board's underside and the cell on that.
-   - Bring the + tab up to the **top** rim pad and the − tab up to the **right** rim pad, then solder them.
-   - Keep Kapton between the − tab and the can wall. Never solder directly to the cell.
-8. **Coat** the tag and cell in a thin layer of epoxy. Leave the wire free beyond the first millimetre.
+7. **Fit the cell with silver epoxy** (no soldering on the cell, no welded tabs). The cell's small raised cap (−) faces the board and the can (+) faces away.
+   - Punch a **Kapton washer** with a ~2 mm hole and stick it on the underside, the hole over the gold pad. The bottom silkscreen ring shows where the cell sits.
+     The washer covers the cell's crimped rim, which is +.
+   - Put a **small** dot of two-part silver epoxy on the gold pad, then press the cell on, centred in the ring.
+     **The cap and the can are only a fraction of a millimetre apart. Epoxy that bridges them shorts the cell.**
+   - **+:** tack a short piece of thin wire or 0.1 mm nickel strip to the can's side wall with silver epoxy, and solder its other end to the **+** rim pad at the top.
+   - Hold the stack together while the epoxy cures at room temperature, with a clip, a friction-fit collar or a small clamp. Don't heat the cell above its 60 °C rating.
+     A friction fit alone isn't reliable in the field, because vibration and temperature changes loosen it. Once the silver epoxy has cured, add a structural-epoxy fillet around the cell's edge.
+   - *Alternative:* use a cell with welded tabs on the two rim pads (+ top, − right), with a full Kapton disc that also covers the gold pad.
+8. **Coat** the tag and cell in a thin layer of structural epoxy. Leave the antenna wire free beyond the first millimetre.
 
 ## Mass (estimate)
 

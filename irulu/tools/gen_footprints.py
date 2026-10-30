@@ -235,9 +235,12 @@ def cell_pads():
     for num in ("1", "2"):
         x, y = D.BT_PADS[num]
         b += smd(num, round(x, 4), round(y, 4), D.BT_PAD_D, D.BT_PAD_D, "circle", '"F.Cu" "F.Mask"')
+    # Underside pad for the cell's negative cap (silver epoxy), plus a silkscreen ring to centre the cell
+    b += smd("2", 0, 0, D.BT_NEG_D, D.BT_NEG_D, "circle", '"B.Cu" "B.Mask"')
+    b += circle(0, 0, 2.45, "B.SilkS", 0.1)
     b += circle(0, 0, 2.4, "F.Fab", 0.05)
     b += model(name)
-    write(name, footprint(name, b, "Top-side rim pads for a 337 (SR416SW) cell's welded tabs; the cell sits under the tag on Kapton",
+    write(name, footprint(name, b, "337 (SR416SW) cell: top rim pads for welded tabs, and an underside pad for the negative cap (silver epoxy)",
                           "battery 337 tab", "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
     board_t, kapton = 0.6, 0.05
     z_top = -board_t - kapton

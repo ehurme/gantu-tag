@@ -85,6 +85,7 @@ TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -1.95, 2.85, 5.3, 11.2        # programming tab
 CUT_Y = 3.95                                                    # silkscreen cut line across the neck
 BT_PADS = {"1": (-0.35, -3.0), "2": (2.85, 1.1)}                # rim pads for the cell tabs: + top, - right
 BT_PAD_D = 0.7
+BT_NEG_D = 2.0      # bare gold pad on the underside, centred on the cell's negative cap (silver-epoxy option)
 
 
 def outline_polygon():
