@@ -1,3 +1,7 @@
+> **Superseded by v7 - do not order v6.** Its Gerbers have the ground pour running out to the board edge, the panel's
+> mouse-bite holes cut into that pour, and it lacks the small decoupling capacitor at the IN100's VCC pin.
+> See ../insect_tag_v7/README.md.
+
 # IN100 insect tag v6 (7 mm round, cut-to-start tail)
 
 This is an open Bluetooth LE beacon tag for insects, built around the InPlay **IN100 NanoBeacon**.
@@ -172,7 +176,8 @@ The neck stub after cutting is about 0.5 mm. Weigh your first tags rather than r
 ## Checks done
 
 - **KiCad 7.0 DRC** (the build tools): 0 violations, 0 unconnected; the board netlist matches the design.
-- **KiCad 10.0.7 DRC and ERC:** see `docs/kicad10_checks.txt`.
+- **KiCad 10.0.7 DRC** (after a zone refill): 0 errors, 0 warnings, 0 schematic-parity issues.
+  **KiCad 10.0.7 ERC**: 0 errors, plus 3 cosmetic warnings saying the embedded jumper, crystal and battery symbols differ from KiCad 10's library copies (`docs/kicad10_checks.txt`).
 - JLC standard rules throughout: tracks and gaps ≥ 0.13 mm, 0.3 mm vias, copper ≥ 0.2 mm from the edge.
   The only finer feature is the QFN's own 0.4 mm pin pitch.
 
