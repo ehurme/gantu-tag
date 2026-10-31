@@ -17,5 +17,12 @@ $KIKIT panelize -p tools/panel.json insect_tag.kicad_pcb fab/insect_tag_panel.ki
 $PY tools/variants.py fab/insect_tag_panel.kicad_pcb fab/jlcpcb_panel docs
 $KIKIT fab jlcpcb --no-drc --nametemplate "insect_tag_panel_{}" fab/insect_tag_panel.kicad_pcb fab/jlcpcb_panel
 
+# Same panel with 16 mm rails (88 x 70 mm): JLC's Standard PCBA needs panels of at least 70 x 70 mm, and Standard is
+# what allows a 0.6 mm (or 0.4 mm) ENIG board. Identical tags; only the rails and the placement offsets differ.
+$KIKIT panelize -p tools/panel_standard.json insect_tag.kicad_pcb fab/insect_tag_panel_standard.kicad_pcb
+$PY tools/variants.py fab/insect_tag_panel_standard.kicad_pcb fab/jlcpcb_panel_standard docs panel_variants_standard.csv
+$KIKIT fab jlcpcb --no-drc --nametemplate "insect_tag_panel_standard_{}" fab/insect_tag_panel_standard.kicad_pcb fab/jlcpcb_panel_standard
+for f in bom pos; do mv fab/jlcpcb_panel_standard/insect_tag_panel_$f.csv fab/jlcpcb_panel_standard/insect_tag_panel_standard_$f.csv; done
+
 # Single-unit Gerbers (bare boards for hand assembly).
 $KIKIT fab jlcpcb --no-drc --nametemplate "insect_tag_single_{}" insect_tag.kicad_pcb fab/jlcpcb_single

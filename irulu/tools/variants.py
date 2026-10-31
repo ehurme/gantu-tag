@@ -8,7 +8,7 @@ of the panel gets the variant in design.PANEL_COLUMNS, on both rows. This script
      placement convention (x from the aux origin, y flipped, rotation = footprint orientation),
   4. writes a variant map (CSV) for the build log.
 
-Usage (KiCad's Python):  python3 tools/variants.py fab/insect_tag_panel.kicad_pcb fab/jlcpcb_panel docs
+Usage (KiCad's Python):  python3 tools/variants.py <panel.kicad_pcb> <fab dir> <docs dir> [map file name]
 """
 import csv
 import os
@@ -21,6 +21,7 @@ import design as D  # noqa: E402
 import pcbnew  # noqa: E402
 
 panel_path, fab_dir, doc_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+map_name = sys.argv[4] if len(sys.argv) > 4 else "panel_variants.csv"
 os.makedirs(fab_dir, exist_ok=True)
 os.makedirs(doc_dir, exist_ok=True)
 board = pcbnew.LoadBoard(panel_path)
@@ -108,7 +109,7 @@ with open(os.path.join(fab_dir, "insect_tag_panel_bom.csv"), "w", newline="") as
         w.writerow([value, ",".join(sorted(refs)), fpid, lcsc])
 
 # ---- 4. variant map
-with open(os.path.join(doc_dir, "panel_variants.csv"), "w", newline="") as f:
+with open(os.path.join(doc_dir, map_name), "w", newline="") as f:
     w = csv.writer(f)
     w.writerow(["Unit", "Variant", "Title", "Panel column (1 = left)", "Row (1 = top)", "U1 X mm", "U1 Y mm"])
     rows_y = sorted({round(u["pos"][1]) for u in units})

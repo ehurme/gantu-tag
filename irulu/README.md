@@ -64,6 +64,12 @@ Current through the pull-up while the OFF jumper is bridged:
 
 So on C and E, bridge the jumper only just before deployment.
 
+D is a bench test, not yet a field recommendation. Under the IN100 the CHIP_EN pad sits 0.2 mm from the ground pad, and a little flux residue plus humidity can leak between them.
+- With **1 MΩ**, a stray 10 MΩ path still leaves CHIP_EN at 91 % of VCC.
+- With **10 MΩ**, the same path would halve it.
+
+Use 10 MΩ in the field only if D tags keep starting reliably after a night in a humid box.
+
 ### A test plan
 
 You can program every tag into RAM for these tests and burn the OTP only on the tags that go into the field.
@@ -73,6 +79,30 @@ You can program every tag into RAM for these tests and burn the OTP only on the 
 3. **Off current.** Feed 1.55 V through a µA meter into **+** and **G** with the jumper bridged. Expect about 1.6 µA on A, 0.16 µA on D and 15 µA on C.
 4. **Range.** Compare RSSI at a fixed distance: plain wire (monopole), against a second 30 mm wire in **AE2** (dipole).
 5. **Choose.** Pick the winner and order the next batch as a single variant by setting `PANEL_COLUMNS` in `tools/design.py`.
+
+## Leakage budget
+
+| Path | Running (tail cut) | Off (jumper bridged) | Notes |
+|---|---|---|---|
+| IN100 | 0.625 µA asleep | 10 nA (CHIP_EN low) | Datasheet Table 19, at 3 V |
+| R1 pull-up | 0 | 1.6 / 15.5 / 0.16 µA (A,B / C,E / D) | After the cut, C2 blocks any DC path |
+| C1 47 µF leakage | ≤ 1.5 µA guaranteed; nA typical | Same | Murata guarantees ≥ 50 Ω·F, measured at the rated 6.3 V. At 1.5 V real parts leak far less |
+| C4 22 µF (B, E) | ≤ ~0.7 µA guaranteed (same class); nA typical | Same | Same kind of high-capacitance part |
+| GPIOs | 0 | 0 | The IN100's pins default to internal pull-ups, but no pin on the tag is tied to ground |
+| Flux and humidity under the QFN | Matters only for D | – | See the note under the variants |
+| The cut neck | Can hold the tag off when wet | – | The CHIP_EN stub sits between GND and VCC. **Sealing the cut edge is required, not cosmetic** |
+
+Test step 3 measures the whole off-state current, capacitor leakage included. Read it after 10 minutes, once the capacitors' dielectric absorption has settled.
+
+## How other tags switch on
+
+Cut-to-start is established practice, and this design uses the standard circuit for it.
+- **CTT BluBat:** "Cut off tab where indicated to activate" (Motus deployment guide). This is the tag the tail here imitates.
+- **ChorusView** peel-to-activate BLE labels (US 12,353,937 and US 12,393,812, 2025): a conductor holds the chip-enable pin low, and a weak pull-up turns the chip on once that conductor is broken.
+  That is the same circuit as R1 and JP1 here. Their claims are written around peeling a label off a liner or another tag, not cutting a tail off a circuit board. That is a reading of the claim text, not legal advice.
+- **Lotek NanoTags:** an infrared activator. **CTT PowerTag and Lotek BeaconTag:** a magnet you remove (reed switch). **CTT LifeTag and BlūMorpho:** start in sunlight.
+  None of these suits a 0.25 g tag without solar cells: a reed switch alone outweighs the board.
+- **Consumer devices:** a plastic pull tab between the cell and its contact. That needs a spring contact, which an epoxied cell doesn't have.
 
 ## Cells
 
@@ -115,14 +145,37 @@ Board, parts and solder come to about **0.115 g**. Height is the cell plus about
 
 The neck carries RXD and TXD on top, and GND, CHIP_EN and VCC underneath, with CHIP_EN between GND and VCC. A copper burr from cutting can't short the cell.
 
+## What's in the folder
+
+| Path | What it is |
+|---|---|
+| `insect_tag.kicad_pro`, `.kicad_sch`, `.kicad_pcb` | KiCad project with variant A's values (KiCad 7 format; checked in KiCad 10.0.7) |
+| `insect_tag.kicad_sym`, `insect_tag.pretty/`, `insect_tag.3dshapes/` | IN100 QFN18 symbol, footprints and 3D models |
+| `fab/jlcpcb_panel/` | Economic-assembly panel (0.8 mm): Gerbers zip, BOM, CPL |
+| `fab/jlcpcb_panel_standard/` | Standard-assembly panel (0.6 or 0.4 mm): the same tags with 17 mm rails |
+| `fab/jlcpcb_single/` | Gerbers for one tag and tail, for bare boards |
+| `docs/` | Schematic PDF, previews, KiCad 3D render, panel render, variant maps, DRC reports, burst simulation |
+| `tools/` | Generators: `design.py` (parts, placement, tracks, variants), `variants.py`, `burst_sim.py`, KiKit configs, `make_fab.sh` |
+
 ## Ordering from JLCPCB
 
-1. Upload `fab/jlcpcb_panel/insect_tag_panel_gerbers.zip`. Options:
-   - 2 layers, **0.8 mm**, **lead-free HASL**, green.
-     JLC's Economic assembly only accepts 0.8–1.6 mm boards, and ENIG only at 1.6 mm. 0.8 mm adds about 14 mg per tag over 0.6 mm. Don't accept the 1.6 mm default: it adds about 70 mg per tag.
+Use JLCPCB rather than PCBWay. JLC/LCSC stocks the IN100 itself (C6062024) and every other part on the board, and its prototype assembly fees are lower. PCBWay would have to buy the IN100 from a distributor for each job.
+
+Two panel files hold the same 20 tags. Board thickness is the biggest mass lever, bigger than the diameter. Board mass for the 7 mm disc at each thickness:
+
+| Board | Board mass | Panel to upload | Assembly type | JLC fees for this BOM |
+|---|---|---|---|---|
+| **0.8 mm**, lead-free HASL | 57 mg | `fab/jlcpcb_panel/` (88 × 48 mm) | Economic (0.8–1.6 mm only) | ≈ $25 (setup $8.18, stencil $1.53, $3.07 × 5 extended parts) |
+| **0.6 mm**, ENIG | 43 mg | `fab/jlcpcb_panel_standard/` (88 × 72 mm) | Standard (no thickness limit; panel ≥ 70 × 70 mm) | ≈ $48 (setup $25.56, stencil $8.21, $1.53 × 9 part lines) |
+| 0.4 mm, ENIG | 28 mg | `fab/jlcpcb_panel_standard/` | Standard | Same; JLC may review a 0.4 mm board by hand |
+
+Don't accept the 1.6 mm default: it makes the board 114 mg. For comparison, shrinking the disc from 7.0 to 6.6 mm would save only about 6 mg at 0.8 mm.
+
+1. Upload the Gerbers zip from the folder you chose. Options:
+   - 2 layers, the thickness and finish from the table, green.
    - Delivery format **Panel by Customer**. The rails, tooling holes and fiducials are in the Gerbers.
    - For "Mark on PCB", specify the location: the bottom rail carries a `JLCJLCJLCJLC` marker.
-2. Turn on **Economic** PCB Assembly, top side, and upload `insect_tag_panel_bom.csv` and `insect_tag_panel_pos.csv` from the same folder.
+2. Turn on PCB Assembly (**Economic** or **Standard** to match), top side. Upload the BOM and CPL from the same folder.
    - Every placement has its own designator, for example `R1_D3` for R1 on the third D tag. JLC counts parts per panel from the CPL.
    - Five parts are **extended** ($3 setup each): U1, Y1, C1, the 22 µF C4 and the 10 MΩ R1. The rest are basic.
    - **Assemble 2 of the 5 panels** for the first round: 40 tags, 8 of each variant. Most of the cost is the IN100 at about $1.70 each.
@@ -165,6 +218,13 @@ The IN100 can measure its own **temperature** (−40 to 85 °C; about ±1.5 °C 
 - **Hubble** has room for this: up to 13 bytes of custom data per advertisement, in 0, 4, 9 or 13 bytes on the satellite network. Check how Hubble's IN100 setup places these fields.
 - **Find My** has no room: the whole payload is the public key.
 
+The IN100 can also carry readings from extra sensors, still with no microcontroller. Each advertisement carries the reading taken at that moment, so it needs no memory on the tag: the receiver keeps the log.
+- **ADC:** four channels on MGPIO4–7, 2 bytes each.
+- **I2C:** up to three sensors, at most 5 bytes per read, on GPIO2/3/4/5/7.
+- A barometric pressure sensor would report height above a ground reference at each ping. You'd need a reference barometer on the ground, because weather moves pressure by the equivalent of several metres an hour.
+- A sensor would mean a new board variant: v7 leaves these pins unconnected.
+- I2C reads only run from burned OTP, not from the tool's RAM mode, so they can't be tried before burning.
+
 ## Mass and size
 
 With a 337 cell the finished tag is about **0.25 g** before epoxy and **3.4 mm** tall. The cell table above covers the other cells. Weigh your first tags rather than relying on these estimates.
@@ -182,6 +242,7 @@ With a 337 cell the finished tag is about **0.25 g** before epoxy and **3.4 mm**
   - Panel DRC: 0 errors.
 
   Details are in `docs/kicad10_checks.txt`.
+- The Standard (0.6 mm) panel: KiCad 7 panel DRC 0 violations, 0 unconnected. The tags are identical; only the rails differ.
 - JLC standard rules throughout: tracks and gaps ≥ 0.13 mm, 0.3 mm vias, copper ≥ 0.2 mm from the edge.
 
 ## Before you order a batch
