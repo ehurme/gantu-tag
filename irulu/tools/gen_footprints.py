@@ -5,7 +5,7 @@ Footprints:
   Crystal_SMD_1612-4Pin_1.6x1.2mm                    TXC 8Q26000008 (1.6 x 1.2 mm, 4 pads)
   C_0402_1005Metric, C_0805_2012Metric               KiCad's land patterns, with project-local 3D models
   Antenna_WirePad_THT_D0.8mm_Drill0.4mm              plated hole for the wire antenna
-  Cell_337_TopTabPads                                two rim pads for the 337 cell's welded tabs (+ cell 3D model)
+  Cell_Button_EpoxyPad_PlusRim                       + rim pad on top, - epoxy pad underneath (+ a 337 cell in 3D)
   ProgPads_2x02_P2.54mm_THT_Tab                      2 x 2 programming pads on the cut-off tab
   KiKit_Tab_*mm                                      KiKit panel tab annotations
 
@@ -290,20 +290,24 @@ def wire_pad():
 
 # ------------------------------------------------------------------ cell rim pads (+ the cell, for the 3D view)
 def cell_pads():
-    """337 cell under the tag: pad 1 (+) is a plated hole for a thin wire from the can's side wall,
-    pad 2 (-) a bare gold pad on the underside for a dot of silver epoxy on the negative cap."""
-    name = "Cell_337_EpoxyPad_PlusHole"
+    """Button cell under the tag, for any cell from 4.8 to 7.9 mm across: pad 1 (+) is a top-side rim pad for a thin
+    wire that runs over the board edge to the can's side wall; pad 2 (-) a bare gold pad on the underside for a dot
+    of silver epoxy on the negative cap. Underside silkscreen rings centre 4.8 and 5.8 mm cells; 6.8 mm cells sit
+    flush with the 7 mm board edge."""
+    name = "Cell_Button_EpoxyPad_PlusRim"
     b = txt("reference", "REF**", 0, 3.3, "F.Fab", 0.4, 0.06)
-    b += txt("value", "337", 0, 3.8, "F.Fab", 0.3, 0.05, hide=True)
-    hx, hy = D.PLUS_HOLE
-    b += tht("1", hx, hy, 0.8, 0.4)
+    b += txt("value", "cell", 0, 3.8, "F.Fab", 0.3, 0.05, hide=True)
+    px, py = D.PLUS_PAD
+    w, h = D.PLUS_PAD_SIZE
+    b += smd("1", px, py, w, h, "roundrect", '"F.Cu" "F.Mask"', rr=0.2)
     b += smd("2", 0, 0, D.NEG_PAD_D, D.NEG_PAD_D, "circle", '"B.Cu" "B.Mask"')
-    b += circle(0, 0, 2.45, "B.SilkS", 0.1)
+    for r in D.CELL_RINGS:
+        b += circle(0, 0, r, "B.SilkS", 0.1)
     b += circle(0, 0, 2.4, "F.Fab", 0.05)
     b += model(name)
-    write(name, footprint(name, b, "337 (SR416SW) cell under the tag: plated hole for the + wire, underside pad for the - cap (silver epoxy)",
-                          "battery 337", "through_hole exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
-    board_t, kapton = 0.6, 0.05
+    write(name, footprint(name, b, "Button cell under the tag: + rim pad on top (wire to the can), underside pad for the - cap (silver epoxy)",
+                          "battery button cell 337 379 364 377 zinc-air", "smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard"))
+    board_t, kapton = 0.8, 0.05
     z_top = -board_t - kapton
     wrl(name, [("kapton", mesh_cyl(0, 0, z_top, -board_t, 2.5, 48)),
                ("cell", mesh_cyl(0, 0, z_top - 1.65, z_top, 2.4, 48))])

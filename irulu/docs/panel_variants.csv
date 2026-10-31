@@ -1,0 +1,21 @@
+Unit,Variant,Title,Panel column (1 = left),Row (1 = top),U1 X mm,U1 Y mm
+A1,A,Baseline,1,1,108.10,31.95
+A2,A,Baseline,1,2,107.90,55.45
+A3,A,Baseline,2,1,117.10,31.95
+A4,A,Baseline,2,2,116.90,55.45
+B1,B,More bulk,3,1,126.10,31.95
+B2,B,More bulk,3,2,125.90,55.45
+B3,B,More bulk,4,1,135.10,31.95
+B4,B,More bulk,4,2,134.90,55.45
+C1,C,Strong enable,5,1,144.10,31.95
+C2,C,Strong enable,5,2,143.90,55.45
+C3,C,Strong enable,6,1,153.10,31.95
+C4,C,Strong enable,6,2,152.90,55.45
+D1,D,Low storage drain,7,1,162.10,31.95
+D2,D,Low storage drain,7,2,161.90,55.45
+D3,D,Low storage drain,8,1,171.10,31.95
+D4,D,Low storage drain,8,2,170.90,55.45
+E1,E,Belt and braces,9,1,180.10,31.95
+E2,E,Belt and braces,9,2,179.90,55.45
+E3,E,Belt and braces,10,1,189.10,31.95
+E4,E,Belt and braces,10,2,188.90,55.45

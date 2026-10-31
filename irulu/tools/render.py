@@ -129,7 +129,7 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
 
 if __name__ == "__main__":
     data = load()
-    xlim, ylim = (-4.0, 4.0), (-4.0, 13.0)
+    xlim, ylim = (-4.0, 4.0), (-4.0, 12.6)
     fig, axes = plt.subplots(1, 3, figsize=(15, 9.6), facecolor=COL["bg"])
     fig.subplots_adjust(left=0.01, right=0.99, top=0.95, bottom=0.01, wspace=0.04)
     PT = (axes[0].get_position().width * 15 * 72) / (xlim[1] - xlim[0])

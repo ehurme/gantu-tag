@@ -1,5 +1,5 @@
 Drill report for insect_tag_panel.kicad_pcb
-Created on Fri Oct 30 19:07:28 2026
+Created on Sat Oct 31 19:57:43 2026
 
 Copper Layer Stackup:
     =============================================================
@@ -10,11 +10,11 @@ Copper Layer Stackup:
 Drill file 'insect_tag_panel.drl' contains
     plated through holes:
     =============================================================
-    T1  0.300mm  0.0118"  (180 holes)
+    T1  0.300mm  0.0118"  (220 holes)
     T2  0.400mm  0.0157"  (40 holes)
     T3  0.700mm  0.0276"  (80 holes)
 
-    Total plated holes count 300
+    Total plated holes count 340
 
 
 Not plated through holes are merged with plated holes

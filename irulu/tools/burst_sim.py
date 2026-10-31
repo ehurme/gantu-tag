@@ -21,8 +21,9 @@ def vmin(voc, r, c, i_tx, dt=1e-6):
 
 # effective capacitance at ~1.5 V after X5R DC-bias derating
 # (assumes roughly 20 % DC-bias loss for 6.3 V X5R parts)
-caps = [("10 uF 0402 (v4)", 8e-6), ("1 x 22 uF 0402", 17e-6), ("3 x 22 uF 0402", 52e-6),
-        ("47 uF 0603 (v6)", 38e-6), ("100 uF 0805 (v5)", 80e-6)]
+# v7 variants: A/C/D = 47 uF 0603 + 100 nF; B/E = 47 uF 0603 + 22 uF 0402 (22 uF 0402 taken as ~15 uF at 1.5 V)
+caps = [("10 uF 0402 (v4)", 8e-6), ("47 uF (v7 A, C, D)", 38e-6), ("47 + 22 uF (v7 B, E)", 53e-6),
+        ("100 uF 0805 (v5)", 80e-6)]
 cells = [("fresh, 20 C (80 ohm)", 1.55, 80), ("cold / half used (150 ohm)", 1.53, 150),
          ("near end of life (250 ohm)", 1.50, 250)]
 for i_tx, name in ((9.1e-3, "0 dBm, 9.1 mA"), (13.8e-3, "+5 dBm, 13.8 mA")):
@@ -40,7 +41,9 @@ for T in (1, 2, 3, 5, 10, 60, 600):
     i_avg = 0.625e-6 + q / T
     print(f"interval {T:>4d} s: average {i_avg*1e6:6.2f} uA -> {8.3e-3/i_avg/24:5.0f} days on 8.3 mAh,"
           f" {4.15e-3/i_avg/24:4.0f} days on the first half (ignoring self-discharge)")
-# v6 storage: OFF jumper bridged holds CHIP_EN at GND; the 1 Mohm pull-up then carries VCC / 1 Mohm.
-i_store = 1.55 / 1e6 + 10e-9
-print(f"\nstorage with OFF bridged: {i_store*1e6:.2f} uA -> {i_store*24*30*1e3:.2f} mAh per 30 days"
-      f" ({i_store*24*30/8.3e-3*100:.0f} % of the cell)")
+# Storage: the OFF jumper holds CHIP_EN at GND; the pull-up then carries VCC / R1 (+ 10 nA in the IN100).
+print()
+for r1, var in ((1e6, "A, B"), (100e3, "C, E"), (10e6, "D")):
+    i_store = 1.55 / r1 + 10e-9
+    print(f"storage with OFF bridged, R1 = {r1/1e6:g} Mohm (variants {var}): {i_store*1e6:.2f} uA -> "
+          f"{i_store*24*30*1e3:.2f} mAh per 30 days ({i_store*24*30/8.3e-3*100:.0f} % of a 337)")

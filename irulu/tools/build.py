@@ -309,16 +309,16 @@ def build_schematic():
         power_symbol(net, x, y + 2.54, 270)
 
     notes = [
-        "IN100 insect tag v6: 7 mm round tag, wire antenna, cut-to-start tail",
-        "- U1 IN100 QFN18 (JLC C6062024). VDDQ tied to VCC; unused GPIOs, switches and RTC pins left open.",
-        "- CHIP_EN: R1 1 Mohm pull-up on the tag. JP1 (OFF) on the tail, bridged after programming, holds it low;",
-        "  cutting the tail releases CHIP_EN after VCC is up (datasheet power sequence). C2 10 nF (tail) delays it while programming.",
-        "- C1 47 uF 0603: carries the 9 mA TX bursts the 337 cell (~80 ohm) cannot supply alone. Use 0 dBm or less.",
-        "- Y1 26 MHz 1612, 7 pF load: the IN100's on-chip load capacitance replaces external caps.",
-        "- AE1: ~30 mm enamelled wire in a plated hole, fed straight from RF_TX (trim to tune).",
-        "- BT1: 337 / SR416SW under the tag: - cap silver-epoxied to the underside pad, + wire in the plated hole.",
-        "- J1: 2 x 2 plated pads on the tail (R T / G +). Program with 3.3 V before the cell is fitted.",
-        "Derived from the IN100 datasheet reference design and SparkFun's NanoBeacon Lite board (CC BY-SA 4.0).",
+        "IN100 insect tag v7: 7 mm round tag, wire antenna, cut-to-start tail, any 1.4-1.55 V button cell",
+        "- U1 IN100 QFN18 (JLC C6062024). VDDQ tied to VCC; unused GPIOs, switches and RTC pins left open; 4 vias in the EP.",
+        "- C1 47 uF 0603 carries the TX bursts a high-resistance button cell cannot; C4 at the VCC pin (SparkFun: 100 nF + 10 uF).",
+        "- CHIP_EN: R1 pull-up and C2 delay on the tag (EN rises after VCC). JP1 (OFF) on the tail, bridged after",
+        "  programming, holds EN low; cutting the tail starts the tag. Program 0 dBm or less, 1 Mbps PHY.",
+        "- Variants (population only): A 1M/10nF/100nF  B C4=22uF  C R1=100k C2=100nF  D R1=10M  E = B + C.",
+        "- Y1 26 MHz 1612, 7 pF, 80 ohm ESR (IN100: 6-8 pF, <= 100 ohm): on-chip load capacitance, no external caps.",
+        "- AE1: ~30 mm enamelled wire fed straight from RF_TX (on-chip 50 ohm match). AE2: optional GND counterpoise wire.",
+        "- BT1: button cell under the tag: - cap silver-epoxied to the underside pad, + wire from the top rim pad.",
+        "Derived from the IN100 datasheet and SparkFun's NanoBeacon boards (CC BY-SA 4.0).",
     ]
     for i, t in enumerate(notes):
         items.append(f'(text "{t}" (at {r2(20 * G)} {r2((132 + 2.2 * i) * G)} 0) '
@@ -327,7 +327,7 @@ def build_schematic():
     lib_block = "(lib_symbols\n" + "\n".join("  " + dump(libsyms[l], 1) for l in lib_ids) + ")"
     sch = (f'(kicad_sch (version 20230121) (generator eeschema)\n'
            f'(uuid {root})\n(paper "A4")\n'
-           f'(title_block (title "IN100 insect tracking tag v6") (date "2026-10-30") (rev "F")\n'
+           f'(title_block (title "IN100 insect tracking tag v7") (date "2026-10-31") (rev "G")\n'
            f'  (comment 1 "Open hardware. Hubble or Apple Find My, chosen when the IN100 is programmed")\n'
            f'  (comment 2 "Derived from the InPlay IN100 reference design and SparkFun NanoBeacon (CC BY-SA 4.0)"))\n'
            f'{lib_block}\n' + "\n".join(items) +
@@ -351,7 +351,7 @@ def build_board(root_uuid, sym_uuid):
     board = pcbnew.NewBoard(path)
     board.SetCopperLayerCount(2)
     ds = board.GetDesignSettings()
-    ds.SetBoardThickness(FromMM(0.6))
+    ds.SetBoardThickness(FromMM(0.8))
 
     nets = {}
     for n in D.NETS:
@@ -561,6 +561,16 @@ def patch_project():
     json.dump(d, open(pro, "w"), indent=2)
 
 
+def refill():
+    """Refill the pours with the project's rules (edge clearance etc.), which only exist once patch_project ran."""
+    import pcbnew
+    path = os.path.join(PRJ, D.PROJECT + ".kicad_pcb")
+    board = pcbnew.LoadBoard(path)
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+    pcbnew.SaveBoard(path, board)
+    fix_fpids(path)
+
+
 def write_tables():
     open(os.path.join(PRJ, "insect_tag.kicad_sym"), "w").write(IN100_SYM)
     open(os.path.join(PRJ, "sym-lib-table"), "w").write(
@@ -574,4 +584,5 @@ if __name__ == "__main__":
     root, su = build_schematic()
     build_board(root, su)
     patch_project()
+    refill()
     print("built", PRJ)

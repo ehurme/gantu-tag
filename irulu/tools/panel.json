@@ -45,7 +45,7 @@
     },
     "text": {
         "type": "simple",
-        "text": "IN100 insect tag v6  CC BY-SA 4.0",
+        "text": "IN100 insect tag v7  CC BY-SA 4.0  variants A-E by column pairs",
         "anchor": "mt",
         "voffset": "2.5mm",
         "hjustify": "center",
@@ -67,6 +67,7 @@
     },
     "post": {
         "millradius": "0.5mm",
-        "origin": "bl"
+        "origin": "bl",
+        "refillzones": true
     }
 }

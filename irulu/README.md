@@ -1,7 +1,3 @@
-> **Superseded by v7 - do not order v6.** Its Gerbers have the ground pour running out to the board edge, the panel's
-> mouse-bite holes cut into that pour, and it lacks the small decoupling capacitor at the IN100's VCC pin.
-> See ../insect_tag_v7/README.md.
-
 # IN100 insect tag v6 (7 mm round, cut-to-start tail)
 
 This is an open Bluetooth LE beacon tag for insects, built around the InPlay **IN100 NanoBeacon**.
