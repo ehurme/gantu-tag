@@ -1,27 +1,74 @@
 
-TX 0 dBm, 9.1 mA: minimum supply voltage during one advertising event (IN100 needs >= 1.1 V)
-bulk cap (effective)              fresh, 20 C (80 ohm)    cold / half used (150 ohm)    near end of life (250 ohm)
-10 uF 0402 (v4)                               0.92 V !!                      0.56 V !!                      0.25 V !!
-47 uF (v7 A, C, D)                            1.25 V ok                      1.18 V  ~                      1.12 V  ~
-47 + 22 uF (v7 B, E)                          1.31 V ok                      1.26 V ok                      1.22 V ok
-100 uF 0805 (v5)                              1.38 V ok                      1.35 V ok                      1.31 V ok
+==== datasheet 3 V currents
 
-TX +5 dBm, 13.8 mA: minimum supply voltage during one advertising event (IN100 needs >= 1.1 V)
-bulk cap (effective)              fresh, 20 C (80 ohm)    cold / half used (150 ohm)    near end of life (250 ohm)
-10 uF 0402 (v4)                               0.62 V !!                      0.10 V !!                     -0.34 V !!
-47 uF (v7 A, C, D)                            1.11 V  ~                      1.02 V !!                      0.95 V !!
-47 + 22 uF (v7 B, E)                          1.20 V ok                      1.15 V  ~                      1.10 V !!
-100 uF 0805 (v5)                              1.30 V ok                      1.26 V ok                      1.22 V ok
+TX 0 dBm, 9.1 mA x1: minimum VCC during one advertising event (IN100 needs >= 1.1 V)
+bulk cap                                           fresh, 20 C (80 ohm)   cold / half used (150 ohm)        end of life (250 ohm)   cold end of life (400 ohm)
+v8.1 assumption: 100 uF + 100 nF = 80 uF              1.38 V (+0.28)              1.35 V (+0.25)              1.31 V (+0.21)              1.28 V (+0.18)  
+v8.0 assumption with C3 10 uF = 88 uF                 1.39 V (+0.29)              1.36 V (+0.26)              1.33 V (+0.23)              1.30 V (+0.20)  
+realistic (review F1): 55 uF                          1.32 V (+0.22)              1.27 V (+0.17)              1.23 V (+0.13)              1.20 V (+0.10)  
+worst case (review F1): 45 uF                         1.28 V (+0.18)              1.22 V (+0.12)              1.17 V (+0.07)              1.14 V (+0.04)  
+
+TX +4 dBm (max), 13.8 mA x1: minimum VCC during one advertising event (IN100 needs >= 1.1 V)
+bulk cap                                           fresh, 20 C (80 ohm)   cold / half used (150 ohm)        end of life (250 ohm)   cold end of life (400 ohm)
+v8.1 assumption: 100 uF + 100 nF = 80 uF              1.30 V (+0.20)              1.26 V (+0.16)              1.23 V (+0.13)              1.20 V (+0.10)  
+v8.0 assumption with C3 10 uF = 88 uF                 1.32 V (+0.22)              1.29 V (+0.19)              1.25 V (+0.15)              1.22 V (+0.12)  
+realistic (review F1): 55 uF                          1.21 V (+0.11)              1.16 V (+0.06)              1.11 V (+0.01)              1.08 V (-0.02)  
+worst case (review F1): 45 uF                         1.16 V (+0.06)              1.09 V (-0.01)              1.03 V (-0.07)              0.99 V (-0.11)  
+
+==== TX current x1.5 (if the IN100 draws more at 1.5 V)
+
+TX 0 dBm, 9.1 mA x1.5: minimum VCC during one advertising event (IN100 needs >= 1.1 V)
+bulk cap                                           fresh, 20 C (80 ohm)   cold / half used (150 ohm)        end of life (250 ohm)   cold end of life (400 ohm)
+v8.1 assumption: 100 uF + 100 nF = 80 uF              1.31 V (+0.21)              1.27 V (+0.17)              1.23 V (+0.13)              1.20 V (+0.10)  
+v8.0 assumption with C3 10 uF = 88 uF                 1.33 V (+0.23)              1.29 V (+0.19)              1.25 V (+0.15)              1.23 V (+0.13)  
+realistic (review F1): 55 uF                          1.22 V (+0.12)              1.16 V (+0.06)              1.11 V (+0.01)              1.08 V (-0.02)  
+worst case (review F1): 45 uF                         1.16 V (+0.06)              1.09 V (-0.01)              1.04 V (-0.06)              1.00 V (-0.10)  
+
+TX +4 dBm (max), 13.8 mA x1.5: minimum VCC during one advertising event (IN100 needs >= 1.1 V)
+bulk cap                                           fresh, 20 C (80 ohm)   cold / half used (150 ohm)        end of life (250 ohm)   cold end of life (400 ohm)
+v8.1 assumption: 100 uF + 100 nF = 80 uF              1.19 V (+0.09)              1.15 V (+0.05)              1.10 V (+0.00)              1.07 V (-0.03)  
+v8.0 assumption with C3 10 uF = 88 uF                 1.22 V (+0.12)              1.18 V (+0.08)              1.14 V (+0.04)              1.11 V (+0.01)  
+realistic (review F1): 55 uF                          1.06 V (-0.04)              0.99 V (-0.11)              0.94 V (-0.16)              0.90 V (-0.20)  
+worst case (review F1): 45 uF                         0.98 V (-0.12)              0.89 V (-0.21)              0.82 V (-0.28)              0.78 V (-0.32)  
 
 charge per event at 0 dBm: 16.2 uC
-interval    1 s: average  16.82 uA ->    21 days on 8.3 mAh,   10 days on the first half (ignoring self-discharge)
-interval    2 s: average   8.72 uA ->    40 days on 8.3 mAh,   20 days on the first half (ignoring self-discharge)
-interval    3 s: average   6.02 uA ->    57 days on 8.3 mAh,   29 days on the first half (ignoring self-discharge)
-interval    5 s: average   3.86 uA ->    89 days on 8.3 mAh,   45 days on the first half (ignoring self-discharge)
-interval   10 s: average   2.24 uA ->   154 days on 8.3 mAh,   77 days on the first half (ignoring self-discharge)
-interval   60 s: average   0.89 uA ->   386 days on 8.3 mAh,  193 days on the first half (ignoring self-discharge)
-interval  600 s: average   0.65 uA ->   530 days on 8.3 mAh,  265 days on the first half (ignoring self-discharge)
+337 (8.3 mAh)  interval   1 s: average 16.82 uA ->     21 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+337 (8.3 mAh)  interval   3 s: average  6.02 uA ->     57 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+337 (8.3 mAh)  interval  10 s: average  2.24 uA ->    154 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+364 (23 mAh)   interval   1 s: average 16.82 uA ->     57 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+364 (23 mAh)   interval   3 s: average  6.02 uA ->    159 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+364 (23 mAh)   interval  10 s: average  2.24 uA ->    427 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+377 (27 mAh)   interval   1 s: average 16.82 uA ->     67 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+377 (27 mAh)   interval   3 s: average  6.02 uA ->    187 days (to empty; ~half that if the last half of a low-drain cell is unusable)
+377 (27 mAh)   interval  10 s: average  2.24 uA ->    501 days (to empty; ~half that if the last half of a low-drain cell is unusable)
 
-storage with OFF bridged, R1 = 1 Mohm (variants A, B): 1.56 uA -> 1.12 mAh per 30 days (14 % of a 337)
-storage with OFF bridged, R1 = 0.1 Mohm (variants C, E): 15.51 uA -> 11.17 mAh per 30 days (135 % of a 337)
-storage with OFF bridged, R1 = 10 Mohm (variants D): 0.17 uA -> 0.12 mAh per 30 days (1 % of a 337)
+OFF bridged, V1 (1 Mohm): 1.56 uA -> 1.123 mAh per 30 days (14 % of a 337), a 337 lasts 222 days bridged
+OFF bridged, V2 (100 kohm, v8.3): 15.51 uA -> 11.167 mAh per 30 days (135 % of a 337), a 337 lasts 22 days bridged
+
+Power-up race (review F2): cell fitted into an empty C1, 0 dBm first event starting as soon as CHIP_EN > 0.6 VCC
+enable                                 cell      C1   starts at  VCC then  min VCC
+v8.1 V1: 1k / 100 nF (SparkFun)       80 ohm    55 uF      3.8 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.1 V1: 1k / 100 nF (SparkFun)       80 ohm    45 uF      3.1 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.1 V1: 1k / 100 nF (SparkFun)      250 ohm    55 uF     12.0 ms     0.90 V    0.75 V  < 1.1 V: brown-out lock
+v8.1 V1: 1k / 100 nF (SparkFun)      250 ohm    45 uF      9.8 ms     0.90 V    0.71 V  < 1.1 V: brown-out lock
+v8.2/8.3 V1: 1M / 100 nF              80 ohm    55 uF     96.1 ms     1.55 V    1.32 V
+v8.2/8.3 V1: 1M / 100 nF              80 ohm    45 uF     95.3 ms     1.55 V    1.28 V
+v8.2/8.3 V1: 1M / 100 nF             250 ohm    55 uF    106.4 ms     1.55 V    1.28 V
+v8.2/8.3 V1: 1M / 100 nF             250 ohm    45 uF    103.6 ms     1.55 V    1.22 V
+v8.2 V2: 1M / 1 nF (OFF jumper)       80 ohm    55 uF      3.8 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.2 V2: 1M / 1 nF (OFF jumper)       80 ohm    45 uF      3.1 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.2 V2: 1M / 1 nF (OFF jumper)      250 ohm    55 uF     12.0 ms     0.90 V    0.75 V  < 1.1 V: brown-out lock
+v8.2 V2: 1M / 1 nF (OFF jumper)      250 ohm    45 uF      9.8 ms     0.90 V    0.71 V  < 1.1 V: brown-out lock
+v8.3 V2: 100k / 10 nF (OFF)           80 ohm    55 uF      3.8 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.3 V2: 100k / 10 nF (OFF)           80 ohm    45 uF      3.1 ms     0.90 V    0.90 V  < 1.1 V: brown-out lock
+v8.3 V2: 100k / 10 nF (OFF)          250 ohm    55 uF     12.0 ms     0.90 V    0.75 V  < 1.1 V: brown-out lock
+v8.3 V2: 100k / 10 nF (OFF)          250 ohm    45 uF      9.8 ms     0.90 V    0.71 V  < 1.1 V: brown-out lock
+(V2 is started by cutting the tail after the cell has been fitted with OFF bridged, so its row only applies if the cell is fitted with OFF open.)
+
+Enable time constants: V1 1M x 100 nF = 100 ms, V2 100k x 10 nF = 1 ms; cell + C1 at power-up: 80-400 ohm x 45-55 uF = 3.6-22 ms
+
+CHIP_EN input load (unpublished; v8.3 hedge). CHIP_EN must reach 0.6 VCC through R1:
+  a pull-down Rpd needs Rpd >= 1.5 x R1; a constant input current I needs I <= 0.4 VCC / R1 (VCC 1.2-1.55 V)
+  V1, N6 (1 Mohm)      works with Rpd >=  1500.0 kohm, or I <=    0.48-0.62 uA
+  V2 (100 kohm)        works with Rpd >=   150.0 kohm, or I <=    4.80-6.20 uA
+  SparkFun (1 kohm)    works with Rpd >=     1.5 kohm, or I <=  480.00-620.00 uA

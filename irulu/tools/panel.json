@@ -14,7 +14,7 @@
     },
     "tabs": {
         "type": "annotation",
-        "tabfootprints": "insect_tag:KiKit_Tab_1p0mm, insect_tag:KiKit_Tab_1p2mm"
+        "tabfootprints": "insect_tag:KiKit_Tab_1p0mm, insect_tag:KiKit_Tab_1p2mm, insect_tag:KiKit_Tab_2p0mm, insect_tag:KiKit_Tab_3p0mm"
     },
     "cuts": {
         "type": "mousebites",
@@ -45,7 +45,7 @@
     },
     "text": {
         "type": "simple",
-        "text": "IN100 insect tag v7  CC BY-SA 4.0  variants A-E by column pairs",
+        "text": "IN100 tag v8 D1 battery  CC BY-SA 4.0  V1 cols 1-5  V2 cols 6-10",
         "anchor": "mt",
         "voffset": "2.5mm",
         "hjustify": "center",

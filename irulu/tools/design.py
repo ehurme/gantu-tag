@@ -1,79 +1,143 @@
-"""IN100 insect tag v7: 7 mm round tag, wire antenna, cut-to-start tail, any 1.4-1.55 V button cell,
-and a mixed-variant test panel.
+"""IN100 insect tag v8 D1: battery tag, 7.2 mm round, cut-to-start tail, V1 slow enable / V2 OFF-jumper panel.
 
-Tag coordinates: origin at the centre of the round tag (and of the cell under it), x right, y down (top view), mm.
+Tag coordinates: origin at the centre of the round tag and of the cell under it (the IN100 sits 1.2 mm below it);
+x right, y down (top view), mm.
 
-What's new in v7 (after a part-by-part check against SparkFun's NanoBeacon boards and the IN100 datasheet):
-  - C4, a 0402 decoupler right at the VCC pin (SparkFun: 100 nF + 10 uF; v6 had only the 47 uF).
-  - C2, the CHIP_EN delay capacitor, moved from the tail onto the tag, so EN rises after VCC however the cell
-    goes on (datasheet power-up order), as on SparkFun's boards (1 k / 100 nF there).
-  - Four vias in the IN100's exposed pad (datasheet: at least four).
-  - Battery-agnostic cell interface: a + pad on the top rim (wire over the edge to the can's side wall) instead
-    of v6's plated hole, which would sit over the negative cap of a large cell; a smaller (1.6 mm) negative pad;
-    underside centring rings for 4.8 and 5.8 mm cells.
-  - AE2: an optional plated hole on GND for a counterpoise wire (try a dipole against the plain monopole).
-  - Panel: zones are refilled after the break-tab holes are drilled (v6's holes cut into the ground pour).
-  - VARIANTS: five population options built on the same board, mixed on one panel (tools/variants.py).
+v8.1 (compact, same parts as v8.0; see README):
+  - Disc 7.2 mm (v8.0: 8.0 mm plus antenna lobes). C1 0805 centred across the top, R1 under it, C2
+    upright in the top-left corner, the crystal on the left, C4 at VDDQ on the right.
+  - Antenna and counterpoise wires on top-side edge pads: AE1 (RF, 0.8 x 1.1 mm) on the right rim next to RF_TX,
+    AE2 (GND, 0.8 x 0.8 mm) at the lower left.
+  - The cell's - cap sits on a 2.0 mm solder-mask-defined GND pad; + on a 0.9 x 1.2 mm underside pad at the
+    upper-right rim (the VCC via is in it).
+  - Bottom-side crimp keep-out r = 1.65 ... 3.70 mm: no exposed copper and no non-VCC vias except three tented ones at
+    r = 1.70 mm (two exposed-pad GND vias and the CHIP_EN via).
+  - CHIP_EN: top layer from the IN100 to R1, then a via to the underside between R1 and C2, round the left to the
+    neck and back up on the tail for the OFF jumper.
+  - Variants: V1 slow enable (1 M / 100 nF, tau 0.1 s: CHIP_EN rises well after a 337 has charged C1) and
+    V2 (1 M / 1 nF + OFF jumper: bridge OFF, fit the cell, cut the tail to start). v8.1 V1 was SparkFun's 1 k / 100 nF,
+    which races a 337's 4-20 ms charge-up of C1 (independent review, F2).
+v8.3 (final test order, 0.6 mm board): AE1 moved to the upper-right rim (-19 deg) and enlarged (>= 0.75 mm free);
+    AE2 slimmer and moved to 147 deg (0.36 mm free instead of 0.20); V2's enable is now 100 k / 10 nF (hedges an unpublished CHIP_EN input
+    load); side tabs at matching heights. Copper otherwise as v8.2.
 """
+import math
+import os
+import sys
 
-PROJECT = "insect_tag"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from parts_lib import LIB, PARTDB, SYMBOLS_ALL, part, variant_value  # noqa: E402,F401
 
-# ---------------------------------------------------------------- parts (values = variant A, the baseline)
+PROJECT = "insect_tag_v8_battery"
+TITLE = "IN100 insect tag v8 D1: battery tag"
+REV = "8.3"
+SCH_COMMENT = "V1 slow enable 1M/100nF / V2 100k/10nF + OFF jumper (cut-to-start). Cell centred on the IN100"
+BOARD_THICKNESS = 0.6
+FOOTPRINTS = ["in100", "xtal", "passives", "off", "edgepad", "prog", "cell"]
+SYMBOLS = {k: SYMBOLS_ALL[k] for k in ("IN100_QFN18",)}
+POWER_SYMBOLS = {"VCC": "power:VCC", "GND": "power:GND"}
+FLAG_NETS = ["VCC", "GND"]
+FLAG_AT = (40, 100)
+NOTES_AT = (20, 132)
+
+# ---------------------------------------------------------------- outline
+R_TAG = 3.6                         # 7.2 mm round, no lobes: the antenna wires go on top-side edge pads
+TY = round(R_TAG - 3.9, 3)          # the tail was laid out for a 7.8 mm disc; it moves up with the disc's lower edge
+
+
+def ty(y):
+    return round(y + TY, 3)
+
+
+NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = -0.9, 0.9, 3.2, ty(5.3)
+TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -3.0, 3.0, ty(5.3), ty(13.2)
+CUT_Y = ty(4.35)
+
+
+def _pol(r, deg):
+    a = math.radians(deg)
+    return (round(r * math.cos(a), 3), round(r * math.sin(a), 3))
+
+
+# v8.3: AE1 moved to the roomiest stretch of the rim (searched numerically) and enlarged: >= 0.75 mm to every other-net
+# pad (v8.2: 0.29 mm from C4). AE2 stays between the crystal and U1, the only GND-safe spot on the left (the top-left
+# is C1's and C2's pads), as a slimmer pad hugging the rim: 0.36 mm clear instead of 0.20. Local clearance 0.25 mm keeps
+# the GND pour further from AE1.
+EDGE_PAD = (1.2, 0.9)               # antenna wire pad: along the radius x along the rim
+EDGE_PAD2 = (0.5, 0.9)              # counterpoise pad (optional GND wire): slim, it hugs the rim between Y1 and U1
+EDGE_PADS = [EDGE_PAD, EDGE_PAD2]
+EDGE_PAD_CLEARANCE = 0.25
+AE1_ANG, AE2_ANG = -19.0, 147.0     # AE1 (RF) upper right, just above RF_TX; AE2 (GND) lower left, about opposite
+AE1_XY = _pol(2.7, AE1_ANG)
+AE2_XY = _pol(3.05, AE2_ANG)
+
+
+def edge_fp(size, side="F"):
+    """Library id of the wire-pad footprint gen_footprints.edge_pad() writes for this size and side."""
+    w, h = size
+    name = f"WirePad{'B' if side == 'B' else ''}_Edge_{w:.1f}x{h:.1f}mm".replace(".", "p")
+    return f"{LIB}:{name}"
+
+
+def tag_polygon():
+    from shapely.geometry import Point
+    return Point(0, 0).buffer(R_TAG, 256)
+
+
+def outline_polygon():
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+    return unary_union([tag_polygon(), box(NECK_X0, NECK_Y0, NECK_X1, NECK_Y1), box(TAB_X0, TAB_Y0, TAB_X1, TAB_Y1)])
+
+
+def pour_pts():
+    return [tuple(p) for p in tag_polygon().exterior.coords][:-1]
+
+
+# ---------------------------------------------------------------- cell interface
+NEG_PAD_D = 2.0           # solder-mask opening (what the epoxy sees)
+NEG_PAD_CU = 2.6          # copper under it (mask-defined pad)
+PLUS_ANG = -55.0          # underside + pad, upper right, outside the 337 outline
+PLUS_C = _pol(2.9, PLUS_ANG)
+PLUS_PAD = PLUS_C
+PLUS_PAD_SIZE = (0.9, 1.2)  # radial x tangential: r 2.45 .. 3.35
+PLUS_PAD_ANGLE = -PLUS_ANG
+PLUS_TOP = False          # no top + pad: the top rim is full; a 6.8 mm can sits on the underside pad itself
+PLUS_VIAS = []
+CELL_RINGS = (2.4, 3.4)   # B.SilkS: 4.8 mm (337) and 6.8 mm (364/377) cell outlines
+KEEPOUT_RING = (1.65, 3.70)
+
+# ---------------------------------------------------------------- parts (values = V1 Reference)
 PARTS = [
-    dict(ref="U1", sym="insect_tag:IN100_QFN18", value="IN100-Q1-R-RC1I",
-         fp="insect_tag:InPlay_IN100_QFN-18-1EP_3x3mm_P0.4mm_EP1.5x1.7mm",
-         fields={"MPN": "IN100-Q1-R-RC1I", "Manufacturer": "InPlay", "LCSC": "C6062024"},
-         sch=(118, 76, 0), pcb=(0.1, 1.45, 0, "F"),
-         ref_at=(-11, -10, "left"), val_at=(3, 16, "left")),
-    dict(ref="Y1", sym="Device:Crystal_GND24", value="26MHz 7pF",
-         fp="insect_tag:Crystal_SMD_1612-4Pin_1.6x1.2mm",
-         fields={"MPN": "8Q26000008", "Manufacturer": "TXC", "LCSC": "C5203638"},
-         sch=(80, 74, 0), pcb=(-2.43, 0.25, 90, "F"),
-         ref_at=(2.5, -3, "left"), val_at=(2.5, 3.5, "left")),
-    dict(ref="C1", sym="Device:C", value="47uF 6.3V",
-         fp="insect_tag:C_0603_1608Metric",
-         fields={"MPN": "GRM188R60J476ME15D", "Manufacturer": "Murata", "LCSC": "C140782"},
-         sch=(146, 98, 0), pcb=(1.3, -1.6, 0, "F")),
-    dict(ref="C4", sym="Device:C", value="100nF",
-         fp="insect_tag:C_0402_1005Metric",
-         fields={"MPN": "CL05B104KO5NNNC", "Manufacturer": "Samsung", "LCSC": "C1525",
-                 "Note": "At the VCC pin. Variants B and E: 22 uF (C105226)"},
-         sch=(160, 98, 0), pcb=(1.35, -0.45, 0, "F")),
-    dict(ref="R1", sym="Device:R", value="1M",
-         fp="insect_tag:R_0402_1005Metric",
-         fields={"MPN": "0402WGF1004TCE", "Manufacturer": "UNI-ROYAL", "LCSC": "C26083",
-                 "Note": "CHIP_EN pull-up. Variants C and E: 100k (C25741); D: 10M (C138067)"},
-         sch=(100, 56, 0), pcb=(-1.05, -1.05, 90, "F")),
-    dict(ref="C2", sym="Device:C", value="10nF",
-         fp="insect_tag:C_0402_1005Metric",
-         fields={"MPN": "CL05B103KB5NNNC", "Manufacturer": "Samsung", "LCSC": "C15195",
-                 "Note": "CHIP_EN delay. Variants C and E: 100 nF (C1525)"},
-         sch=(88, 56, 0), pcb=(-1.8, -1.5, 90, "F")),
-    dict(ref="JP1", sym="Jumper:SolderJumper_2_Open", value="OFF",
-         fp="insect_tag:SolderJumper_OFF_Tail",
-         fields={"Note": "Bridge after programming to hold the tag off until the tail is cut"},
-         sch=(92, 118, 0), pcb=(-0.8, 11.0, 0, "F"), in_bom=False),
-    dict(ref="AE1", sym="Device:Antenna", value="Wire 30mm",
-         fp="insect_tag:Antenna_WirePad_THT_D0.8mm_Drill0.4mm",
-         fields={"Note": "Builder fits ~30 mm of fine enamelled wire (quarter wave at 2.44 GHz); trim to tune"},
-         sch=(150, 52, 0), pcb=(2.75, -0.05, 20, "F"), in_bom=False),
-    dict(ref="AE2", sym="Device:Antenna", value="Counterpoise (optional)",
-         fp="insect_tag:Antenna_WirePad_THT_D0.8mm_Drill0.4mm",
-         fields={"Note": "Optional ~30 mm GND wire, leaving opposite AE1, to make a dipole"},
-         sch=(166, 52, 0), pcb=(-2.25, 1.8, 200, "F"), in_bom=False),
-    dict(ref="BT1", sym="Device:Battery_Cell", value="337 / 379 / 364 / 377 / ZnAir 10 / 312",
-         fp="insect_tag:Cell_Button_EpoxyPad_PlusRim",
-         fields={"Note": "Fitted by the builder: - cap silver-epoxied to the underside pad, + wire from the top rim pad"},
-         sch=(176, 98, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
-    dict(ref="J1", sym="Connector_Generic:Conn_01x04", value="PROG",
-         fp="insect_tag:ProgPads_2x02_P2.54mm_THT_Tab",
-         fields={"Note": "2 x 2 plated pads on the cut-off tail: R(XD) T(XD) / G +"},
-         sch=(70, 110, 0), pcb=(0.0, 8.07, 0, "F"), in_bom=False, mirror="x",
+    part("IN100", "U1", (0.0, 1.2, 0, "F"), (118, 76, 0), ref_at=(-11, -10, "left"), val_at=(3, 16, "left")),
+    part("XTAL", "Y1", (-2.55, -0.05, 90, "F"), (80, 74, 0), ref_at=(2.5, -3, "left"), val_at=(2.5, 3.5, "left")),
+    part("C100U", "C1", (0.0, -2.3, 180, "F"), (146, 100, 0), val_at=(2, 3, "left"), note="Bulk reservoir for TX bursts"),
+    part("C100N", "C4", (2.2, 1.5, 270, "F"), (190, 100, 0), val_at=(2, 3, "left"), note="Right at VDDQ (pin 13)"),
+    part("R1M", "R1", (0.0, -1.1, 0, "F"), (100, 56, 0),
+         note="CHIP_EN pull-up. V1: 1M (C26083). V2: 100k (C25741)"),
+    part("C100N", "C2", (-1.9, -1.8, 90, "F"), (88, 56, 0),
+         note="CHIP_EN delay. V1: 100nF (C1525), tau 0.1 s. V2: 10nF (C15195), tau 1 ms"),
+    dict(ref="JP1", sym="Jumper:SolderJumper_2_Open", value="OFF", fp=f"{LIB}:SolderJumper_OFF_Tail",
+         fields={"Note": "Bridge after programming, before fitting the cell (V2; optional on V1); cutting the tail "
+                         "starts the tag. Bridged: 1.55 uA through R1 on V1, 15.5 uA on V2 (100k)"},
+         sch=(92, 118, 0), pcb=(-1.1, ty(11.65), 180, "F"), in_bom=False),
+    dict(ref="AE1", sym="Device:Antenna", value="Wire 31mm", fp=edge_fp(EDGE_PAD),
+         fields={"Note": "~31 mm wire (quarter wave at 2.44 GHz) soldered flat on the edge pad; trim while watching RSSI"},
+         sch=(150, 52, 0), pcb=(AE1_XY[0], AE1_XY[1], -AE1_ANG, "F"), in_bom=False),
+    dict(ref="AE2", sym="Device:Antenna", value="Counterpoise (optional)", fp=edge_fp(EDGE_PAD2),
+         fields={"Note": "Optional ~31 mm GND wire leaving opposite AE1: dipole"},
+         sch=(166, 52, 0), pcb=(AE2_XY[0], AE2_XY[1], -AE2_ANG, "F"), in_bom=False),
+    dict(ref="BT1", sym="Device:Battery_Cell", value="337 / 364 / 377", fp=f"{LIB}:Cell_Button_NegPad2mm_PlusEdge",
+         fields={"Note": "Fitted by the builder: - cap silver-epoxied to the underside pad, + to the underside rim pad"},
+         sch=(176, 100, 0), pcb=(0.0, 0.0, 0, "F"), in_bom=False),
+    dict(ref="J1", sym="Connector_Generic:Conn_01x04", value="PROG", fp=f"{LIB}:ProgPads_2x02_P2.54mm_D1.6mm_THT_Tab",
+         fields={"Note": "2 x 2 pads on the cut-off tail: R(XD) T(XD) / G +"},
+         sch=(70, 110, 0), pcb=(0.0, ty(8.5), 0, "F"), in_bom=False, mirror="x",
          ref_at=(2, -5, "left"), val_at=(2, 3.5, "left")),
 ]
 
-# U1 (QFN18): 1 XO_N, 2 XO_P, 3 MGPIO7, 4 MGPIO6, 5 MGPIO5, 6 SW0, 7 SW1, 8 GPIO0 (UART RXD), 9 GPIO1 (UART TXD),
-# 10 GPIO2, 11 GPIO3, 12 MGPIO4, 13 VDDQ, 14 RTC_XO_P, 15 RTC_XO_N, 16 RF_TX, 17 VCC, 18 CHIP_EN, 19 EP/GND
+# U1 (QFN18): 1 XO_N, 2 XO_P, 3-7 NC, 8 GPIO0 (RXD), 9 GPIO1 (TXD), 10-12 NC, 13 VDDQ, 14/15 RTC (NC), 16 RF_TX,
+# 17 VCC, 18 CHIP_EN, 19 EP/GND
 NETS = {
     "VCC":  [("U1", "17"), ("U1", "13"), ("C1", "1"), ("C4", "1"), ("R1", "2"), ("BT1", "1"), ("J1", "4")],
     "GND":  [("U1", "19"), ("Y1", "2"), ("Y1", "4"), ("C1", "2"), ("C4", "2"), ("C2", "2"), ("JP1", "2"),
@@ -85,138 +149,140 @@ NETS = {
     "RXD":  [("U1", "8"), ("J1", "3")],
     "RF":   [("U1", "16"), ("AE1", "1")],
 }
-NO_CONNECT = [("U1", n) for n in ("3", "4", "5", "6", "7", "10", "11", "12", "14", "15")]   # RTC pins: internal 32 kHz RC
-POWER_NETS = {"VCC", "GND"}
-FLAG_AT = (40, 95)
+NO_CONNECT = [("U1", n) for n in ("3", "4", "5", "6", "7", "10", "11", "12", "14", "15")]
 
-# ---------------------------------------------------------------- variants (population only; the copper is identical)
-# ref -> (value, LCSC, MPN, manufacturer); anything not listed keeps the PARTS value.
-V_22U = ("22uF 6.3V", "C105226", "CL05A226MQ5QUNC", "Samsung")
-V_100K = ("100k", "C25741", "0402WGF1003TCE", "UNI-ROYAL")
-V_100N = ("100nF", "C1525", "CL05B104KO5NNNC", "Samsung")
-V_10M = ("10M", "C138067", "RC0402FR-0710ML", "YAGEO")
+# ---------------------------------------------------------------- variants (population only; identical copper)
 VARIANTS = {
-    "A": dict(title="Baseline", change={},
-              why="47 uF + 100 nF, 1 Mohm / 10 nF enable. The design as intended."),
-    "B": dict(title="More bulk", change={"C4": V_22U},
-              why="C4 = 22 uF instead of 100 nF (~69 uF in total): margin if TX current at 1.5 V is above the 3 V figure, or for +5 dBm."),
-    "C": dict(title="Strong enable", change={"R1": V_100K, "C2": V_100N},
-              why="100 k / 100 nF enable, closer to SparkFun's 1 k / 100 nF: tells you whether a 1 Mohm pull-up is too weak. "
-                  "Draws 15 uA while the OFF jumper is bridged, so bridge it only just before deployment."),
-    "D": dict(title="Low storage drain", change={"R1": V_10M},
-              why="10 Mohm pull-up: 0.15 uA while the OFF jumper is bridged (v6's 1 Mohm: 1.5 uA). Tells you whether the IN100's "
-                  "CHIP_EN starts reliably through 10 Mohm."),
-    "E": dict(title="Belt and braces", change={"C4": V_22U, "R1": V_100K, "C2": V_100N},
-              why="B and C together: the variant most likely to work if anything marginal is going on."),
+    "V1": dict(title="Slow enable", silk="V1 SLOW", mark="V1", change={},
+               why="1 M / 100 nF enable (tau 0.1 s): CHIP_EN rises after the cell has charged C1, so the cell can be "
+                   "fitted live. Program 0 dBm, 3 s (+4 dBm only on 364/377 cells)."),
+    "V2": dict(title="OFF jumper, 100k enable", silk="V2 OFF", mark="V2",
+               change={"R1": variant_value("R100K"), "C2": variant_value("C10N")},
+               why="100 k / 10 nF enable (tau 1 ms) + OFF jumper: bridge OFF before fitting the cell (15.5 uA while "
+                   "bridged), cut the tail to start. The 100 k still lifts CHIP_EN past 0.6 VCC if the IN100 turns out "
+                   "to load the pin (unpublished) with anything down to ~150 kohm or up to ~6 uA, where V1's 1 M "
+                   "would fail. Program 0 dBm, 3 s (+4 dBm only on 364/377 cells)."),
 }
-# Panel columns (left to right on the unrotated top row) -> variant; the turned bottom row mirrors left/right.
-PANEL_COLUMNS = ["A", "A", "B", "B", "C", "C", "D", "D", "E", "E"]
+VARIANT_PLACEHOLDER = "V1 SLOW"
+MARK_PLACEHOLDER = "V1"           # underside mark on the body, between the cell outlines; rewritten per unit
+PANEL_COLUMNS = ["V1"] * 5 + ["V2"] * 5
 
-# ---------------------------------------------------------------- outline
-R_TAG = 3.5
-NECK_X0, NECK_X1, NECK_Y0, NECK_Y1 = -0.9, 0.9, 2.6, 4.9      # 1.8 mm neck: cut here to start the tag
-TAB_X0, TAB_X1, TAB_Y0, TAB_Y1 = -3.0, 3.0, 4.9, 12.2         # programming tail
-CUT_Y = 3.95                                                  # silkscreen cut line across the neck
-PLUS_PAD = (0.8, -2.7)         # top-side rim pad for the + wire (VCC via inside it)
-PLUS_PAD_SIZE = (0.9, 0.6)
-NEG_PAD_D = 1.6                # gold pad on the underside for the cell's negative cap (silver epoxy)
-CELL_RINGS = (2.45, 2.95)      # underside centring rings: 4.8 mm (337) and 5.8 mm (379, ZnAir 10) cells
-
-
-def outline_polygon():
-    from shapely.geometry import Point, box
-    from shapely.ops import unary_union
-    return unary_union([Point(0, 0).buffer(R_TAG, 256),
-                        box(NECK_X0, NECK_Y0, NECK_X1, NECK_Y1),
-                        box(TAB_X0, TAB_Y0, TAB_X1, TAB_Y1)])
+# KiKit tab annotations (just outside an edge, arrow pointing in); mouse bites sit in the tab (offset -0.25 mm).
+def _side_tab(deg, width=1.0):
+    """Origin for a horizontal (left/right) tab on the round rim: both of the tab's side rays must start outside the
+    disc, so the origin sits just outside the rim at the side nearer the disc's equator."""
+    y = R_TAG * math.sin(math.radians(deg))
+    yn = max(abs(y) - width / 2, 0.0)
+    x = math.sqrt(R_TAG ** 2 - yn ** 2) + 0.03
+    return (round(math.copysign(x, math.cos(math.radians(deg))), 3), round(y, 3))
 
 
-def pour_polygon():
-    """GND pour area on both layers: the round tag only (not the neck or tail)."""
-    from shapely.geometry import Point
-    return Point(0, 0).buffer(R_TAG, 128)
+def _top_tab(x, width=1.0):
+    """Origin for a vertical tab on the top of the rim at x: both side rays must start outside the disc."""
+    xn = max(abs(x) - width / 2, 0.0)
+    return (round(x, 3), round(-math.sqrt(R_TAG ** 2 - xn ** 2) - 0.03, 3))
 
 
-# KiKit tab annotations (just outside an edge, arrow pointing in). Rows alternate by 180 deg about the unit's
-# bounding-box centre (x = 0), so the tail-bottom tab at x = 0 meets its mate on the turned row.
-# The top tab (to the rail) is off-centre, away from the + pad.
-_KT1_X = -0.7
+# v8.3: KT1 moved right of AE2 (x = 0.93, 285 deg); KT2 at 155 deg so both side tabs sit at the same height and
+# meet their neighbours' tabs squarely (v8.2: 170/25 deg, offset by 0.9 mm, joined by a 0.4 mm Z-shaped neck).
+TAB_WIDTHS = (1.0, 1.2, 2.0, 3.0)
 BOARD_ONLY = [
-    dict(ref="KT1", fp="insect_tag:KiKit_Tab_1p0mm",
-         pcb=(_KT1_X, -((R_TAG ** 2 - (abs(_KT1_X) - 0.5) ** 2) ** 0.5 + 0.05), 270, "F")),   # tag top -> rail
-    dict(ref="KT2", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(-(R_TAG + 0.04), 0.5, 0, "F")),         # tag left
-    dict(ref="KT3", fp="insect_tag:KiKit_Tab_1p0mm", pcb=(R_TAG + 0.04, 0.5, 180, "F")),          # tag right (mates KT2)
-    dict(ref="KT4", fp="insect_tag:KiKit_Tab_1p2mm", pcb=(0.0, TAB_Y1 + 0.05, 90, "F")),          # tail bottom
+    dict(ref="KT1", fp=f"{LIB}:KiKit_Tab_1p0mm", pcb=(_top_tab(0.93)[0], _top_tab(0.93)[1], 270, "F")),
+    dict(ref="KT2", fp=f"{LIB}:KiKit_Tab_1p0mm", pcb=(_side_tab(155)[0], _side_tab(155)[1], 0, "F")),
+    dict(ref="KT3", fp=f"{LIB}:KiKit_Tab_1p0mm", pcb=(_side_tab(25)[0], _side_tab(25)[1], 180, "F")),
+    dict(ref="KT4", fp=f"{LIB}:KiKit_Tab_3p0mm", pcb=(0.0, TAB_Y1 + 0.05, 90, "F")),  # tail end -> backbone
+    # v8.3: the tail (cut off after programming) is anchored on three sides with wide tabs, so the 0.6 mm
+    # panel stays stiff through printing and reflow; the nubs end up on scrap, not on the tag.
+    dict(ref="KT5", fp=f"{LIB}:KiKit_Tab_2p0mm", pcb=(TAB_X0 - 0.04, round((TAB_Y0 + TAB_Y1) / 2 + 0.6, 3), 0, "F")),
+    dict(ref="KT6", fp=f"{LIB}:KiKit_Tab_2p0mm", pcb=(TAB_X1 + 0.04, round((TAB_Y0 + TAB_Y1) / 2 + 0.6, 3), 180, "F")),
 ]
 
-# ---------------------------------------------------------------- routing (all hand-placed)
+# ---------------------------------------------------------------- routing
 VIA_D, VIA_DRILL = 0.5, 0.3
 ZONE_CLEARANCE = 0.15
 W_SIG, W_XO, W_PWR, W_RF = 0.13, 0.15, 0.2, 0.25
-UX, UY = 0.1, 1.45       # U1 centre
-V_EN = (-0.35, -1.2)     # CHIP_EN to the underside (clear of the negative pad)
-V_VCC = (-0.35, -2.35)   # VCC to the underside, kept 0.9 mm inside the edge so the right-hand ground crescent stays joined
-V_DQ = (2.45, UY)        # VDDQ to the underside VCC track
-X_RXD, X_TXD = -0.5, 0.5                   # neck lanes, top layer
-X_GND_B, X_EN_B, X_VCC_B = -0.5, 0.0, 0.5  # neck lanes, bottom layer (EN sits between GND and VCC)
-X_GND_TAIL, Y_GND_TAIL = -2.45, 5.25       # bottom GND lane: round the outside of the R pad to G
-X_EN_TAIL, X_VCC_TAIL = -0.25, 0.3         # lanes inside the tail, clear of the pads
-V_EN_TAIL = (0.0, 10.1)                   # CHIP_EN back to the top at the OFF jumper
-EP_VIAS = [(UX + dx, UY + dy) for dx in (-0.4, 0.4) for dy in (-0.45, 0.45)]
+EP_VIAS = [(dx, 1.2 + dy) for dx in (-0.4, 0.4) for dy in (-0.45, 0.45)]
+V_EN = (-1.25, -1.15)         # CHIP_EN to the underside between R1 and C2 (tented; inner edge of the crimp ring)
+V_EN_TAIL = (-2.35, ty(6.3))  # CHIP_EN back to the top on the tail, for the OFF jumper
+V_VCC_A = (1.95, -2.3)        # VCC to the underside, inside the underside + pad
+V_VCC_B = (2.85, 1.0)         # VCC at VDDQ / C4
+X_EN_B, X_GND_B, X_VCC_B = -0.55, -0.05, 0.52  # neck lanes, underside (v8.3: >= 0.29 mm apart across CUT, was 0.15)
+X_RXD_N, X_TXD_N = -0.3, 0.3                    # neck lanes, top
+GND_VIAS = []
 
 
 def static_tracks():
-    # Crystal: XO_P straight across into pad 1; XO_N through the gap between the crystal's pad rows to pad 3.
-    yield ("XO_P", "F", W_XO, [("U1", "2"), ("Y1", "1")])
-    yield ("XO_N", "F", W_XO, [("U1", "1"), (-2.8, UY - 1.2), ("Y1", "3")])
-    # RF straight to the antenna hole.
-    yield ("RF", "F", W_RF, [("U1", "16"), ("AE1", "1")])
-    # VCC top: pin 17 straight up through C4's pad to C1; C1 to the + pad; R1 over to C1; VDDQ to its via.
-    yield ("VCC", "F", W_PWR, [("U1", "17"), (0.35, -0.45), (0.35, -1.6), ("C1", "1")])
-    yield ("VCC", "F", W_PWR, [(0.35, -0.45), ("C4", "1")])
-    yield ("VCC", "F", W_PWR, [("C1", "1"), PLUS_PAD])
-    yield ("VCC", "F", W_PWR, [("R1", "2"), (-1.05, -1.95), (0.1, -1.95)])
-    yield ("VCC", "F", W_PWR, [(-0.35, -1.95), V_VCC])
-    yield ("VCC", "F", W_PWR, [("U1", "13"), V_DQ])
-    # CHIP_EN: pin 18 up to its via; R1 and C2 hang off it.
-    yield ("EN", "F", W_SIG, [("U1", "18"), (-0.15, -0.55), V_EN])
-    yield ("EN", "F", W_SIG, [(-0.15, -0.55), (-0.6, -0.55), ("R1", "1")])
-    yield ("EN", "F", W_SIG, [("R1", "1"), ("C2", "1")])
-    # Underside: CHIP_EN and VCC run side by side down the right of the cell pad and into the neck.
-    yield ("EN", "B", W_SIG, [V_EN, (0.6, -1.2), (1.0, -1.0), (1.3, -0.6), (1.3, 2.0), (X_EN_B, 3.0),
-                              (X_EN_B, 5.9), (X_EN_TAIL, 6.15), (X_EN_TAIL, 9.85), V_EN_TAIL])
-    yield ("VCC", "B", W_PWR, [V_VCC, (1.0, -2.35), (1.7, -1.6), (1.7, 2.3), (X_VCC_B, 3.1),
-                               (X_VCC_B, 5.9), (X_VCC_TAIL, 6.1), (X_VCC_TAIL, 8.5), ("J1", "4")])
-    yield ("VCC", "B", W_PWR, [V_DQ, (1.7, UY)])
-    # GND top: crystal lid pad 4 to the counterpoise hole (which doubles as its via).
-    yield ("GND", "F", W_PWR, [("Y1", "4"), ("AE2", "1")])
-    # UART on top through the neck; GND starts in the underside pour and runs down the bottom of the neck.
-    yield ("RXD", "F", W_SIG, [("U1", "8"), (-0.15, 3.25), (X_RXD, 3.55), (X_RXD, 6.0), ("J1", "3")])
-    yield ("TXD", "F", W_SIG, [("U1", "9"), (0.35, 3.25), (X_TXD, 3.4), (X_TXD, 6.0), ("J1", "2")])
-    yield ("GND", "B", W_PWR, [(X_GND_B, 2.3), (X_GND_B, Y_GND_TAIL), (-1.9, Y_GND_TAIL), (X_GND_TAIL, 5.8),
-                               (X_GND_TAIL, 8.9), ("J1", "1")])
-    # Tail: the OFF jumper.
-    yield ("EN", "F", W_SIG, [V_EN_TAIL, ("JP1", "1")])
-    yield ("GND", "F", W_PWR, [("JP1", "2"), ("J1", "1")])
+    # Crystal: XO_P across into pad 1; XO_N between the crystal's pad rows to pad 3.
+    yield ("XO_P", "F", W_XO, [("U1", "2"), (-2.0, 0.4), ("Y1", "1")])
+    yield ("XO_N", "F", W_XO, [("U1", "1"), (-1.75, 0.0), (-1.85, -0.05), (-2.92, -0.05), ("Y1", "3")])
+    # RF straight right to the edge pad.
+    yield ("RF", "F", W_RF, [("U1", "16"), (2.0, 0.0), ("AE1", "1")])
+    # Top row: EN left of the U1 top pins, VCC right. R1 bridges them; EN goes on past the via to C2 (upright, top
+    # left); C1 across the top on VCC.
+    yield ("EN", "F", W_SIG, [("U1", "18"), (-0.25, -0.75), ("R1", "1")])
+    yield ("EN", "F", W_SIG, [("R1", "1"), V_EN])
+    yield ("EN", "F", W_SIG, [V_EN, ("C2", "1")])
+    yield ("VCC", "F", W_PWR, [("U1", "17"), (0.25, -0.75), ("R1", "2")])
+    yield ("VCC", "F", W_PWR, [("R1", "2"), ("C1", "1")])
+    yield ("VCC", "F", W_PWR, [("C1", "1"), V_VCC_A])
+    # VDDQ to C4 and the right-hand VCC via.
+    yield ("VCC", "F", W_PWR, [("U1", "13"), (2.0, 1.2), ("C4", "1")])
+    yield ("VCC", "F", W_PWR, [("C4", "1"), V_VCC_B])
+    # UART on top straight down the neck to the pads.
+    yield ("RXD", "F", W_SIG, [("U1", "8"), (X_RXD_N, 3.3), (X_RXD_N, ty(5.8)), ("J1", "3")])
+    yield ("TXD", "F", W_SIG, [("U1", "9"), (X_TXD_N, 3.3), (X_TXD_N, ty(5.8)), ("J1", "2")])
+    # Underside: CHIP_EN round the left, VCC round the right (both under solder mask), GND from the - pad down.
+    yield ("EN", "B", W_SIG, [V_EN, (-2.05, -0.75), (-2.2, 1.0), (-1.35, 2.55), (X_EN_B, 3.2), (X_EN_B, ty(5.6)),
+                              V_EN_TAIL])
+    yield ("VCC", "B", 0.3, [V_VCC_A, (2.75, -1.0), V_VCC_B, (2.2, 2.35), (X_VCC_B, 3.2), (X_VCC_B, ty(5.6)),
+                             (2.35, ty(5.95)), (2.35, ty(9.0)), ("J1", "4")])
+    yield ("VCC", "B", 0.3, [V_VCC_A, ("BT1", "1")])
+    yield ("GND", "B", 0.25, [(X_GND_B, 1.2), (X_GND_B, ty(9.0)), ("J1", "1")])
+    # Tail: OFF jumper between CHIP_EN and GND.
+    yield ("EN", "F", W_SIG, [V_EN_TAIL, (-2.35, ty(11.65)), ("JP1", "1")])
+    yield ("GND", "F", W_PWR, [("JP1", "2"), (-0.55, ty(10.8)), ("J1", "1")])
 
 
 def static_vias():
-    yield ("EN",) + V_EN
-    yield ("VCC",) + V_VCC
-    yield ("VCC",) + V_DQ
-    yield ("EN",) + V_EN_TAIL
-    for x, y in EP_VIAS:          # exposed-pad vias (datasheet: at least four)
-        yield ("GND", round(x, 3), round(y, 3))
-    yield ("GND", -2.5, -1.0)     # stitches the top pour by the crystal and C2
-    yield ("GND", 2.7, 0.75)      # stitches the top pour between RF and VDDQ
-    yield ("GND", 2.8, -0.95)     # C1 and C4 ground
+    for x, y in EP_VIAS:
+        yield ("GND", x, y)
+    for v in GND_VIAS:
+        yield ("GND",) + v
+    for v in (V_EN, V_EN_TAIL):
+        yield ("EN",) + v
+    for v in (V_VCC_A, V_VCC_B):
+        yield ("VCC",) + v
 
 
-# Silkscreen (text, x, y, size, side, angle) and lines ((x1, y1), (x2, y2), side)
-SILK_TEXT = [("CUT", 0.0, 4.45, 0.42, "F", 0),
-             ("R", -2.45, 6.8, 0.6, "F", 0), ("T", 2.45, 6.8, 0.6, "F", 0),
-             ("G", -2.45, 9.34, 0.6, "F", 0), ("+", 2.45, 9.34, 0.6, "F", 0),
-             ("OFF", 1.0, 11.0, 0.6, "F", 0),
-             ("+", 1.55, -2.55, 0.45, "F", 0),
-             ("A", 2.4, 11.0, 0.8, "F", 0)]      # variant letter (tools/variants.py rewrites it per panel column)
+ZONES = [dict(layer="F", net="GND", pts=None), dict(layer="B", net="GND", pts=None)]
+
+
+def _fill_zone_pts():
+    ZONES[0]["pts"] = pour_pts()
+    ZONES[1]["pts"] = pour_pts()
+
+
+_fill_zone_pts()
+
+# Silkscreen (text, x, y, size, side, angle) and lines
+SILK_TEXT = [("CUT", 0.0, ty(4.8), 0.42, "F", 0),
+             ("R", -1.27, ty(6.05), 0.5, "F", 0), ("T", 1.27, ty(6.05), 0.5, "F", 0),
+             ("G", -2.45, ty(9.77), 0.6, "F", 0), ("+", 2.45, ty(9.77), 0.6, "F", 0),
+             ("OFF", 0.75, ty(11.65), 0.55, "F", 0),
+             ("+", _pol(2.75, -80)[0], _pol(2.75, -80)[1], 0.6, "B", 0),
+             ("-", -1.85, -0.5, 0.8, "B", 0, 0.12),           # beside the round pad: the cell's - cap goes there
+             (MARK_PLACEHOLDER, 0.0, 2.88, 0.6, "B", 0, 0.12),  # variant mark, outside a 337, under a 6.8 mm cell
+             ("ANT", 2.6, 0.24, 0.5, "F", 0, 0.1),          # below AE1 (the RF wire pad, upper right)
+             ("V1 SLOW", 0.0, ty(12.65), 0.55, "F", 0)]
 SILK_LINES = [((NECK_X0, CUT_Y), (NECK_X1, CUT_Y), "F")]
+
+SCH_NOTES = [
+    "IN100 insect tag v8 D1 (battery): cell centred on the IN100, cut-to-start tail",
+    "- U1 IN100 QFN18 (JLC C6062024). VDDQ tied to VCC. 4 EP vias, under the cell's - cap.",
+    "- C1 100 uF 0805 (bursts), C4 100 nF at VDDQ (pin 13).",
+    "- CHIP_EN: R1 to VCC, C2 to GND. V1 1M/100nF (tau 0.1 s, slow start), V2 100k/10nF + JP1 OFF on the tail.",
+    "- Y1 26 MHz 1612, 7 pF, 80 ohm (IN100 spec 6-8 pF, 60-100 ohm): on-chip load capacitance.",
+    "- AE1 ~31 mm wire on a top edge pad (upper right) from RF_TX (on-chip 50 ohm match). AE2 optional GND arm (top).",
+    "- BT1: 337/364/377 silver-oxide cell, - cap on the 2.0 mm underside pad, + to the underside rim pad.",
+    "- Program before fitting the cell: the programmer drives 3.3 V into VCC.",
+]

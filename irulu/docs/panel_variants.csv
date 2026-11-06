@@ -1,21 +1,21 @@
 Unit,Variant,Title,Panel column (1 = left),Row (1 = top),U1 X mm,U1 Y mm
-A1,A,Baseline,1,1,108.10,31.95
-A2,A,Baseline,1,2,107.90,55.45
-A3,A,Baseline,2,1,117.10,31.95
-A4,A,Baseline,2,2,116.90,55.45
-B1,B,More bulk,3,1,126.10,31.95
-B2,B,More bulk,3,2,125.90,55.45
-B3,B,More bulk,4,1,135.10,31.95
-B4,B,More bulk,4,2,134.90,55.45
-C1,C,Strong enable,5,1,144.10,31.95
-C2,C,Strong enable,5,2,143.90,55.45
-C3,C,Strong enable,6,1,153.10,31.95
-C4,C,Strong enable,6,2,152.90,55.45
-D1,D,Low storage drain,7,1,162.10,31.95
-D2,D,Low storage drain,7,2,161.90,55.45
-D3,D,Low storage drain,8,1,171.10,31.95
-D4,D,Low storage drain,8,2,170.90,55.45
-E1,E,Belt and braces,9,1,180.10,31.95
-E2,E,Belt and braces,9,2,179.90,55.45
-E3,E,Belt and braces,10,1,189.10,31.95
-E4,E,Belt and braces,10,2,188.90,55.45
+V1_1,V1,Slow enable,1,1,107.10,31.80
+V1_2,V1,Slow enable,1,2,107.11,57.20
+V1_3,V1,Slow enable,2,1,116.30,31.80
+V1_4,V1,Slow enable,2,2,116.30,57.20
+V1_5,V1,Slow enable,3,1,125.50,31.80
+V1_6,V1,Slow enable,3,2,125.50,57.20
+V1_7,V1,Slow enable,4,1,134.70,31.80
+V1_8,V1,Slow enable,4,2,134.70,57.20
+V1_9,V1,Slow enable,5,1,143.90,31.80
+V1_10,V1,Slow enable,5,2,143.90,57.20
+V2_1,V2,"OFF jumper, 100k enable",6,1,153.10,31.80
+V2_2,V2,"OFF jumper, 100k enable",6,2,153.10,57.20
+V2_3,V2,"OFF jumper, 100k enable",7,1,162.30,31.80
+V2_4,V2,"OFF jumper, 100k enable",7,2,162.30,57.20
+V2_5,V2,"OFF jumper, 100k enable",8,1,171.50,31.80
+V2_6,V2,"OFF jumper, 100k enable",8,2,171.50,57.20
+V2_7,V2,"OFF jumper, 100k enable",9,1,180.70,31.80
+V2_8,V2,"OFF jumper, 100k enable",9,2,180.70,57.20
+V2_9,V2,"OFF jumper, 100k enable",10,1,189.89,31.80
+V2_10,V2,"OFF jumper, 100k enable",10,2,189.90,57.20

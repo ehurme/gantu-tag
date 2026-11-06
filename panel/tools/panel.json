@@ -1,0 +1,72 @@
+{
+    "layout": {
+        "type": "plugin",
+        "code": "tools/mixed_layout.py.MixedLayout",
+        "arg": "tools/mixed_panel.json",
+        "renamenet": "B{n}-{orig}",
+        "renameref": "{orig}"
+    },
+    "source": {
+        "type": "auto",
+        "tolerance": "6mm"
+    },
+    "tabs": {
+        "type": "annotation",
+        "tabfootprints": "insect_tag:KiKit_Tab_1p0mm, insect_tag:KiKit_Tab_1p2mm, insect_tag:KiKit_Tab_2p0mm, insect_tag:KiKit_Tab_3p0mm"
+    },
+    "cuts": {
+        "type": "mousebites",
+        "drill": "0.5mm",
+        "spacing": "0.75mm",
+        "offset": "-0.25mm",
+        "prolong": "0.5mm"
+    },
+    "framing": {
+        "type": "frame",
+        "width": "5mm",
+        "hspace": "2mm",
+        "vspace": "2mm",
+        "cuts": "none"
+    },
+    "tooling": {
+        "type": "4hole",
+        "hoffset": "2.5mm",
+        "voffset": "2.5mm",
+        "size": "1.152mm",
+        "soldermaskmargin": "1.3mm"
+    },
+    "fiducials": {
+        "type": "3fid",
+        "hoffset": "9mm",
+        "voffset": "2.5mm",
+        "coppersize": "1mm",
+        "opening": "2mm"
+    },
+    "text": {
+        "type": "simple",
+        "text": "IN100 tag v8.3  0.6mm  D2 solar: S6 S6 S6L S6L N6 | D1 battery: V1 V1 V2 V2",
+        "anchor": "mt",
+        "voffset": "2.5mm",
+        "hjustify": "center",
+        "vjustify": "center",
+        "width": "1.0mm",
+        "height": "1.0mm",
+        "thickness": "0.18mm"
+    },
+    "text2": {
+        "type": "simple",
+        "text": "JLCJLCJLCJLC",
+        "anchor": "mb",
+        "voffset": "-2.5mm",
+        "hjustify": "center",
+        "vjustify": "center",
+        "width": "1.2mm",
+        "height": "1.2mm",
+        "thickness": "0.2mm"
+    },
+    "post": {
+        "millradius": "0.5mm",
+        "origin": "bl",
+        "refillzones": true
+    }
+}

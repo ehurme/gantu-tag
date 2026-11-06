@@ -1,0 +1,10 @@
+** Drc report for /home/claude/v8/insect_tag_v8_solar/insect_tag_v8_solar.kicad_pcb **
+** Created on 2026-11-06 10:40:13 **
+
+** Found 0 DRC violations **
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

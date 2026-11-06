@@ -1,40 +1,39 @@
-"""Run KiCad DRC on the board, verify schematic/board net parity, and render PNG previews.
+"""KiCad 7 checks for a board or panel: DRC (pcbnew.WriteDRCReport), board-versus-design net parity, pour islands,
+and (for D1) copper inside the cell's crimp keep-out ring.
 
-Usage: /usr/bin/python3 tools/check.py [outdir]
+Usage: python3.12 tools/check.py [board.kicad_pcb] [report dir]
 """
+import math
 import os
 import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import design as D  # noqa: E402
-from build import parse  # noqa: E402
+import pcbnew  # noqa: E402
 
 PRJ = os.path.abspath(os.path.join(HERE, ".."))
-OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(PRJ, "docs")
+BOARD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(PRJ, D.PROJECT + ".kicad_pcb")
+OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(PRJ, "docs")
 os.makedirs(OUT, exist_ok=True)
+mm = pcbnew.ToMM
 
 
-def drc():
-    import pcbnew
-    board = pcbnew.LoadBoard(os.path.join(PRJ, D.PROJECT + ".kicad_pcb"))
-    rpt = os.path.join(OUT, "drc_report.txt")
+def drc(board, name):
+    rpt = os.path.join(OUT, name)
     pcbnew.WriteDRCReport(board, rpt, pcbnew.EDA_UNITS_MILLIMETRES, True)
     txt = open(rpt).read()
-    viol = re.findall(r"^\[(\w+)\]: (.*)$", txt, re.M)
-    summary = {k: int(v) for k, v in re.findall(r"\*\* Found (\d+) (\w[\w ]*?) \*\*", txt) and
-               [(m[1], m[0]) for m in re.findall(r"\*\* Found (\d+) ([\w ]+?) \*\*", txt)]}
-    return txt, viol, summary, board
+    counts = {m[1]: int(m[0]) for m in re.findall(r"\*\* Found (\d+) ([\w ]+?) \*\*", txt)}
+    items = re.findall(r"^\[(\w+)\]: (.*)\n(.*)\n\s*(@.*)\n(?:\s*(@.*)\n)?", txt, re.M)
+    return counts, items, txt
 
 
 def parity(board):
-    """Compare pad nets on the board with the design netlist (what the schematic was built from)."""
     want = {}
     for net, pins in D.NETS.items():
         for r, p in pins:
-            want[(r, p)] = net if net in D.POWER_NETS else "/" + net
+            want[(r, p)] = net if net in D.POWER_SYMBOLS else "/" + net
     bad = []
     for fp in board.GetFootprints():
         ref = fp.GetReference()
@@ -51,29 +50,79 @@ def parity(board):
     return bad
 
 
-def render():
-    pcb = os.path.join(PRJ, D.PROJECT + ".kicad_pcb")
-    outs = []
-    for name, layers, mirror in [
-        ("pcb_top", "F.Cu,F.Paste,F.SilkS,F.Mask,Edge.Cuts,F.Fab", False),
-        ("pcb_bottom", "B.Cu,B.SilkS,B.Mask,Edge.Cuts,B.Fab", True),
-        ("pcb_copper_both", "F.Cu,B.Cu,Edge.Cuts", False),
-    ]:
-        svg = os.path.join(OUT, name + ".svg")
-        cmd = ["kicad-cli", "pcb", "export", "svg", "--layers", layers, "--exclude-drawing-sheet",
-               "--page-size-mode", "2", "-o", svg, pcb]
-        if mirror:
-            cmd.insert(4, "--mirror")
-        subprocess.run(cmd, check=True, capture_output=True)
-        outs.append(svg)
-    return outs
+def islands(board):
+    """Each filled pour polygon must touch at least one item of its own net that is not itself a pour."""
+    from shapely.geometry import Polygon, Point
+    report = []
+    items = {}
+    for t in board.GetTracks():
+        layers = ("F", "B") if t.GetClass() == "PCB_VIA" else (("F",) if t.GetLayer() == pcbnew.F_Cu else ("B",))
+        for L in layers:
+            items.setdefault((t.GetNetname(), L), []).append(Point(mm(t.GetStart().x), mm(t.GetStart().y)))
+            items.setdefault((t.GetNetname(), L), []).append(Point(mm(t.GetEnd().x), mm(t.GetEnd().y)))
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            for L, lid in (("F", pcbnew.F_Cu), ("B", pcbnew.B_Cu)):
+                if p.IsOnLayer(lid):
+                    items.setdefault((p.GetNetname(), L), []).append(Point(mm(p.GetPosition().x), mm(p.GetPosition().y)))
+    for z in board.Zones():
+        if z.GetIsRuleArea():
+            continue
+        for lid, L in ((pcbnew.F_Cu, "F"), (pcbnew.B_Cu, "B")):
+            if not z.IsOnLayer(lid):
+                continue
+            ps = z.GetFilledPolysList(lid)
+            for i in range(ps.OutlineCount()):
+                ol = ps.Outline(i)
+                poly = Polygon([(mm(ol.CPoint(j).x), mm(ol.CPoint(j).y)) for j in range(ol.PointCount())]).buffer(0.05)
+                hit = any(poly.contains(pt) for pt in items.get((z.GetNetname(), L), []))
+                if not hit:
+                    c = poly.centroid
+                    report.append(f"{z.GetNetname()} pour island on {L}.Cu near ({c.x - 100:.2f}, {c.y - 100:.2f}), "
+                                  f"area {poly.area:.3f} mm2")
+    return report
+
+
+def keepout_ring(board, origin=(100.0, 100.0)):
+    """D1 only: exposed copper (pads, via holes) or non-VCC vias on the bottom inside the crimp ring."""
+    ring = getattr(D, "KEEPOUT_RING", None)
+    if not ring:
+        return []
+    r0, r1 = ring
+    out = []
+    ox, oy = origin
+
+    def rr(x, y):
+        return math.hypot(mm(x) - ox, mm(y) - oy)
+    for t in board.GetTracks():
+        if t.GetClass() == "PCB_VIA":
+            r = rr(t.GetPosition().x, t.GetPosition().y)
+            if r0 - 0.25 < r < r1 + 0.25 and t.GetNetname() != "VCC":
+                out.append(f"tented {t.GetNetname()} via at r = {r:.2f} mm "
+                           f"({mm(t.GetPosition().x) - ox:.2f}, {mm(t.GetPosition().y) - oy:.2f})")
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            if not p.IsOnLayer(pcbnew.B_Cu) or not p.IsOnLayer(pcbnew.B_Mask):
+                continue
+            r = rr(p.GetPosition().x, p.GetPosition().y)
+            ext = max(mm(p.GetSize().x), mm(p.GetSize().y)) / 2
+            if r - ext < r1 and r + ext > r0 and p.GetNetname() != "VCC":
+                out.append(f"EXPOSED {p.GetNetname()} pad {fp.GetReference()}.{p.GetNumber()} at r = {r:.2f} mm")
+    return out
 
 
 if __name__ == "__main__":
-    txt, viol, summary, board = drc()
-    print("DRC summary:", re.findall(r"\*\* Found \d+ [\w ]+ \*\*", txt))
-    for kind, msg in viol:
-        print(f"  [{kind}] {msg}")
-    bad = parity(board)
-    print("board/design net parity:", "OK" if not bad else bad)
-    print("renders:", render())
+    board = pcbnew.LoadBoard(BOARD)
+    name = "drc_report.txt" if BOARD.endswith(D.PROJECT + ".kicad_pcb") else os.path.basename(BOARD).replace(".kicad_pcb", "_drc.txt")
+    counts, items, txt = drc(board, name)
+    print("DRC:", counts)
+    for kind, msg, rule, a, b in items[:60]:
+        print(f"  [{kind}] {msg} | {rule.strip()} | {a.strip()} | {(b or '').strip()}")
+    if BOARD.endswith(D.PROJECT + ".kicad_pcb"):
+        bad = parity(board)
+        print("board/design net parity:", "OK" if not bad else bad)
+    isl = islands(board)
+    print("pour islands:", "none" if not isl else isl)
+    if not BOARD.endswith("panel.kicad_pcb") and "panel" not in os.path.basename(BOARD):
+        ko = keepout_ring(board)
+        print("crimp keep-out ring:", "clean" if not ko else ko)

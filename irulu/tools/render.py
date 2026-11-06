@@ -1,6 +1,6 @@
-"""Render a colour preview of the tag (top, both copper layers, bottom) to docs/pcb_preview.png.
+"""Render a colour preview of the board (top, both copper layers, bottom) to docs/pcb_preview.png.
 
-Usage: HOME=/root /usr/bin/python3 tools/render.py [out.png]
+Usage: python3.12 tools/render.py [out.png]
 """
 import os
 import sys
@@ -20,9 +20,8 @@ import design as D  # noqa: E402
 PRJ = os.path.abspath(os.path.join(HERE, ".."))
 X0 = Y0 = 100.0
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(PRJ, "docs", "pcb_preview.png")
-
 COL = {"F": "#c8783c", "B": "#3c78c8", "board": "#1d5c3a", "edge": "#e8e8e8", "silk": "#f4f4f4",
-       "via": "#d8d8d8", "hole": "#101010", "bg": "#121417"}
+       "via": "#d8d8d8", "hole": "#101010", "bg": "#121417", "keep": "#ff5050"}
 
 
 def mm(v):
@@ -54,6 +53,8 @@ def load():
             data["tracks"].append((L, mm(t.GetStart().x) - X0, mm(t.GetStart().y) - Y0,
                                    mm(t.GetEnd().x) - X0, mm(t.GetEnd().y) - Y0, mm(t.GetWidth())))
     for z in b.Zones():
+        if z.GetIsRuleArea():
+            continue
         for lid, L in ((pcbnew.F_Cu, "F"), (pcbnew.B_Cu, "B")):
             if not z.IsOnLayer(lid):
                 continue
@@ -67,7 +68,7 @@ def load():
                     holes.append([(mm(hc.CPoint(j).x) - X0, mm(hc.CPoint(j).y) - Y0) for j in range(hc.PointCount())])
                 data["zones"].append((L, pts, holes))
     for d in b.GetDrawings():
-        if d.GetClass() in ("PCB_TEXT",):
+        if d.GetClass() == "PCB_TEXT" and d.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS):
             L = "F" if d.GetLayer() == pcbnew.F_SilkS else "B"
             data["text"].append((L, d.GetText(), mm(d.GetPosition().x) - X0, mm(d.GetPosition().y) - Y0,
                                  mm(d.GetTextHeight())))
@@ -75,11 +76,17 @@ def load():
             L = "F" if d.GetLayer() == pcbnew.F_SilkS else "B"
             data["lines"].append((L, mm(d.GetStart().x) - X0, mm(d.GetStart().y) - Y0,
                                   mm(d.GetEnd().x) - X0, mm(d.GetEnd().y) - Y0))
+    for fp in b.GetFootprints():
+        for g in fp.GraphicalItems():
+            if g.GetClass() == "PCB_FP_SHAPE" and g.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS) \
+                    and g.GetShape() == pcbnew.SHAPE_T_CIRCLE:
+                L = "F" if g.GetLayer() == pcbnew.F_SilkS else "B"
+                c = g.GetCenter()
+                data["lines"].append((L, "circle", mm(c.x) - X0, mm(c.y) - Y0, mm(g.GetRadius())))
     return data
 
 
-def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
-    from shapely.geometry import Polygon
+def draw(ax, data, layers, silk_side, title, xlim, ylim, PT, mirror=False):
     from matplotlib.path import Path
     from matplotlib.patches import PathPatch
     outline = D.outline_polygon()
@@ -94,7 +101,7 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
             for ring in [pts] + holes:
                 verts += ring + [ring[0]]
                 codes += [Path.MOVETO] + [Path.LINETO] * (len(ring) - 1) + [Path.CLOSEPOLY]
-            ax.add_patch(PathPatch(Path(verts, codes), fc=COL[L], ec="none", alpha=a * 0.75, zorder=2))
+            ax.add_patch(PathPatch(Path(verts, codes), fc=COL[L], ec="none", alpha=a * 0.6, zorder=2))
         for tl, x1, y1, x2, y2, w in data["tracks"]:
             if tl == L:
                 ax.plot([x1, x2], [y1, y2], color=COL[L], lw=w * PT, solid_capstyle="round", alpha=a, zorder=3)
@@ -102,9 +109,9 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
             if L not in pl:
                 continue
             if g[0] == "circle":
-                ax.add_patch(Circle((g[1], g[2]), g[3], fc=COL[L], ec="none", alpha=a + 0.1 if a < 0.9 else 1, zorder=4))
+                ax.add_patch(Circle((g[1], g[2]), g[3], fc=COL[L], ec="none", alpha=min(1, a + 0.1), zorder=4))
             else:
-                ax.add_patch(MPoly(g[1], closed=True, fc=COL[L], ec="none", alpha=a + 0.1 if a < 0.9 else 1, zorder=4))
+                ax.add_patch(MPoly(g[1], closed=True, fc=COL[L], ec="none", alpha=min(1, a + 0.1), zorder=4))
     for x, y, r, dr in data["vias"]:
         ax.add_patch(Circle((x, y), r, fc=COL["via"], ec="none", zorder=5))
         ax.add_patch(Circle((x, y), dr, fc=COL["hole"], ec="none", zorder=6))
@@ -115,10 +122,18 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
         for L, txt, x, y, h in data["text"]:
             if L == silk_side:
                 ax.text(x, y, txt, color=COL["silk"], fontsize=h * PT * 1.25, ha="center", va="center",
-                        fontweight="bold", zorder=7, transform=ax.transData)
-        for L, x1, y1, x2, y2 in data["lines"]:
-            if L == silk_side:
-                ax.plot([x1, x2], [y1, y2], color=COL["silk"], lw=0.12 * PT, zorder=7)
+                        fontweight="bold", zorder=7)
+        for item in data["lines"]:
+            if item[0] != silk_side:
+                continue
+            if item[1] == "circle":
+                ax.add_patch(Circle((item[2], item[3]), item[4], fc="none", ec=COL["silk"], lw=0.1 * PT, zorder=7))
+            else:
+                L, x1, y1, x2, y2 = item
+                ax.plot([x1, x2], [y1, y2], color=COL["silk"], lw=0.1 * PT, zorder=7)
+    for r in getattr(D, "KEEPOUT_RING", ()):
+        if silk_side == "B" or len(layers) == 2:
+            ax.add_patch(Circle((0, 0), r, fc="none", ec=COL["keep"], lw=0.6, ls="--", zorder=8))
     ax.set_xlim(*(xlim[::-1] if mirror else xlim))
     ax.set_ylim(ylim[1], ylim[0])
     ax.set_aspect("equal")
@@ -129,13 +144,16 @@ def draw(ax, data, layers, silk_side, title, xlim, ylim, mirror=False):
 
 if __name__ == "__main__":
     data = load()
-    xlim, ylim = (-4.0, 4.0), (-4.0, 12.6)
-    fig, axes = plt.subplots(1, 3, figsize=(15, 9.6), facecolor=COL["bg"])
+    x0, y0, x1, y1 = D.outline_polygon().bounds
+    xlim, ylim = (x0 - 0.4, x1 + 0.4), (y0 - 0.4, y1 + 0.4)
+    w = 15
+    hh = w / 3 * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0]) + 0.6
+    fig, axes = plt.subplots(1, 3, figsize=(w, hh), facecolor=COL["bg"])
     fig.subplots_adjust(left=0.01, right=0.99, top=0.95, bottom=0.01, wspace=0.04)
-    PT = (axes[0].get_position().width * 15 * 72) / (xlim[1] - xlim[0])
-    draw(axes[0], data, ["F"], "F", "Top (parts side)", xlim, ylim)
-    draw(axes[1], data, ["B", "F"], None, "Both copper layers (orange top, blue bottom)", xlim, ylim)
-    draw(axes[2], data, ["B"], "B", "Bottom (mirrored, against the cell)", xlim, ylim, mirror=True)
+    PT = (axes[0].get_position().width * w * 72) / (xlim[1] - xlim[0])
+    draw(axes[0], data, ["F"], "F", "Top (parts side)", xlim, ylim, PT)
+    draw(axes[1], data, ["B", "F"], None, "Both copper layers (orange top, blue bottom)", xlim, ylim, PT)
+    draw(axes[2], data, ["B"], "B", "Bottom (mirrored)", xlim, ylim, PT, mirror=True)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    fig.savefig(OUT, dpi=110, facecolor=COL["bg"])
+    fig.savefig(OUT, dpi=int(getattr(D, "RENDER_DPI", 110)), facecolor=COL["bg"])
     print(OUT)

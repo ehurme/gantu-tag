@@ -1,0 +1,137 @@
+{
+ "units": [
+  {
+   "n": 0,
+   "design": "D2",
+   "variant": "S6",
+   "row": 1,
+   "col": 1
+  },
+  {
+   "n": 1,
+   "design": "D2",
+   "variant": "S6",
+   "row": 1,
+   "col": 2
+  },
+  {
+   "n": 2,
+   "design": "D2",
+   "variant": "S6L",
+   "row": 1,
+   "col": 3
+  },
+  {
+   "n": 3,
+   "design": "D2",
+   "variant": "S6L",
+   "row": 1,
+   "col": 4
+  },
+  {
+   "n": 4,
+   "design": "D2",
+   "variant": "N6",
+   "row": 1,
+   "col": 5
+  },
+  {
+   "n": 5,
+   "design": "D1",
+   "variant": "V1",
+   "row": 1,
+   "col": 7
+  },
+  {
+   "n": 6,
+   "design": "D1",
+   "variant": "V1",
+   "row": 1,
+   "col": 8
+  },
+  {
+   "n": 7,
+   "design": "D1",
+   "variant": "V2",
+   "row": 1,
+   "col": 9
+  },
+  {
+   "n": 8,
+   "design": "D1",
+   "variant": "V2",
+   "row": 1,
+   "col": 10
+  },
+  {
+   "n": 9,
+   "design": "D2",
+   "variant": "S6",
+   "row": 2,
+   "col": 1
+  },
+  {
+   "n": 10,
+   "design": "D2",
+   "variant": "S6",
+   "row": 2,
+   "col": 2
+  },
+  {
+   "n": 11,
+   "design": "D2",
+   "variant": "S6L",
+   "row": 2,
+   "col": 3
+  },
+  {
+   "n": 12,
+   "design": "D2",
+   "variant": "S6L",
+   "row": 2,
+   "col": 4
+  },
+  {
+   "n": 13,
+   "design": "D2",
+   "variant": "N6",
+   "row": 2,
+   "col": 5
+  },
+  {
+   "n": 14,
+   "design": "D1",
+   "variant": "V1",
+   "row": 2,
+   "col": 7
+  },
+  {
+   "n": 15,
+   "design": "D1",
+   "variant": "V1",
+   "row": 2,
+   "col": 8
+  },
+  {
+   "n": 16,
+   "design": "D1",
+   "variant": "V2",
+   "row": 2,
+   "col": 9
+  },
+  {
+   "n": 17,
+   "design": "D1",
+   "variant": "V2",
+   "row": 2,
+   "col": 10
+  }
+ ],
+ "geometry": {
+  "width": 94.79539199999999,
+  "height": 71.0,
+  "backbone": 12.100000000000001,
+  "hmax": 20.45
+ },
+ "netpattern": "B{n}-"
+}

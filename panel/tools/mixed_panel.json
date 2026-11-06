@@ -1,0 +1,18 @@
+{
+  "designs": {
+    "D2": {"pcb": "../../insect_tag_v8_solar/insect_tag_v8_solar.kicad_pcb"},
+    "D1": {"pcb": "../../insect_tag_v8_battery/insect_tag_v8_battery.kicad_pcb"}
+  },
+  "columns": [["D2", "S6"], ["D2", "S6"], ["D2", "S6L"], ["D2", "S6L"], ["D2", "N6"],
+              "BAR",
+              ["D1", "V1"], ["D1", "V1"], ["D1", "V2"], ["D1", "V2"]],
+  "hspace": 2.0,
+  "vspace": 2.0,
+  "bar": 2.0,
+  "frame_width": 5.0,
+  "frame_space": 2.0,
+  "backbone_min": 4.0,
+  "min_panel": 71.0,
+  "tolerance": 6.0,
+  "units_out": "../fab/insect_tag_v8_combined_panel.units.json"
+}

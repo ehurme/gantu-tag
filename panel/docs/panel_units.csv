@@ -1,0 +1,19 @@
+Unit,Design,Variant,Title,"Panel column (1 = left, 6 = bar)",Row (1 = top),U1 X mm (CPL origin),U1 Y mm (CPL origin)
+S6_1,D2,S6,"6 photodiodes, start circuit, 1.1 s hold",1,1,10.20,53.85
+S6_2,D2,S6,"6 photodiodes, start circuit, 1.1 s hold",1,2,10.20,17.15
+S6_3,D2,S6,"6 photodiodes, start circuit, 1.1 s hold",2,1,18.60,53.85
+S6_4,D2,S6,"6 photodiodes, start circuit, 1.1 s hold",2,2,18.60,17.15
+S6L_1,D2,S6L,"6 photodiodes, start circuit, 3.3 s hold",3,1,27.00,53.85
+S6L_2,D2,S6L,"6 photodiodes, start circuit, 3.3 s hold",3,2,27.00,17.15
+S6L_3,D2,S6L,"6 photodiodes, start circuit, 3.3 s hold",4,1,35.40,53.85
+S6L_4,D2,S6L,"6 photodiodes, start circuit, 3.3 s hold",4,2,35.40,17.15
+N6_1,D2,N6,"6 photodiodes, no start circuit",5,1,43.80,53.85
+N6_2,D2,N6,"6 photodiodes, no start circuit",5,2,43.80,17.15
+V1_1,D1,V1,Slow enable,7,1,56.60,59.20
+V1_2,D1,V1,Slow enable,7,2,56.60,11.80
+V1_3,D1,V1,Slow enable,8,1,65.80,59.20
+V1_4,D1,V1,Slow enable,8,2,65.80,11.80
+V2_1,D1,V2,"OFF jumper, 100k enable",9,1,75.00,59.20
+V2_2,D1,V2,"OFF jumper, 100k enable",9,2,75.00,11.80
+V2_3,D1,V2,"OFF jumper, 100k enable",10,1,84.20,59.20
+V2_4,D1,V2,"OFF jumper, 100k enable",10,2,84.20,11.80

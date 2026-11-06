@@ -1,0 +1,21 @@
+Unit,Variant,Title,Panel column (1 = left),Row (1 = top),U1 X mm,U1 Y mm
+S6_1,S6,"6 photodiodes, start circuit, 1.1 s hold",1,1,110.70,37.15
+S6_2,S6,"6 photodiodes, start circuit, 1.1 s hold",1,2,110.70,59.75
+S6_3,S6,"6 photodiodes, start circuit, 1.1 s hold",2,1,119.10,37.15
+S6_4,S6,"6 photodiodes, start circuit, 1.1 s hold",2,2,119.10,59.75
+S6_5,S6,"6 photodiodes, start circuit, 1.1 s hold",3,1,127.50,37.15
+S6_6,S6,"6 photodiodes, start circuit, 1.1 s hold",3,2,127.50,59.75
+S6_7,S6,"6 photodiodes, start circuit, 1.1 s hold",4,1,135.90,37.15
+S6_8,S6,"6 photodiodes, start circuit, 1.1 s hold",4,2,135.90,59.75
+S6L_1,S6L,"6 photodiodes, start circuit, 3.3 s hold",5,1,144.30,37.15
+S6L_2,S6L,"6 photodiodes, start circuit, 3.3 s hold",5,2,144.30,59.75
+S6L_3,S6L,"6 photodiodes, start circuit, 3.3 s hold",6,1,152.70,37.15
+S6L_4,S6L,"6 photodiodes, start circuit, 3.3 s hold",6,2,152.70,59.75
+S6L_5,S6L,"6 photodiodes, start circuit, 3.3 s hold",7,1,161.10,37.15
+S6L_6,S6L,"6 photodiodes, start circuit, 3.3 s hold",7,2,161.10,59.75
+S6L_7,S6L,"6 photodiodes, start circuit, 3.3 s hold",8,1,169.50,37.15
+S6L_8,S6L,"6 photodiodes, start circuit, 3.3 s hold",8,2,169.50,59.75
+N6_1,N6,"6 photodiodes, no start circuit",9,1,177.90,37.15
+N6_2,N6,"6 photodiodes, no start circuit",9,2,177.90,59.75
+N6_3,N6,"6 photodiodes, no start circuit",10,1,186.30,37.15
+N6_4,N6,"6 photodiodes, no start circuit",10,2,186.30,59.75

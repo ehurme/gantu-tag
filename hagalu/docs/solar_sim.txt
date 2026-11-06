@@ -1,0 +1,86 @@
+Float voltage with the IN100 off (load 0.15 uA), V   [S6 start: 1.69 V; IN100 max 3.6 V recommended]
+PDs T(C)     0.2klx    0.5klx      1klx      2klx      5klx     10klx     20klx    100klx
+5     0        1.64      1.84      1.96      2.06      2.20      2.30      2.40      2.62
+5    25        1.29      1.50      1.63      1.74      1.89      2.00      2.10      2.35
+5    40        1.07      1.30      1.43      1.55      1.70      1.82      1.93      2.19
+6     0        1.97      2.21      2.35      2.48      2.64      2.76      2.88      3.15
+6    25        1.55      1.80      1.95      2.09      2.27      2.40      2.53      2.82
+6    40        1.29      1.56      1.71      1.86      2.04      2.18      2.32      2.63
+7     0        2.30      2.58      2.74      2.89      3.08      3.22      3.35      3.67
+7    25        1.80      2.10      2.28      2.44      2.64      2.80      2.95      3.29
+7    40        1.50      1.82      2.00      2.17      2.38      2.54      2.70      3.07
+
+Adverts per minute, 10 min from an empty capacitor (3 s interval: 20/min = running continuously).
+STUCK = VCC fell under 1.1 V while the IN100 was on (brown-out lock until the store falls under 0.1 V).
+
+25 C, C1 = 55 uF, 3 channels (16.2 uC), turn-off at 0.45 VCC
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M)                              0.0         1.0         3.2         7.6        20.9        43.3        19.9        20.0
+S6L (R2 10M)                               0.0         0.9         3.1         7.3        20.4        19.8        19.9        20.0
+
+25 C, C1 = 55 uF, 3 channels, turn-off at 0.2 VCC (the IN100 holds on to a lower CHIP_EN)
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M)                              0.0         1.0         3.1         7.4        20.5        42.5        19.9        20.0
+S6L (R2 10M)                               0.0   0.2 STUCK   0.2 STUCK         8.2        19.6        19.8        19.9        20.0
+
+25 C, worst case: C1 = 45 uF, 19 uC per advert, turn-off at 0.2 VCC
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M)                              0.0         1.0         2.9         6.7        18.2        37.5        19.9        20.0
+S6L (R2 10M)                               0.0   0.2 STUCK   0.2 STUCK   0.2 STUCK        19.6        19.8        19.9        20.0
+
+40 C, C1 = 55 uF, 3 channels (D2 leaks ~140 nA)
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M) k_off 0.2                    0.0         0.0         1.7         6.4        19.7        41.9        19.9        20.0
+S6  (R2 3.3M) k_off 0.45                   0.0         0.0         1.8         6.5        20.0        42.4        88.0        20.0
+S6L (R2 10M) k_off 0.2                     0.0         0.0         1.7         6.3        19.3        19.8        19.9        20.0
+S6L (R2 10M) k_off 0.45                    0.0         0.0         1.7         6.4        19.6        42.1        19.9        20.0
+
+If the IN100 waits one interval before its first advert (review F6), 25 C, 55 uF
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M) k_off 0.2                    0.0         0.0         0.0         0.0        19.5        19.7        19.8        19.9
+S6  (R2 3.3M) k_off 0.45                   0.0         0.0         0.0         0.0        19.5        19.7        19.8        19.9
+S6L (R2 10M) k_off 0.2                     0.0         0.9         2.9         7.6        19.5        19.7        19.8        19.9
+S6L (R2 10M) k_off 0.45                    0.0         0.0         0.0         5.4        19.5        19.7        19.8        19.9
+
+One advertising channel (6.2 uC per event; OTP setting), 25 C, 55 uF
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M) k_off 0.2                    0.0         1.6         5.7        14.1        39.8        19.8        19.9        20.0
+S6  (R2 3.3M) k_off 0.45                   0.0         1.6         5.9        14.6        41.4        19.8        19.9        20.0
+S6L (R2 10M) k_off 0.2                     0.0         2.1         7.0        16.8        19.6        19.8        19.9        20.0
+S6L (R2 10M) k_off 0.45                    0.0         1.5         5.6        13.8        19.6        19.8        19.9        20.0
+
+TPS3831 at its 500 nA maximum, 25 C, 55 uF, k_off 0.45
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+S6  (R2 3.3M)                              0.0         0.0         2.1         6.5        19.8        42.2        19.9        20.0
+S6L (R2 10M)                               0.0         0.0         2.1         6.3        19.3        19.8        19.9        20.0
+
+S6 (3.3M), 25 C, 55 uF: daylight factor 0.7 / 1.3 and diode ideality 1.0 / 1.4
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+n=1.2 k=0.7                                0.0         0.3         1.8         4.9        14.2        29.8        61.4        20.0
+n=1.2 k=1.3                                0.0         1.6         4.5        10.2        27.5        56.9        19.9        20.0
+n=1.0 k=1.0                                0.0         1.1         3.3         7.8        21.1        43.5        19.9        20.0
+n=1.4 k=1.0                                0.0         0.7         2.9         7.4        20.6        43.0        19.9        20.0
+
+N6 (no start circuit), 25 C, 55 uF, three guesses of the IN100's power-on reset level
+                                        0.2klx      0.5klx        1klx        2klx        5klx       10klx       20klx      100klx
+V_POR 1.0 V                          0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK        20.0
+V_POR 1.3 V                          0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK   0.1 STUCK        20.0
+V_POR 1.5 V                          0.2 STUCK   0.2 STUCK   0.2 STUCK   0.2 STUCK        19.7        19.8        19.9        20.0
+
+Highest capacitor voltage, full sun 100 klx, IN100 off (ideality 1.2 / 1.0):
+6 PDs at  25 C: 2.82 V / 2.70 V (IN100 recommended max 3.6 V, abs max 3.9 V; on-chip VCC ADC only to 3.0 V)
+6 PDs at   0 C: 3.15 V / 3.04 V (IN100 recommended max 3.6 V, abs max 3.9 V; on-chip VCC ADC only to 3.0 V)
+6 PDs at -10 C: 3.28 V / 3.17 V (IN100 recommended max 3.6 V, abs max 3.9 V; on-chip VCC ADC only to 3.0 V)
+
+No blocking diode: dark current back through the string (25 C), and time to drain C1 in the dark
+  at 1.10 V:    0.013 uA
+  at 1.69 V:    0.327 uA
+  at 2.00 V:    1.747 uA
+  at 2.50 V:   26.073 uA
+  at 3.00 V:  389.071 uA
+  2.5 V -> 1.69 V:      5 s;  1.69 V -> 1.1 V:    135 s
+  programmer at 3.3 V into the dark string: 7.2 mA (ideality 1.0, worst case), on top of up to 50 mA for OTP programming
+
+C1 = 55 uF: charge between start (1.69 V) and the 1.1 V floor 32 uC = 1.8 adverts after boot (no light); one advert takes VCC from 1.69 V to 1.34 V
+
+C1 = 45 uF: charge between start (1.69 V) and the 1.1 V floor 26 uC = 1.4 adverts after boot (no light); one advert takes VCC from 1.69 V to 1.26 V

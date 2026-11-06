@@ -1,5 +1,5 @@
-** Drc report for /home/claude/insect_tag_v7/insect_tag.kicad_pcb **
-** Created on 2026-10-31 21:38:46 **
+** Drc report for /home/claude/v8/insect_tag_v8_battery/insect_tag_v8_battery.kicad_pcb **
+** Created on 2026-11-06 10:39:51 **
 
 ** Found 0 DRC violations **
 
