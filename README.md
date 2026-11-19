@@ -66,18 +66,18 @@ down once the first tags are on the bench.
 
 ## History
 
-Every revision is a commit, dated when it was made, and each released design has a git tag:
+Every revision is a commit, dated when it was made. The commit that closes each version:
 
-| Tag | What changed |
+| Version | What changed |
 |---|---|
-| `v4` | 6.4 mm round tag on a 0.6 mm board, printed antenna arm, cut-off programming tab |
-| `v5` | 8 mm tag with a 30 mm wire antenna; all parts on the top side, cell underneath |
-| `v6` | 7 mm tag with a Blu Bat-style **cut-to-start tail** (superseded: pour and decoupling faults, don't order) |
-| `v7` | Fixes v6; any button cell; five population variants on one test panel |
-| `v8.3` | Split into **Hagalu** (solar) and **Irulu** (battery) on one combined 0.6 mm panel. **This is what was ordered** |
+| [`v4`](https://github.com/pvnkmrksk/gantu-tag/tree/ffad947) | 6.4 mm round tag on a 0.6 mm board, printed antenna arm, cut-off programming tab |
+| [`v5`](https://github.com/pvnkmrksk/gantu-tag/tree/3f6ccb6) | 8 mm tag with a 30 mm wire antenna; all parts on the top side, cell underneath |
+| [`v6`](https://github.com/pvnkmrksk/gantu-tag/tree/cb1977e) | 7 mm tag with a Blu Bat-style **cut-to-start tail** (superseded: pour and decoupling faults, don't order) |
+| [`v7`](https://github.com/pvnkmrksk/gantu-tag/tree/bdc53f7) | Fixes v6; any button cell; five population variants on one test panel |
+| [`v8.3`](https://github.com/pvnkmrksk/gantu-tag/tree/761deb4) | Split into **Hagalu** (solar) and **Irulu** (battery) on one combined 0.6 mm panel. **This is what was ordered** |
 
-Before v8 there was only the battery tag, so its history lives in `irulu/`. To see an old version, run
-`git checkout v6`, for example.
+Before v8 there was only the battery tag, so its history lives in `irulu/`. Click a version to browse it, or
+`git checkout cb1977e` for v6, for example.
 
 ## Licence
 
