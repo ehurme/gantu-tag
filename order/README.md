@@ -19,7 +19,7 @@ It holds one panel carrying both tags (Hagalu Gantu and Irulu Gantu):
 
 The same Gerbers, BOM and CPL are regenerated from source in [`../panel/fab/jlcpcb_panel/`](../panel/fab/jlcpcb_panel/).
 
-> **Status:** these tags are early pilots. The boards were ordered but not yet bench-tested when this was published.
+> **Status:** these tags are early pilots. The assembled panels arrived on 19 November 2026 and are not yet bench-tested.
 > Check the latest notes in the [main README](../README.md) before you spend money.
 
 ## Order settings
