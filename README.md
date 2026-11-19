@@ -24,6 +24,7 @@ bench testing starts now. Treat every number here as a design estimate until the
 | When it runs | **In light only**, in bursts as the capacitor fills | Continuously until the cell is flat (≈ 57 days on a 337 at a 3 s interval) |
 | Size (after cutting the tail) | 6.4 × 12.55 mm | Ø 7.2 mm |
 | Mass (design estimate, 0.6 mm board) | ≈ 0.19–0.21 g | ≈ 0.12 g without the cell, ≈ 0.25 g with a 337 |
+| **Cost per tag** (approx.) | **≈ €7** | **≈ €2.30** + a button cell |
 | Start-up | On S6/S6L a supervisor starts the radio once the capacitor holds a burst; N6 has none | Fit the cell (V1), or cut the tail (V2) |
 | Pilot variants on the panel | S6, S6L, N6 | V1, V2 |
 | Design files | [`hagalu/`](hagalu/) | [`irulu/`](irulu/) |
@@ -107,9 +108,17 @@ Before v8 there was only the battery tag, so its history lives in `irulu/`. Clic
 
 Per-tag parts lists with LCSC numbers are on the [website](https://pvnkmrksk.github.io/gantu-tag/#bom); the full
 panel BOM is [`panel/fab/jlcpcb_panel/insect_tag_v8_combined_panel_bom.csv`](panel/fab/jlcpcb_panel/insect_tag_v8_combined_panel_bom.csv).
-The first order (5 bare panels, 2 assembled, 36 tags) came to roughly **€250–280 before shipping and VAT, about €7 per
-assembled tag**. Parts are about three quarters of that: about €6 per Hagalu and €2.30 per Irulu, mostly the IN100 and
-the photodiodes. Prices are from November 2026; the JLC cart is the real number.
+Approximate cost per tag, parts and JLC placement, at November 2026 prices:
+
+| | Per tag |
+|---|---|
+| **Hagalu Gantu** (solar) | **≈ €7** |
+| **Irulu Gantu** (button cell) | **≈ €2.30**, plus the cell you fit yourself |
+
+Each order also carries one-off fees of roughly €100 (setup, stencil, extended-part fees, bare boards), which you
+spread over however many tags you order. The first order (5 bare panels, 2 assembled, 36 tags) came to about
+**€250–280 before shipping and VAT**. Most of the cost is the IN100 (≈ $2.60) and, on Hagalu, the six photodiodes
+(≈ $0.87 each). The JLC cart is the real number.
 
 ## Licence
 
