@@ -24,6 +24,20 @@ Treat every number here as a design estimate until the bring-up results are in.
 | Pilot variants on the panel | S6, S6L, N6 | V1, V2 |
 | Design files | [`hagalu/`](hagalu/) | [`irulu/`](irulu/) |
 
+### Renders
+
+KiCad 10 renders of the v8.3 boards as ordered. Top: parts side. Bottom: the antenna pads on Hagalu, and the cell
+pads on Irulu.
+
+| | Top | Bottom |
+|---|---|---|
+| **Hagalu Gantu** | <img src="hagalu/docs/pcb_3d_top.png" width="260" alt="Hagalu top"> | <img src="hagalu/docs/pcb_3d_bottom.png" width="260" alt="Hagalu bottom"> |
+| **Irulu Gantu** | <img src="irulu/docs/pcb_3d_top.png" width="260" alt="Irulu top"> | <img src="irulu/docs/pcb_3d_bottom.png" width="260" alt="Irulu bottom"> |
+
+The JLC panel (94.9 × 71.1 mm, 0.6 mm), with 10 Hagalu and 8 Irulu tags on each panel:
+
+<p align="center"><img src="panel/docs/panel_top.png" width="640" alt="Combined panel, top"></p>
+
 Both use the InPlay **IN100 NanoBeacon**, a beacon chip configured rather than programmed. One tag works on Apple
 **Find My** (OpenHaystack-style static key) or on **Hubble**, chosen when you burn its one-time-programmable memory.
 You don't change the hardware to switch networks.
