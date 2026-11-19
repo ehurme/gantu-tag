@@ -56,6 +56,13 @@ configuration is gone. To test Hagalu in light, **burn the OTP on one tag**, the
 - **Find My** (OpenHaystack static key, the default for the first units): non-connectable advertising with the payload
   `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00` and the static random address `key[0] | 0xC0, key[1..5]`.
   Check the bytes in nRF Connect against an ESP32 running the same key.
+  - **Entering it in the Config Tool** (checked on a Hagalu S6 on 19 Nov 2026): edit Advertising set #1 → Custom →
+    tick only **Manufacturer Specific Data**. Set **ID** to `0x004C` and put the remaining 27 bytes in **Data**
+    (`12 19 00 <key 6–27> <hint> 00`, typed as hex without spaces). Leave Extended Data empty. The tool adds the
+    `1E FF` header itself and no flags field, so the advert is exactly 31 bytes.
+  - **The tool takes the address byte-reversed.** To make scanners show `F6:AF:67:80:2E:FD`, type
+    `FD:2E:80:67:AF:F6`. Check it on a scanner that shows addresses (iOS hides them; the NanoBeacon scanner app
+    showed it).
 - **Hubble:** follow Hubble's IN100 guide. No hardware change is needed.
 
 Hagalu keeps no clock in the dark. That's fine for Find My; for Hubble the time counter restarts every morning.
