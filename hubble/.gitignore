@@ -1,0 +1,3 @@
+firmware/test/test_core
+firmware/test/payloads.csv
+__pycache__/

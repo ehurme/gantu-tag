@@ -1,5 +1,9 @@
 # Sensors and flex boards: design study (branch `sensors-flex`)
 
+> **Update, 19 Nov 2026:** the chosen direction is a **3 V, Hubble, battery tag with an MCU**: path D in spirit, on
+> a TI CC2340R5. It is specified in [`../hubble/README.md`](../hubble/README.md). This study stays as the background
+> for that choice.
+
 **Status:** design study, 19 Nov 2026. Nothing here has been built. Numbers come from datasheets and from
 [`sensors/tools/budget.py`](../sensors/tools/budget.py), which reproduces the v8.3 READMEs' own mass figures before
 adding anything (0.111–0.122 g for Irulu, 0.187–0.216 g for Hagalu). Weigh and measure the first boards.
