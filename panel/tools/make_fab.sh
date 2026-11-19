@@ -11,7 +11,7 @@ rm -rf fab/jlcpcb_panel
 mkdir -p fab/jlcpcb_panel docs
 # Panel: layout plugin places both designs, backbone, bar and teeth; KiKit adds tabs, mouse bites, frame, tooling,
 # fiducials and text, then refills the zones.
-$KIKIT panelize -p tools/panel.json ../insect_tag_v8_solar/insect_tag_v8_solar.kicad_pcb "fab/$P.kicad_pcb"
+$KIKIT panelize -p tools/panel.json ../hagalu/insect_tag_v8_solar.kicad_pcb "fab/$P.kicad_pcb"
 # Per-unit population, tail labels, BOM and CPL.
 $PY tools/mixed_variants.py "fab/$P.kicad_pcb" "fab/$P.units.json" fab/jlcpcb_panel docs "$P"
 # Gerbers + drill (the assembly files above are ours).

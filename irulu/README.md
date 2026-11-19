@@ -9,7 +9,7 @@ The antenna and counterpoise wires solder flat onto **edge pads** on the top sid
 
 **v8.3 (this revision, the final test order)**:
 
-- **0.6 mm board**, ordered on one combined panel with D2. See `../insect_tag_v8_combined/README.md` for the order,
+- **0.6 mm board**, ordered on one combined panel with D2. See `../panel/README.md` for the order,
   the variant counts and the reasoning.
 - **AE1 (ANT) moved to the upper-right rim** (−19°) and enlarged to 1.2 × 0.9 mm. It now has ≥ 0.75 mm to every
   other-net pad; v8.2's pad sat 0.29 mm from C4. **ANT** is printed just below it.
@@ -69,7 +69,7 @@ to its left), the 337 and 364/377 cell outlines, and the + pad at the upper righ
 ## Variants
 
 Same copper. The v8.3 order is the combined panel: **8 of each** on 2 assembled panels (columns 7–8 V1, 9–10 V2;
-unit map in `../insect_tag_v8_combined/docs/panel_units.csv`). `PANEL_COLUMNS` and `tools/make_fab.sh` here still
+unit map in `../panel/docs/panel_units.csv`). `PANEL_COLUMNS` and `tools/make_fab.sh` here still
 build the old D1-only panel.
 
 | Variant | R1 (VCC → CHIP_EN) | C2 (CHIP_EN → GND) | Start-up | Program to | Tail silk |
@@ -224,7 +224,7 @@ Schematic: `docs/schematic.pdf`.
 
 ## Ordering from JLCPCB
 
-**v8.3: order the combined 0.6 mm panel, as described in `../insect_tag_v8_combined/README.md`.** The rest of this
+**v8.3: order the combined 0.6 mm panel, as described in `../panel/README.md`.** The rest of this
 section describes v8.2's separate 0.8 mm D1 panel and is kept for reference only. Its rebuilt panel in
 `fab/jlcpcb_panel/` is below Standard PCBA's 70 × 70 mm minimum, so don't order it.
 
@@ -336,7 +336,7 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
   `docs/review_scripts/`). No blocker in copper, pinouts or polarities; its value and setting findings are applied
   above.
 - **v8.3:** board DRC 0/0 and netlist parity again after moving AE1/AE2. The combined panel's checks are in
-  `../insect_tag_v8_combined/README.md`.
+  `../panel/README.md`.
 - **KiCad 10.0.7 (Mac, 6 Nov 2026):** DRC 0 errors, 0 unconnected, 1 cosmetic warning (BT1's reference text on
   B.Fab). ERC 0 errors; three library-version warnings (Crystal_GND24, SolderJumper_2_Open, Battery_Cell).
 

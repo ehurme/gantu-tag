@@ -12,7 +12,7 @@ JLCPCB fits every part, top side only. You add the antenna wire(s). Derived from
 
 ## v8.3 (this revision): final test order
 
-- **0.6 mm board**, ordered on one combined panel with D1. See `../insect_tag_v8_combined/README.md` for the order,
+- **0.6 mm board**, ordered on one combined panel with D1. See `../panel/README.md` for the order,
   the variant counts and the reasoning.
 - **Antenna pads moved to the underside**, which carries no parts.
   - Two 1.2 × 1.0 mm edge pads: **AE1 (ANT)** on the right edge, level with the IN100, and **AE2 (GND)** at the lower
@@ -151,7 +151,7 @@ What the table says:
 | **S6L** | columns 3–4 | 8 | fitted | **10 MΩ** (C26082) | not fitted | `S6L 10M` |
 | **N6** | column 5 | 4 | not fitted | not fitted | 1 MΩ (C26083) | `N6` |
 
-The unit map is `../insect_tag_v8_combined/docs/panel_units.csv`. (`PANEL_COLUMNS` in `design.py` and
+The unit map is `../panel/docs/panel_units.csv`. (`PANEL_COLUMNS` in `design.py` and
 `tools/make_fab.sh` still build v8.2's D2-only panel if you ever need it.)
 - After the tail is cut, N6 is recognisable by its missing U2/D2.
 - S6 and S6L look the same from the top; since v8.3 the variant is printed on the underside of the body.
@@ -248,7 +248,7 @@ The 1 : 2 outline would carry over to any of these. These are estimates: weigh t
 
 ## Ordering from JLCPCB
 
-**v8.3: order the combined 0.6 mm panel, as described in `../insect_tag_v8_combined/README.md`.** The rest of this
+**v8.3: order the combined 0.6 mm panel, as described in `../panel/README.md`.** The rest of this
 section describes v8.2's separate 0.8 mm D2 panel (Economic PCBA). It is kept for reference: its Gerbers in
 `fab/jlcpcb_panel/` were rebuilt with the v8.3 copper, but that panel is below Standard PCBA's 70 × 70 mm
 minimum, so don't order it.
@@ -317,7 +317,7 @@ or a measured lamp (see "Simulation").
   Reports are in `docs/`.
 - **Independent first-principles review:** `docs/independent_review.md`.
 - **v8.3:** board DRC 0/0 again after moving the antenna pads; the combined panel's checks are in
-  `../insect_tag_v8_combined/README.md`.
+  `../panel/README.md`.
 - **KiCad 10.0.7 (Mac, 6 Nov 2026):** DRC 0 errors, 0 unconnected. Warnings are cosmetic: the underside pads'
   reference text sits on B.Fab inside a front footprint, and R1's DNP flag differs between symbol and footprint. ERC
   0 errors; one library-version warning (Crystal_GND24).

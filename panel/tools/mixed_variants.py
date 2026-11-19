@@ -24,8 +24,8 @@ import pcbnew
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 V8 = os.path.abspath(os.path.join(HERE, "..", ".."))
-DESIGN_DIRS = {"D2": os.path.join(V8, "insect_tag_v8_solar", "tools"),
-               "D1": os.path.join(V8, "insect_tag_v8_battery", "tools")}
+DESIGN_DIRS = {"D2": os.path.join(V8, "hagalu", "tools"),
+               "D1": os.path.join(V8, "irulu", "tools")}
 
 
 def load_design(name, tools_dir):

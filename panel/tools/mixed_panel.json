@@ -1,7 +1,7 @@
 {
   "designs": {
-    "D2": {"pcb": "../../insect_tag_v8_solar/insect_tag_v8_solar.kicad_pcb"},
-    "D1": {"pcb": "../../insect_tag_v8_battery/insect_tag_v8_battery.kicad_pcb"}
+    "D2": {"pcb": "../../hagalu/insect_tag_v8_solar.kicad_pcb"},
+    "D1": {"pcb": "../../irulu/insect_tag_v8_battery.kicad_pcb"}
   },
   "columns": [["D2", "S6"], ["D2", "S6"], ["D2", "S6L"], ["D2", "S6L"], ["D2", "N6"],
               "BAR",

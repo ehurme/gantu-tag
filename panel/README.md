@@ -161,8 +161,8 @@ The cart is the real number. Choosing PCBA qty 5 instead of 2 gives 90 tags at r
   - seal the cut edge.
 
 The full steps are in each tag's README:
-- `../insect_tag_v8_solar/README.md` (D2)
-- `../insect_tag_v8_battery/README.md` (D1)
+- `../hagalu/README.md` (D2)
+- `../irulu/README.md` (D1)
 
 In short:
 1. Break a tag out with its tail. Program it through the tail pads, then fit the antenna:
