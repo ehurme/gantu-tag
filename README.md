@@ -11,7 +11,9 @@ a node.
 **Website:** https://pvnkmrksk.github.io/gantu-tag/
 
 These are **early pilots**. The first panels were ordered on 6 November 2026 and arrived assembled on 19 November;
-bench testing starts now. Treat every number here as a design estimate until the bring-up results are in.
+bench testing has started. **First result, the same evening:** a Hagalu S6, configured over UART and run from RAM
+with a plain copper antenna, was picked up by passing iPhones and reported through Apple Find My three times in
+20 minutes (±76–102 m). Treat every other number here as a design estimate until bring-up is complete.
 
 <p align="center"><img src="docs/photos/panel_assembled_2026-11-19.jpg" width="420" alt="An assembled gantu-tag panel from JLCPCB, held in hand"></p>
 
