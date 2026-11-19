@@ -4,7 +4,8 @@
 
 <p align="center"><b>Open, tiny Bluetooth LE tracking tags for insects that anyone can order from JLCPCB.</b></p>
 
-*Gantu* (ಗಂಟು, said *gun-two*) is Kannada for a knot: a tag is something you tie onto an animal.
+*Gantu* (ಗಂಟು, said *gun-two*) is Kannada for a knot, for someone who clings on and goes wherever you go, and for
+a node.
 [More about the name](#about-the-name).
 
 **Website:** https://pvnkmrksk.github.io/gantu-tag/
@@ -138,12 +139,15 @@ inside; the licence here applies to it. There's no warranty: you build and use t
 
 ## About the name
 
-| Name | Kannada | Say it | IPA | Meaning |
-|---|---|---|---|---|
-| Gantu | ಗಂಟು | *gun-two* | /ɡəɳʈu/ | A knot; also a small bundle tied up to carry |
-| Hagalu | ಹಗಲು | *huh-guh-loo* | /ɦəɡəlu/ | Daytime |
-| Irulu | ಇರುಳು | *ih-roo-loo* | /iruɭu/ | Night |
+**Gantu** (ಗಂಟು, *gun-two*, /ɡəɳʈu/) works on three levels:
 
-The *ṇṭ* in gantu is retroflex (tongue curled back), and the *ḷ* in irulu is a retroflex *l*. Hagalu runs only when
-there's light; Irulu keeps going through the night. The logo is one thread tied in a trefoil knot, shading from
-turmeric ochre into indigo.
+- **A knot.** The tag is tied onto the animal.
+- **Clinging on.** Colloquially, someone who is *gantu* to you sticks to you and goes wherever you go, as if the two of
+  you were knotted together. That's the tag and its insect.
+- **A node,** as on a plant stem or in a network. The tag is found as a node heard by a mesh of phones and gateways.
+
+**Hagalu** (ಹಗಲು, *huh-guh-loo*, /ɦəɡəlu/, day) and **Irulu** (ಇರುಳು, *ih-roo-loo*, /iruɭu/, night) name how each
+tag works: Hagalu runs on daylight, Irulu runs on its cell through the night as well.
+
+The *ṇṭ* in gantu is retroflex (tongue curled back), as is the *ḷ* in irulu. The logo is one thread tied in a trefoil
+knot, shading from turmeric ochre into indigo.
