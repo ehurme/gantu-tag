@@ -209,4 +209,4 @@ In short:
    - sets each unit's population and writes the BOM and CPL (`tools/mixed_variants.py`);
    - writes the Gerbers.
 
-CC BY-SA 4.0. No warranty.
+CC BY 4.0 for the hardware and documentation; MIT for the scripts. See [the licence section](../README.md#licence). No warranty: you build and use these at your own risk.

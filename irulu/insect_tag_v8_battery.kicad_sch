@@ -2,7 +2,7 @@
 (uuid 523e3932-933e-41bb-96cf-c01f2161134d)
 (paper "A4")
 (title_block (title "IN100 insect tag v8 D1: battery tag") (date "2026-11-02") (rev "8.3")
-  (comment 1 "Open hardware (CC BY-SA 4.0). Derived from insect_tag_v7")
+  (comment 1 "Open hardware (CC BY 4.0). Derived from insect_tag_v7")
   (comment 2 "V1 slow enable 1M/100nF / V2 100k/10nF + OFF jumper (cut-to-start). Cell centred on the IN100"))
 (lib_symbols
   (symbol "Connector_Generic:Conn_01x04"

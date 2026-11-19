@@ -45,7 +45,7 @@
     },
     "text": {
         "type": "simple",
-        "text": "IN100 tag v8 D1 battery  CC BY-SA 4.0  V1 cols 1-5  V2 cols 6-10",
+        "text": "IN100 tag v8 D1 battery  CC BY 4.0  V1 cols 1-5  V2 cols 6-10",
         "anchor": "mt",
         "voffset": "2.5mm",
         "hjustify": "center",

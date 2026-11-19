@@ -43853,7 +43853,7 @@
   (gr_text "ANT" (at 183.29546 30.839891) (layer "F.SilkS") (tstamp f3013271-9ceb-48db-8408-08b5821a24cc)
     (effects (font (size 0.5 0.5) (thickness 0.1)))
   )
-  (gr_text "IN100 tag v8 D1 battery  CC BY-SA 4.0  V1 cols 1-5  V2 cols 6-10" (at 148.5 22.5) (layer "F.SilkS") (tstamp f36c3c1b-b8ca-41c7-9013-1cd8d7ff6759)
+  (gr_text "IN100 tag v8 D1 battery  CC BY 4.0  V1 cols 1-5  V2 cols 6-10" (at 148.5 22.5) (layer "F.SilkS") (tstamp f36c3c1b-b8ca-41c7-9013-1cd8d7ff6759)
     (effects (font (size 1.2 1.2) (thickness 0.2)))
   )
   (gr_text "R" (at 117.57454 52.64989 180) (layer "F.SilkS") (tstamp f3eaef90-b679-42fc-b1af-c3b9906dc307)

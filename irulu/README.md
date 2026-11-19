@@ -352,5 +352,5 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
 
 ## License
 
-CC BY-SA 4.0. References: InPlay's IN100 datasheet and SparkFun's NanoBeacon boards (CC BY-SA 4.0).
+CC BY 4.0 for the hardware and documentation; MIT for the scripts. See [the licence section](../README.md#licence). No warranty: you build and use these at your own risk.
 No warranty: you build and use these at your own risk.

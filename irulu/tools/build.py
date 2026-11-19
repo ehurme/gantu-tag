@@ -343,7 +343,7 @@ def build_schematic():
     sch = (f'(kicad_sch (version 20230121) (generator eeschema)\n'
            f'(uuid {root})\n(paper "{getattr(D, "SCH_PAPER", "A4")}")\n'
            f'(title_block (title "{D.TITLE}") (date "2026-11-02") (rev "{D.REV}")\n'
-           f'  (comment 1 "Open hardware (CC BY-SA 4.0). Derived from insect_tag_v7")\n'
+           f'  (comment 1 "Open hardware (CC BY 4.0). Derived from insect_tag_v7")\n'
            f'  (comment 2 "{D.SCH_COMMENT}"))\n'
            f'{lib_block}\n' + "\n".join(items) +
            '\n(sheet_instances (path "/" (page "1")))\n)\n')

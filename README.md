@@ -42,12 +42,32 @@ The JLC panel (94.9 × 71.1 mm, 0.6 mm), with 10 Hagalu and 8 Irulu tags on each
 
 <p align="center"><img src="panel/docs/panel_top.png" width="640" alt="Combined panel, top"></p>
 
-Both use the InPlay **IN100 NanoBeacon**, a beacon chip configured rather than programmed. One tag works on Apple
-**Find My** (OpenHaystack-style static key) or on **Hubble**, chosen when you burn its one-time-programmable memory.
-You don't change the hardware to switch networks.
-
 The pilot variant names (S6, S6L, N6, V1, V2) only mark the start-circuit options under test. They'll be narrowed
 down once the first tags are on the bench.
+
+## Approach
+
+The tag doesn't carry a GPS or a receiver. It only **broadcasts a Bluetooth LE advert every few seconds**, and phones
+or gateways that belong to a large existing network hear it and report where they were. You then fetch those
+reports.
+
+- **One chip, configured rather than programmed.** Both tags use the InPlay
+  [IN100 NanoBeacon](https://inplay-tech.com/in100). It runs no firmware: you load a configuration over its UART
+  (address, advert bytes, interval, TX power), test it in RAM, then burn it once into the chip's one-time-programmable
+  memory. That keeps the tag down to the chip, a crystal and a few capacitors.
+- **Two networks, the same hardware.** Which network a tag joins is decided only by what you burn into it:
+  - **Apple Find My** via [OpenHaystack](https://github.com/seemoo-lab/openhaystack): the tag sends a fixed-key
+    Find My advert, nearby iPhones relay its position to Apple, and you decrypt the reports with your private key.
+    No Apple hardware is needed on the tag side, and it costs nothing per tag.
+  - **[Hubble Network](https://hubble.com)**: the IN100 is one of Hubble's supported chips, and its adverts are picked
+    up by Hubble's terrestrial network of phones and gateways and, as its next satellites arrive, from orbit. Hubble
+    is a paid service with a free starter tier.
+- **Built by JLCPCB, finished by hand.** Every part is placed by JLCPCB's assembly service from its own stock, on a
+  2-layer 0.6 mm board. You add only the antenna wire, the cell (Irulu) and epoxy.
+- **Started by cutting.** Each tag carries its programming pads on a tail. Like commercial bat and insect tags, you
+  program it, then cut the tail off; on Irulu V2 the cut is also what switches it on.
+- **Pilots before a batch.** The first panel carries several population variants of each tag (S6/S6L/N6 and V1/V2),
+  so one order shows which start circuit works before anyone orders in bulk.
 
 ## Build your own
 
@@ -93,10 +113,19 @@ the photodiodes. Prices are from November 2026; the JLC cart is the real number.
 
 ## Licence
 
-Hardware designs and documentation: [CC BY-SA 4.0](LICENSE). The designs reference InPlay's IN100 datasheet and
-SparkFun's NanoBeacon boards (CC BY-SA 4.0). No warranty: you build and use these at your own risk.
+Permissive, with attribution:
 
-Designed by Pavan Kumar Kaushik (Max Planck Institute of Animal Behaviour, Konstanz).
+- **Hardware designs, documentation, renders and the logo:** [CC BY 4.0](LICENSE).
+- **Scripts** (the Python and shell in `*/tools/`, `docs/logo/make_logo.py`) **and the website:** [MIT](LICENSE-CODE).
+
+You can use, change, sell and build on all of it, commercially or not, as long as you credit the source. A line
+like this is enough:
+
+> Based on gantu-tag by Pavan Kumar Kaushik, https://github.com/pvnkmrksk/gantu-tag (CC BY 4.0)
+
+The circuits follow InPlay's IN100 datasheet and the component values on SparkFun's NanoBeacon board; no SparkFun
+design files are included. The archived JLC order zip in `order/` predates this licence and still says CC BY-SA 4.0
+inside; the licence here applies to it. There's no warranty: you build and use these at your own risk.
 
 ## About the name
 
