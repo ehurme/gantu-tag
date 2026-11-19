@@ -13,9 +13,14 @@ a node.
 These are **early pilots**. The first panels were ordered on 6 November 2026 and arrived assembled on 19 November;
 bench testing has started. **First result, the same evening:** a Hagalu S6, configured over UART and run from RAM
 with a plain copper antenna, was picked up by passing iPhones and reported through Apple Find My three times in
-20 minutes (±76–102 m). Treat every other number here as a design estimate until bring-up is complete.
+20 minutes (±76–102 m). It advertised steadily from about 1.9 klx, and weighs **0.242 g** with its wire antenna
+(tail cut, no epoxy). Treat every other number here as a design estimate until bring-up is complete.
 
 <p align="center"><img src="docs/photos/panel_assembled_2026-11-19.jpg" width="420" alt="An assembled gantu-tag panel from JLCPCB, held in hand"></p>
+
+| Weighed: 0.242 g | Advertising Find My under 1.7 klx |
+|---|---|
+| <img src="docs/photos/hagalu_s6_on_scale_242mg_2026-11-19.jpg" width="280" alt="Hagalu S6 with its wire antenna on a 1 mg scale, reading 0.242 g"> | <img src="docs/photos/hagalu_s6_findmy_advert_1704lx_2026-11-19.jpg" width="280" alt="nRF Connect showing a Find My advert from the tag at -57 dBm, with a second phone reading 1704 lx"> |
 
 ## The two tags
 
@@ -26,7 +31,7 @@ with a plain copper antenna, was picked up by passing iPhones and reported throu
 | Power | Six photodiodes charge a 100 µF capacitor; no battery | A silver-oxide button cell (337, 364 or 377) |
 | When it runs | **In light only**, in bursts as the capacitor fills | Continuously until the cell is flat (≈ 57 days on a 337 at a 3 s interval) |
 | Size (after cutting the tail) | 6.4 × 12.55 mm | Ø 7.2 mm |
-| Mass (design estimate, 0.6 mm board) | ≈ 0.19–0.21 g | ≈ 0.12 g without the cell, ≈ 0.25 g with a 337 |
+| Mass (0.6 mm board) | **0.242 g measured** (S6 with wire, no epoxy; estimate was 0.19–0.21 g) | ≈ 0.12 g without the cell, ≈ 0.25 g with a 337 (estimate) |
 | **Cost per tag** (approx.) | **≈ €7** | **≈ €2.30** + a button cell |
 | Start-up | On S6/S6L a supervisor starts the radio once the capacitor holds a burst; N6 has none | Fit the cell (V1), or cut the tail (V2) |
 | Pilot variants on the panel | S6, S6L, N6 | V1, V2 |
@@ -82,6 +87,18 @@ reports.
 3. **Finish:** break the tag out, fit the antenna wire (and the cell on Irulu), cut the tail and coat it in epoxy.
    The step-by-step for each tag is in [`hagalu/README.md`](hagalu/README.md) and [`irulu/README.md`](irulu/README.md).
 
+## Roadmap
+
+Lighter first, then simpler, then cheaper. The full plan, with mass targets, is in [`docs/roadmap.md`](docs/roadmap.md).
+
+| Stage | What | Hagalu | Irulu (with a 337) |
+|---|---|---|---|
+| **Now** | Bench work on the v8.3 pilots: mass split, Irulu bring-up, S6L/N6, a smaller C1, range, Hubble | 0.242 g measured | ≈ 0.25 g |
+| **v9** | Polyimide flex, antenna as a trace on a flex tail, thinner copper, 47 µF C1 if it tests well | ≈ 0.13–0.16 g | ≈ 0.19–0.20 g |
+| **v10** | IN100 in WLCSP (1.1 × 2.0 mm), 0201 parts; Irulu no bigger than its cell | ≈ 0.05–0.07 g | ≈ 0.16–0.17 g |
+
+On Irulu the 0.13 g cell is the floor; everything else can shrink to ≈ 0.03–0.04 g.
+
 ## Repository map
 
 | Folder | What's in it |
@@ -90,7 +107,7 @@ reports.
 | [`irulu/`](irulu/) | Battery tag: KiCad project, generator, burst simulation, renders, review |
 | [`panel/`](panel/) | The combined 0.6 mm JLC panel (KiKit layout, mixed-variant BOM/CPL) and its ordering README |
 | [`order/`](order/) | The exact files sent to JLCPCB, with a checksum |
-| [`docs/`](docs/) | Programming guide, the v8 handover and build notes, the logo |
+| [`docs/`](docs/) | Roadmap, programming guide, the v8 handover and build notes, bench photos, the logo |
 
 ## History
 

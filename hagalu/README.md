@@ -246,6 +246,10 @@ For comparison, the D1 battery tag is ≈ 0.13 g, or **≈ 0.26 g with a 337 cel
 
 The 1 : 2 outline would carry over to any of these. These are estimates: weigh the first tags.
 
+**Measured (19 Nov 2026):** one S6, tail cut, with ≈ 30 mm of copper wire and no epoxy, weighs **0.242 g**, about
+35–50 mg above the estimate. A bare board from the panel will show whether the board or the parts account for it.
+Next steps are in [`../docs/roadmap.md`](../docs/roadmap.md).
+
 ## Ordering from JLCPCB
 
 **v8.3: order the combined 0.6 mm panel, as described in `../panel/README.md`.** The rest of this

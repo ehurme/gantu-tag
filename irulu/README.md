@@ -195,6 +195,9 @@ assembly library (checked for v8.0); a 47 µF 0603 as on v7 fits but halves the 
 These are estimates: the review's method with board copper, Murata's mass for C1 and TXC's for the crystal; the
 IN100 is estimated. Weigh the first tags.
 
+The route to a smaller Irulu (flex, a 47 µF 0603 C1, then a WLCSP IN100 on a board no bigger than the 337) is in
+[`../docs/roadmap.md`](../docs/roadmap.md).
+
 ## Circuit
 
 - **U1** IN100-Q1-R-RC1I (QFN18, C6062024). VCC and VDDQ tied to the cell. UART on GPIO0 (RXD) and GPIO1 (TXD).
