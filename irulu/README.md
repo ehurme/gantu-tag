@@ -306,7 +306,8 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
   offset on two or three tags.
 - *Find My* (default for the first units, OpenHaystack static key): non-connectable advertising with the payload
   `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`; static random address `key[0] | 0xC0, key[1..5]`.
-- *Hubble:* follow Hubble's IN100 guide. No hardware change is needed.
+- *Hubble:* see [programming](../docs/programming.md#network-payloads) (`new_hubble_tag.py`; don't use the Config
+  Tool's own Hubble format). No hardware change is needed.
 
 ## Bring-up
 

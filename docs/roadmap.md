@@ -44,8 +44,10 @@ Nothing new to order. Each item answers a question that the next revision depend
       from first light to the first Find My report.
 - [ ] **Coating:** light threshold and mass before and after epoxy over the photodiodes.
 - [ ] **Antenna:** single wire vs dipole (AE1 + AE2) on range.
-- [ ] **Hubble:** burn one tag for Hubble. Ask Hubble first how their backend handles a time counter that restarts
-      every morning (Hagalu has no clock in the dark). Find My's static key doesn't care.
+- [ ] **Hubble:** running from RAM on Hagalu-002 since 20 Nov 2026, with VCC, temperature and advert count in the
+      encrypted payload, and seen in the Hubble app ([programming](programming.md#network-payloads)). Restarts
+      decode fine on the bench (the counter starts again at period 0). Next: burn one tag and leave it in daylight
+      for a few days to confirm daily restarts at Hubble's end. Find My's static key doesn't care.
 
 ## Stage 1: v9, flex (both tags)
 
