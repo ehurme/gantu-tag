@@ -27,7 +27,7 @@ relaying phone's GPS fix and the tag's own encrypted payload: supply voltage and
 |---|---|---|
 | <img src="docs/photos/walk_findmy_track_2026-11-20.jpg" width="260" alt="Map of Find My sightings of a Hagalu tag, coloured from oldest to newest"> | <img src="docs/photos/walk_findmy_sightings_2026-11-20.jpg" width="260" alt="Dashboard listing 143 Find My sightings in view and 220 saved"> | <img src="docs/photos/walk_hubble_payload_2026-11-20.jpg" width="260" alt="A Hubble packet decoded as 1.562 V, 28.45 degrees C, 0 adverts, with the relay's GPS fix"> |
 
-<p align="center"><img src="docs/photos/panel_assembled_2026-11-19.jpg" width="420" alt="An assembled gantu-tag panel from JLCPCB, held in hand"></p>
+<p align="center"><img src="docs/photos/panel_assembled_2026-11-19.jpg" width="560" alt="An assembled gantu-tag panel from JLCPCB, held in hand"></p>
 
 | Weighed: 0.242 g | Advertising Find My under 1.7 klx |
 |---|---|
@@ -174,21 +174,31 @@ spread over however many tags you order. The first order (5 bare panels, 2 assem
 
 ## Licence
 
-Permissive, with attribution:
+**Open, and it has to stay open.** You can use, change, build, sell and share all of it, commercially or not, on two
+conditions that pass on to everything made from it:
 
-- **Hardware designs, documentation, renders and the logo:** [CC BY 4.0](LICENSE).
-- **Scripts** (the Python and shell in `tools/` and `*/tools/`, `docs/logo/make_logo.py`), **the dashboard and the
-  website:** [MIT](LICENSE-CODE). The bundled dashboard assets keep their
-  [MapLibre](dashboard/assets/MAPLIBRE-LICENSE) and [D3](dashboard/assets/D3-COLOR-LICENSE) licences.
+1. **Credit the author.** Keep the [`NOTICE`](NOTICE) file and credit the work wherever you publish, show or sell
+   it or anything made from it:
 
-You can use, change, sell and build on all of it, commercially or not, as long as you credit the source. A line
-like this is enough:
+   > Based on gantu-tag by Pavan Kumar Kaushik, https://github.com/pvnkmrksk/gantu-tag
 
-> Based on gantu-tag by Pavan Kumar Kaushik, https://github.com/pvnkmrksk/gantu-tag (CC BY 4.0)
+2. **Share alike.** Release what you make from it under the same licence, with its source.
 
-The circuits follow InPlay's IN100 datasheet and the component values on SparkFun's NanoBeacon board; no SparkFun
-design files are included. The archived JLC order zip in `order/` predates this licence and still says CC BY-SA 4.0
-inside; the licence here applies to it. There's no warranty: you build and use these at your own risk.
+| What | Licence |
+|---|---|
+| **Hardware:** KiCad projects, Gerbers, BOM and placement files, the panel, the order files, the tag configs in `configs/` | [CERN-OHL-S-2.0](LICENSE), strongly reciprocal: boards and tags made from the design count too |
+| **Documentation and media:** the docs, photos, renders, PDFs, the logo, the website's text and images | [CC BY-SA 4.0](LICENSE-DOCS) |
+| **Software:** `tools/`, `dashboard/`, `*/tools/`, the review scripts, `docs/logo/make_logo.py`, the website's code | [AGPL-3.0-or-later](LICENSE-CODE): also covers modified copies run as a web service, such as the dashboard |
+
+Two conditions in [`NOTICE`](NOTICE) make the credit concrete: anyone who sells or hands out tags made from the
+design must include the source link and the credit line in the packaging or documentation, and modified software
+must keep the credit in its source and in its legal notices. Bundled third-party files keep their own licences
+([MapLibre](dashboard/assets/MAPLIBRE-LICENSE), [D3](dashboard/assets/D3-COLOR-LICENSE)).
+
+Versions up to commit `53f775e` (20 November 2026) were published under CC BY 4.0 and MIT, and copies of those keep
+those terms; everything after is under the licences above. The circuits follow InPlay's IN100 datasheet and the
+component values on SparkFun's NanoBeacon board; no SparkFun design files are included. There's no warranty: you
+build and use these at your own risk.
 
 ## About the name
 

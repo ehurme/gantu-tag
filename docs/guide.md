@@ -66,7 +66,7 @@ More detail and the reasoning: [`order/README.md`](../order/README.md) and [`pan
 
 ## 3. Break out a tag
 
-<img src="photos/panel_assembled_2026-11-19.jpg" width="360" alt="An assembled panel from JLCPCB">
+<img src="photos/panel_assembled_2026-11-19.jpg" width="480" alt="An assembled panel from JLCPCB">
 
 - **Keep the tail on**: it carries the four programming holes.
 - **Don't snap the body out.** Cut its tab with a flush cutter or scalpel from the panel side while supporting the

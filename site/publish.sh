@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Pavan Kumar Kaushik. Part of gantu-tag, https://github.com/pvnkmrksk/gantu-tag (see NOTICE).
 # Build the website into _site/ (site/ plus the files it offers for download).
 #   site/publish.sh          build only; preview with: python3 -m http.server -d _site 8000
 #   site/publish.sh --push   build, commit to the gh-pages branch (which GitHub Pages serves) and push it

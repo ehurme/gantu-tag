@@ -358,5 +358,5 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
 
 ## License
 
-CC BY 4.0 for the hardware and documentation; MIT for the scripts. See [the licence section](../README.md#licence). No warranty: you build and use these at your own risk.
+Copyleft, with credit to the author required: CERN-OHL-S-2.0 for the hardware, CC BY-SA 4.0 for the documentation, AGPL-3.0-or-later for the scripts. See [the licence section](../README.md#licence) and [`NOTICE`](../NOTICE). No warranty: you build and use these at your own risk.
 No warranty: you build and use these at your own risk.
