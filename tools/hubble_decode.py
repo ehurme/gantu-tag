@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Decode a gantu tag's Hubble advert (service data of UUID 0xFCA6, AES-EAX, protocol v2) with its key.
 
-Usage:  python3 hubble_decode.py ~/Documents/KiCad/gantu_keys/hagalu_002.hubble.key 08bd470d7219e1d96ffe3c...
+Usage:  python3 tools/hubble_decode.py ~/gantu-keys/hagalu_002.hubble.key 08bd470d7219e1d96ffe3c...
         (one or more service-data hex strings, e.g. copied from nRF Connect)
 
 Checks that the rotating ID (EID) matches the key, verifies the AEAD tag and decrypts the payload; a 7-byte
@@ -69,7 +69,7 @@ def decode(key: bytes, rot: int, raw: bytes) -> str:
 
 def main():
     if len(sys.argv) < 3:
-        sys.exit("usage: python3 hubble_decode.py <name>.hubble.key <service data hex> [...]")
+        sys.exit("usage: python3 tools/hubble_decode.py <name>.hubble.key <service data hex> [...]")
     kv = dict(l.split(": ", 1) for l in open(sys.argv[1]).read().splitlines()
               if ": " in l and not l.startswith("#"))
     key, rot = bytes.fromhex(kv["key_hex"].strip()), int(kv["period_exponent"])

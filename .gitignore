@@ -5,3 +5,13 @@ __pycache__/
 fp-info-cache
 *.kicad_prl
 *.lck
+
+# Tag keys and per-tag configs hold secrets: they live in $GANTU_KEYS (~/gantu-keys), never in the repo
+*.keys
+*.key
+*.b64
+*.cfg
+!configs/*-template.cfg
+
+# built site (site/publish.sh)
+_site/

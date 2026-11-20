@@ -186,8 +186,10 @@ The programmer powers VCC at 3.3 V through J1. **It doesn't need to drive CHIP_E
 - *Find My* (default for the first units, OpenHaystack static key):
   - payload `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`
   - static random address `key[0] | 0xC0, key[1..5]`
-- *Hubble:* see [programming](../docs/programming.md#network-payloads) (`new_hubble_tag.py`; don't use the Config
-  Tool's own Hubble format). Remember that the counter restarts every morning on this tag.
+- *Hubble:* see [programming](../docs/programming.md#network-payloads) (`tools/new_hubble_tag.py`; don't use the
+  Config Tool's own Hubble format). Remember that the counter restarts every morning on this tag.
+- Ready-made configs for both networks are in [`../configs/`](../configs/); the whole sequence, with the jig, is in
+  the [build guide](../docs/guide.md).
 
 ## Hand assembly
 
