@@ -4,7 +4,7 @@ Where gantu-tag goes after the v8.3 pilots. Written 19 November 2026, the day th
 priority is **lighter, then simpler, then cheaper**: cost is already low, while mass decides which insects can carry a
 tag.
 
-## Where we are (19 Nov 2026)
+## Where we are (20 Nov 2026)
 
 First bench results from one Hagalu S6, run from RAM with a plain copper wire antenna:
 
@@ -18,6 +18,12 @@ First bench results from one Hagalu S6, run from RAM with a plain copper wire an
 | Weighed | Advertising under 1.7 klx (nRF Connect, Find My payload) |
 |---|---|
 | <img src="photos/hagalu_s6_on_scale_242mg_2026-11-19.jpg" width="300" alt="Hagalu S6 with its wire antenna on a 1 mg scale, reading 0.242 g"> | <img src="photos/hagalu_s6_findmy_advert_1704lx_2026-11-19.jpg" width="300" alt="nRF Connect showing a Find My advert from the tag at -57 dBm, with a second phone reading 1704 lx"> |
+
+**A walk through town (20 Nov 2026)** with two burned Hagalu tags running on light only: gantu_S6_01 on Find My
+and Hagalu-002 on Hubble. Both were reported, including from inside a supermarket under ordinary shop lighting.
+Find My gave well over a hundred sightings that afternoon (±73–102 m); Hubble gave 25 packets, each with the
+relaying phone's location (±2.4 m on the packet shown) and the decrypted sensor payload. Screenshots are in the
+[build guide](guide.md#8-follow-it).
 
 Two things to resolve from this:
 
@@ -40,23 +46,33 @@ Nothing new to order. Each item answers a question that the next revision depend
       smaller bursts).
 - [ ] **Smaller C1:** hand-swap C1 on two S6 and two Irulu tags to 47 µF 0603. If they still complete every advert
       (one-channel advertising if needed), v9 saves ≈ 13 mg per tag and Irulu can shrink.
-- [ ] **Range, not RSSI:** walk-away test in the open with the tag at insect height, 0 dBm and +5 dBm. Also the time
-      from first light to the first Find My report.
+- [ ] **Range, not RSSI:** walk-away test in the open with the tag at insect height, at 0 dBm and +4 dBm (the
+      maximum). Also the time from first light to the first Find My report.
 - [ ] **Coating:** light threshold and mass before and after epoxy over the photodiodes.
 - [ ] **Antenna:** single wire vs dipole (AE1 + AE2) on range.
-- [ ] **Hubble:** running from RAM on Hagalu-002 since 20 Nov 2026, with VCC, temperature and advert count in the
-      encrypted payload, and seen in the Hubble app ([programming](programming.md#network-payloads)). Restarts
-      decode fine on the bench (the counter starts again at period 0). Next: burn one tag and leave it in daylight
-      for a few days to confirm daily restarts at Hubble's end. Find My's static key doesn't care.
+- [x] **Hubble:** Hagalu-002 burned on 20 Nov 2026 with VCC, temperature and advert count in the encrypted payload
+      ([programming](programming.md#network-payloads), [record](tags.md)). On a walk the same evening Hubble
+      reported it 25 times and decoded every packet.
+- [ ] **Why the count stays at 0:** every packet checked from Hagalu-002 on its own reads **1.562 V and advert
+      count 0**, even packets 4 s apart, and Hubble reports its uptime counter as 0 too. On the adapter (3.4 V) the
+      count rose by one per advert. Either the IN100 restarts before each advert, or it doesn't keep its counters at
+      this voltage. Run it from ≈ 1.6 V on the bench and watch. Meanwhile the rotating ID stays at period 0, so it
+      doesn't rotate on Hagalu (like Find My's static key), and Hubble keeps decoding it.
+- [ ] **Nitinol antenna and silver-epoxy joints:** see [below](#antenna-and-joints-without-solder). Glue nitinol
+      wire to two tags of each kind and compare RSSI and range with copper on the same tags.
 
 ## Stage 1: v9, flex (both tags)
 
 One structural change, the same proven circuits.
 
 - **Polyimide flex** (≈ 0.1 mm) instead of 0.6 mm FR4, with a thin polyimide stiffener under the IN100 and crystal
-  only. On both tags the board is the biggest single part of the mass.
+  only. On both tags the board is the biggest single part of the mass. JLCPCB makes and assembles flex boards
+  ([capabilities](https://jlcpcb.com/capabilities/flex-pcb-capabilities),
+  [stiffeners](https://jlcpcb.com/blog/pcb-stiffeners-guide)); check its current minimum size and whether it will
+  place a QFN on flex before laying out v9.
 - **Antenna as a copper trace on a flex tail** (≈ 30 mm), instead of a hand-soldered wire. Every tag gets the same
-  antenna, and the last hand step on Hagalu goes away.
+  antenna, and the last hand step on Hagalu goes away. If a trace proves too fragile on the insect, use glued
+  nitinol wire instead (next section).
 - **Thinner copper** (½ oz) and a hatched ground pour.
 - **C1 47 µF 0603** if the Stage 0 swap passes.
 - **IN100 in DFN8** (2.5 × 2.5 mm) if JLC stocks it and the bench confirms programming over its pins. It's a smaller
@@ -69,6 +85,41 @@ One structural change, the same proven circuits.
 | **Irulu** with a 337 cell (0.13 g) | ≈ 0.25 g | ≈ 0.19–0.20 g |
 
 Flex will cost a little more per tag than rigid FR4, not less.
+
+## Antenna and joints without solder
+
+Soldering is the slowest and least repeatable hand step: a 31 mm wire onto a 1 mm edge pad on every tag, and on
+Irulu a wire to a cell that must never be heated. Gluing is easier to do in bulk: dot epoxy onto a row of tags,
+lay the wires in, and cure them all at once.
+
+- **Silver conductive epoxy for every joint.** Two-part silver epoxy such as
+  [MG Chemicals 8331D](https://mgchemicals.com/products/adhesives/electrically-conductive-adhesives/silver-epoxy/)
+  ([datasheet](https://mgchemicals.com/downloads/category-data-sheets/CDS-ElectricallyConductiveAdhesives.pdf))
+  cures in ≈ 6 h at room temperature or 10 min at 65 °C, with about 20 min working time. Its resistivity,
+  ≈ 2 × 10⁻³ Ω·cm, is negligible over a 1 mm joint. It's already the method for Irulu's cell; use it for the
+  antenna wires too.
+- **Superelastic nitinol wire for the antenna.** Nickel-titanium wire springs back straight after bending, where
+  copper kinks and stays bent, and it is lighter. It can't be soldered without special flux (its oxide), which is
+  one more reason to glue it. Sources sell 0.1–0.2 mm superelastic wire by the foot or on spools:
+  [Nexmetal](https://nexmetal.com/products/nitinol-superelastic-wire),
+  [Goodfellow](https://www.goodfellow.com/eu/nitinol-shape-memory-alloy-spooled-wire-1000069755) (0.125 mm),
+  [McMaster-Carr](https://www.mcmaster.com/nitinol-wire). Pick an austenite finish (Af) below the field
+  temperature, so it stays superelastic outdoors.
+
+  | 31 mm arm | Copper | Nitinol |
+  |---|---|---|
+  | Mass at 0.1 mm | ≈ 2.2 mg | ≈ 1.6 mg |
+  | Mass at 0.2 mm | ≈ 8.7 mg | ≈ 6.3 mg |
+  | Extra loss at 2.44 GHz, 0.2 mm (estimate) | — | ≈ 0.2–0.4 dB |
+  | Extra loss at 2.44 GHz, 0.1 mm (estimate) | — | ≈ 0.5–0.9 dB |
+
+  Nitinol conducts about 50 times worse than copper, but at 2.44 GHz the current flows in a ≈ 9 µm skin, so the
+  loss resistance of a quarter-wave arm is only 2–4 Ω against tens of ohms of radiation resistance. Estimates from
+  skin depth; measure RSSI against copper on the same tag.
+- **Test (Stage 0):** two Hagalu and two Irulu with glued nitinol dipoles. Abrade the wire end just before gluing.
+  Compare RSSI at a fixed distance with copper, then bend the wire repeatedly and check it springs back and the
+  joint holds. If it passes, the build guide switches to glued nitinol, and the soldering iron is needed only if a
+  tag is reworked.
 
 ## Stage 2: v10, chip-scale (toward the CTT class, 40–50 mg)
 

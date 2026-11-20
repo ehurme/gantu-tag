@@ -8,13 +8,23 @@
 a node.
 [More about the name](#about-the-name).
 
-**Website:** https://pvnkmrksk.github.io/gantu-tag/
+**Website:** https://pvnkmrksk.github.io/gantu-tag/ · **Build guide:** [step by step](docs/guide.md)
+([on the website](https://pvnkmrksk.github.io/gantu-tag/guide.html), with a form that turns your key into a config)
 
 These are **early pilots**. The first panels were ordered on 6 November 2026 and arrived assembled on 19 November;
 bench testing has started. **First result, the same evening:** a Hagalu S6, configured over UART and run from RAM
 with a plain copper antenna, was picked up by passing iPhones and reported through Apple Find My three times in
 20 minutes (±76–102 m). It advertised steadily from about 1.9 klx, and weighs **0.242 g** with its wire antenna
 (tail cut, no epoxy). Treat every other number here as a design estimate until bring-up is complete.
+
+**First walk, 20 November:** two burned Hagalu tags, running on light alone, went for a walk through town: one on
+Apple Find My, one on Hubble. Both were reported, including from inside a supermarket under ordinary shop lighting.
+Find My gave well over a hundred sightings in the afternoon; Hubble gave fewer (25 packets), but each one carried the
+relaying phone's GPS fix and the tag's own encrypted payload: supply voltage and temperature.
+
+| Find My: the track | Find My: sightings | Hubble: a packet and its decoded payload |
+|---|---|---|
+| <img src="docs/photos/walk_findmy_track_2026-11-20.jpg" width="260" alt="Map of Find My sightings of a Hagalu tag, coloured from oldest to newest"> | <img src="docs/photos/walk_findmy_sightings_2026-11-20.jpg" width="260" alt="Dashboard listing 143 Find My sightings in view and 220 saved"> | <img src="docs/photos/walk_hubble_payload_2026-11-20.jpg" width="260" alt="A Hubble packet decoded as 1.562 V, 28.45 degrees C, 0 adverts, with the relay's GPS fix"> |
 
 <p align="center"><img src="docs/photos/panel_assembled_2026-11-19.jpg" width="420" alt="An assembled gantu-tag panel from JLCPCB, held in hand"></p>
 
@@ -80,12 +90,22 @@ reports.
 
 ## Build your own
 
-1. **Order:** upload the files in [`order/`](order/). That folder holds the exact zip sent to JLCPCB, with the order
-   settings and the placement checks. One order gives two assembled panels: 20 Hagalu and 16 Irulu tags.
-2. **Program:** four wires from a 3.3 V USB-serial adapter to the tail, and InPlay's NanoBeacon Config Tool. See
-   [`docs/programming.md`](docs/programming.md).
-3. **Finish:** break the tag out, fit the antenna wire (and the cell on Irulu), cut the tail and coat it in epoxy.
-   The step-by-step for each tag is in [`hagalu/README.md`](hagalu/README.md) and [`irulu/README.md`](irulu/README.md).
+The [build guide](docs/guide.md) walks through every step, with photos. In short:
+
+1. **Order** the files in [`order/`](order/) from JLCPCB: 0.6 mm, Panel by Customer, Standard PCBA, 2 assembled
+   panels. One order gives 20 Hagalu and 16 Irulu tags.
+2. **Fit the antenna:** a 31 mm, ≈ 0.1 mm wire on the **ANT** pad, and a second one on **GND** for a dipole.
+3. **Make the jig:** four jumper wires, a 2 × 2 block of header pins and a rubber band. The pins wedge into the
+   tail's four 0.8 mm holes and hold by themselves.
+4. **Make the config:** take a template from [`configs/`](configs/) and add your key, from Find My (you generate it)
+   or Hubble (it issues one). Use `tools/new_findmy_tag.py` or `tools/new_hubble_tag.py`, or the website's form.
+5. **Program:** InPlay's NanoBeacon Config Tool. Test in RAM, then burn the one-time-programmable memory
+   ([details](docs/programming.md)).
+6. **Finish:** fit the cell on Irulu, cut the tail, coat in epoxy. Then follow the tag through Find My or Hubble.
+
+| The jig | Wiring: tail → 3.3 V USB-serial adapter |
+|---|---|
+| <img src="docs/photos/jig_pins_rubber_band_2026-11-20.jpg" width="300" alt="Four header pins in jumper wires, held square by an elastic band, next to a tail with holes marked G, R, T and +"> | **G** (square hole) → GND<br>**+** → 3V3 (never 5 V)<br>**R** → TXD<br>**T** → RXD<br><br>Seat the jig first, then plug in the USB. |
 
 ## Roadmap
 
@@ -93,7 +113,7 @@ Lighter first, then simpler, then cheaper. The full plan, with mass targets, is 
 
 | Stage | What | Hagalu | Irulu (with a 337) |
 |---|---|---|---|
-| **Now** | Bench work on the v8.3 pilots: mass split, Irulu bring-up, S6L/N6, a smaller C1, range, Hubble | 0.242 g measured | ≈ 0.25 g |
+| **Now** | Bench work on the v8.3 pilots: mass split, Irulu bring-up, S6L/N6, a smaller C1, range; nitinol antenna wire and silver-epoxy joints instead of solder | 0.242 g measured | ≈ 0.25 g |
 | **v9** | Polyimide flex, antenna as a trace on a flex tail, thinner copper, 47 µF C1 if it tests well | ≈ 0.13–0.16 g | ≈ 0.19–0.20 g |
 | **v10** | IN100 in WLCSP (1.1 × 2.0 mm), 0201 parts; Irulu no bigger than its cell | ≈ 0.05–0.07 g | ≈ 0.16–0.17 g |
 
@@ -107,7 +127,10 @@ On Irulu the 0.13 g cell is the floor; everything else can shrink to ≈ 0.03–
 | [`irulu/`](irulu/) | Battery tag: KiCad project, generator, burst simulation, renders, review |
 | [`panel/`](panel/) | The combined 0.6 mm JLC panel (KiKit layout, mixed-variant BOM/CPL) and its ordering README |
 | [`order/`](order/) | The exact files sent to JLCPCB, with a checksum |
-| [`docs/`](docs/) | Roadmap, programming guide, the v8 handover and build notes, bench photos, the logo |
+| [`configs/`](configs/) | Find My and Hubble config templates for InPlay's Config Tool: add your key |
+| [`tools/`](tools/) | Make a tag's key and config (`new_findmy_tag.py`, `new_hubble_tag.py`); decode a Hubble advert (`hubble_decode.py`) |
+| [`docs/`](docs/) | [Build guide](docs/guide.md), [programming](docs/programming.md), [roadmap](docs/roadmap.md), [tag records](docs/tags.md), the v8 handover and build notes, photos, the logo |
+| [`site/`](site/) | The website ([publish it](site/publish.sh) to the `gh-pages` branch) |
 
 ## History
 
@@ -145,7 +168,8 @@ spread over however many tags you order. The first order (5 bare panels, 2 assem
 Permissive, with attribution:
 
 - **Hardware designs, documentation, renders and the logo:** [CC BY 4.0](LICENSE).
-- **Scripts** (the Python and shell in `*/tools/`, `docs/logo/make_logo.py`) **and the website:** [MIT](LICENSE-CODE).
+- **Scripts** (the Python and shell in `tools/` and `*/tools/`, `docs/logo/make_logo.py`) **and the website:**
+  [MIT](LICENSE-CODE).
 
 You can use, change, sell and build on all of it, commercially or not, as long as you credit the source. A line
 like this is enough:
