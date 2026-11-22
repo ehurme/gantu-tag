@@ -78,6 +78,20 @@ That checks whether the N6 wakes before the capacitor holds enough charge for th
 The operator subsequently reported radio silence on the DC boot check and set the pilot aside.
 The failed DC boot leaves the solar-start mechanism unconfirmed.
 
+## Hagalu-006 and Hagalu-003 same-lamp test
+
+Both tags used Find My at **0 dBm / 3 s**. Over the 269 s common window of the 22:05:59–22:10:36 CET
+recording on 22 Nov 2026, under the same lamp, the receiver logged:
+
+| Tag | Hardware | Adverts received | Median reception gap | Median RSSI |
+|---|---|---:|---:|---:|
+| Hagalu-003 | S6L | 73 | 3.002 s | −59 dBm |
+| Hagalu-006 | S6 | 75 | 2.995 s | −60 dBm |
+
+Both had stable clusters around 3 s, with longer gaps mainly near multiples of 3 s.
+The run establishes a same-lamp baseline. A matched dim-light ramp and cold starts are the tests
+for the different enable hold times. [Hagalu-006 flash record](tags.md#hagalu-006-find-my-s6-comparison-pilot).
+
 ## Program the next PCBA
 
 1. Read the variant printed under the board. In Gantumoote’s Flash history, select the next unburned tag and download its own config and key.
