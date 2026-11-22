@@ -75,6 +75,9 @@ during the subsequent solar attempt. Confirm a fresh OTP boot on regulated 3.3 V
 then test from fully dark under bright, even light while scoping VCC across the tail's + and G pads.
 That checks whether the N6 wakes before the capacitor holds enough charge for the first burst.
 
+The operator subsequently reported radio silence on the DC boot check and set the pilot aside.
+The failed DC boot leaves the solar-start mechanism unconfirmed.
+
 ## Program the next PCBA
 
 1. Read the variant printed under the board. In Gantumoote’s Flash history, select the next unburned tag and download its own config and key.
