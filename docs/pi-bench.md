@@ -4,12 +4,22 @@
 
 The receiver runs on `walk-pi5` as `gantumoote-ble.service`. Open **Devices & connections → Flash history & Pi BLE** in Gantumoote to see the last local reception and download a 24-hour CSV. A Find My or Hubble location report in the map is a separate network observation.
 
+Use the installed command in Terminal to list the Pi's known tags and stream selected tags:
+
+```sh
+gantu-ble -l
+gantu-ble -d h03 h04
+```
+
+Each column shows the last packet time, RSSI, decoded temperature and raw BLE advertising bytes.
+Use `--plain` for timestamped lines that you can save to a private log. Keep raw captures until you have used them.
+
 From the Pi checkout:
 
 ```sh
 cd ~/gantumoote
 systemctl status gantumoote-ble --no-pager
-journalctl -u gantumoote-ble -n 25 --no-pager
+sudo journalctl -u gantumoote-ble -n 25 --no-pager
 ls -lh ~/blelog
 /usr/bin/python3 -m dashboard.ble capture ~/blelog/burn.btsnoop
 ```
