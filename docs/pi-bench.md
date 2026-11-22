@@ -16,6 +16,11 @@ ls -lh ~/blelog
 
 The `burn.btsnoop` capture spans 12:09–12:29 CET on 22 Nov 2026. A second capture covers 16:42:27–16:42:47 CET, before Hagalu-003’s recorded OTP output. The 17:08–17:09 CET capture contains nine matching Hagalu-003 Find My adverts. The filename and modification time alone do not establish the capture window.
 
+The separate overnight file `night.btsnoop` ran from 23:23:19 CET on 21 Nov to 12:08:09 CET on 22 Nov. The
+original analysis recorded Hagalu-006 on USB adapter power at 3.406 V. The Pi heard 4,409 Find My adverts,
+2,525 authenticated Hubble adverts and one zero-key Hubble advert at startup. The raw copies were deleted
+after that analysis. The dashboard preserves the totals. That run does not establish an OTP burn or a solar start.
+
 ## Program the next PCBA
 
 1. Read the variant printed under the board. The next prepared S6L is Hagalu-004. In Gantumoote’s Flash history, download `findmy-temp-tx4.cfg` under that serial and use its own key.
