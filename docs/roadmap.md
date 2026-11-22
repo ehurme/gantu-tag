@@ -41,6 +41,13 @@ Nothing new to order. Each item answers a question that the next revision depend
       and epoxy. This turns the estimates in the READMEs into measurements.
 - [ ] **Irulu bring-up:** V1 first (SparkFun values), then V2 with the CHIP_EN load test. Weigh it with a 337.
 - [ ] **Hagalu variants:** S6L and N6. N6 has no supervisor; if it starts cleanly, the start circuit can lose two parts.
+      Find My keys for Hagalu-003 to Hagalu-020 are made and on the dashboard: Hagalu-003 and -004 go on S6L,
+      Hagalu-005 on an N6, Hagalu-006 to -011 on the S6 boards (Hagalu-007 tries +4 dBm in RAM first), and the
+      rest wait for the S6L and N6 results
+      ([plan](tags.md), [why](#what-each-variant-tests)). Burned on 22 Nov 2026: Hagalu-003 (0 dBm, 3 s) and -004
+      (+4 dBm, 6 s) on S6L both run on solar. Hagalu-005 on N6 went silent after its burn, so Hagalu-018 to -020
+      stay unburned until [its check](pi-bench.md#hagalu-005-n6-startup-check) shows why. Hagalu-006 followed on an
+      S6 (0 dBm, 3 s) as the S6 comparison.
 - [ ] **Voltage- or current-limited in dim light?** Watch VCC across C1 at ≈ 1.5 klx. Stuck just below the 1.69 V
       start level means voltage (more or better cells); rising past it and draining means current (bigger cells or
       smaller bursts).
@@ -57,9 +64,32 @@ Nothing new to order. Each item answers a question that the next revision depend
       count 0**, even packets 4 s apart, and Hubble reports its uptime counter as 0 too. On the adapter (3.4 V) the
       count rose by one per advert. Either the IN100 restarts before each advert, or it doesn't keep its counters at
       this voltage. Run it from ≈ 1.6 V on the bench and watch. Meanwhile the rotating ID stays at period 0, so it
-      doesn't rotate on Hagalu (like Find My's static key), and Hubble keeps decoding it.
+      doesn't rotate on Hagalu (like Find My's static key), and Hubble keeps decoding it. The likely reason is the
+      start circuit itself: in dim light an S tag starts at 1.69 V, sends one advert and switches off, so every packet
+      is the first after a start ([below](#what-each-variant-tests)). If VCC stays above 1.67 V in brighter light,
+      the IN100 stays on and the count should climb. At the lamp ramp's brightest step (about 23.6 klx), Hagalu-003
+      and -004 still restarted for every advert ([ramp](pi-bench.md#observed-solar-reception-gaps)). Later lamp
+      runs show tags sending at exactly their programmed intervals, as if they stayed on
+      ([two regimes](pi-bench.md#two-regimes-in-one-run)). Neither had VCC or the light at the tag measured. Decode
+      Hagalu-002's packets locally in sun.
 - [ ] **Nitinol antenna and silver-epoxy joints:** see [below](#antenna-and-joints-without-solder). Glue nitinol
       wire to two tags of each kind and compare RSSI and range with copper on the same tags.
+
+### What each variant tests
+
+The panel carries several start circuits on the same copper because the IN100 datasheet leaves three things out:
+how soon after CHIP_EN goes high it sends its first advert, the CHIP_EN level at which it turns off, and how much
+current CHIP_EN draws. Each variant is a bet on one of them.
+
+| Variant (on 2 panels) | Start circuit | What it tests | Where it stands (22 Nov 2026) |
+|---|---|---|---|
+| **Hagalu S6** (8) | The TPS3831 starts the IN100 once C1 reaches 1.69 V; C5 holds CHIP_EN through the advert's dip; R2 3.3 MΩ lets it fall in ≈ 1 s | The safe build, if the first advert comes straight after start. If it came one interval later, CHIP_EN would already be gone and S6 would be silent in dim light | Hagalu-001 advertises in patchy light (≈ 1.5 klx), where S6 restarts for every advert. That only works if the first advert comes at once, so S6 is the field build (inferred; watching VCC on a tail confirms it). Hagalu-003 and -004 back it: in bright lamp light they sent every ≈ 2.1 s, sooner than their 3 s and 6 s intervals, so the first advert comes before one interval has passed |
+| **Hagalu S6L** (8) | The same, with R2 10 MΩ (≈ 3.3 s) | The fallback for a late first advert. Its own risk: if the IN100 stays on down to a low CHIP_EN, it sends a second advert, takes VCC under 1.1 V and locks until dark | The late advert it guards against doesn't seem to happen, so the lock is what's left to test. Hagalu-003 and -004 run on solar after their burns. In a dimming lamp ramp neither showed a second advert per start, but Hagalu-003 stopped first at 1.59 klx. Its 3 s interval is inside the ≈ 3.3 s hold, while 004's 6 s isn't ([ramp](pi-bench.md#observed-solar-reception-gaps)). Still to do: a slow dawn ramp with VCC watched on the tail. If it locks, make the rest S6 before burning (R2 to 3.3 MΩ, or a 4.7 MΩ stacked on R2 for ≈ 3.2 MΩ) |
+| **Hagalu N6** (4) | No supervisor: R1 1 MΩ from VCC to CHIP_EN, with C5. The IN100 starts wherever its power-on reset lets go | Whether the start circuit can go (two fewer parts). Predicted to lock below ≈ 5 klx, and it needs CHIP_EN to draw under ≈ 0.5 µA | Hagalu-005 ran in RAM, was burned on 22 Nov and has been silent since, also on 3.3 V DC. The pre-burn CHIP_EN check wasn't recorded. Next: read CHIP_EN at C5 (≈ VCC means no load) and the supply current on 3.3 V ([check](pi-bench.md#hagalu-005-n6-startup-check)). Hagalu-018 to -020 stay unburned |
+| **Irulu V1** (8) | R1 1 MΩ / C2 100 nF: CHIP_EN rises ≈ 0.1 s after the cell is fitted | The simple battery build: fit the cell and it runs | Waiting for cells. Its CHIP_EN load test needs no cell and answers N6's 1 MΩ question too |
+| **Irulu V2** (8) | R1 100 kΩ / C2 10 nF and the OFF bridge on the tail: silent until the tail is cut | Cut-to-start, and the hedge if CHIP_EN loads a 1 MΩ enable (copes with a 150 kΩ pull-down or ≈ 5 µA) | Waiting for cells. Draws 15.5 µA while OFF is bridged (≈ 22 days on a 337) |
+
+S6 ↔ S6L is one 0402 resistor and V1 ↔ V2 two, so whichever wins, every S tag and every battery tag can follow it.
 
 ## Stage 1: v9, flex (both tags)
 

@@ -31,6 +31,11 @@ original analysis recorded Hagalu-006 on USB adapter power at 3.406 V. The Pi he
 2,525 authenticated Hubble adverts and one zero-key Hubble advert at startup. The raw copies were deleted
 after that analysis. The dashboard preserves the totals. That run does not establish an OTP burn or a solar start.
 
+Every 22 Nov bench recording from `~/blelog` (the `h03-h04-*` and `h05-*` TSVs with their `.lux.tsv` files, plus
+`post-burn-interval-IxdYlR.btsnoop` and `monitor-diagnostic.btsnoop`) is also copied, read-only, into
+`dashboard/data/secrets/ble-captures/`, which the daily backup includes. The runs cited below are listed under
+**Saved BLE captures** in Flash history.
+
 ## Hagalu-003 and Hagalu-004 solar bench (22 November 2026)
 
 **Field candidate: Hagalu-004 (S6L, +4 dBm, programmed interval 6 s).** The programmed settings and
@@ -43,15 +48,30 @@ The table reports gaps between adverts received by the Pi.
 
 | Phone light | Hagalu-003 (0 dBm) | Hagalu-004 (+4 dBm) |
 |---|---:|---:|
-| ~23.6 klx | 2.07 s median | 2.11 s median |
+| ~23.6 klx (read at 19:01, before the run) | 2.07 s median | 2.11 s median |
 | 12.2 klx | 4.34 s median | 5.32 s median |
 | 6.0 klx | 11.08 s median | 14.43 s median |
 | 3.0 klx | 30.58 s median | 37.77 s median |
 | 1.59 klx | Two adverts, 125 s apart | Five adverts, gaps of 102–105 s |
 
-At 12.2–3.0 klx, Hagalu-004 had 23–30% longer median gaps and a 6–7 dB median RSSI lead.
-At 1.59 klx, it kept sending after Hagalu-003 was last heard. Both cadences changed as the lamp dimmed,
-which fits recharge-limited operation. A VCC trace would establish whether each short gap includes a fresh startup.
+At 12.2–3.0 klx, Hagalu-004 had 23–30% longer median gaps and a 6–7 dB median RSSI lead. Both cadences
+changed as the lamp dimmed, which fits recharge-limited operation.
+
+At the brightest step both tags sent about every 2.1 s. That is faster than either programmed interval (3 s and
+6 s) and almost the same at 0 and +4 dBm. So each advert there came from a fresh start, and neither tag stayed on.
+The roadmap expected the IN100 to stay on in bright light. It didn't at the ramp's brightest step.
+
+At 1.59 klx, Hagalu-004 kept sending after Hagalu-003 was last heard at 19:37:23. Recharge alone predicts the
+opposite, because 003 spends less charge per advert. Two explanations fit:
+
+- **003 sat in dimmer light under the lamp.** Swap the two tags and repeat the dim step.
+- **003 spent extra charge after some starts.** On S6L, CHIP_EN is held for about 3.3 s. That is longer than
+  003's 3 s interval, so a second advert can fire before the chip turns off. 004's 6 s interval rules that out.
+  The ramp shows no pairs of adverts 3 s apart, so there is no direct sign of this. A VCC trace on the tail would
+  settle it.
+
+The S6L lock test is still open. It needs a slow rise from dark (a dawn ramp) with VCC on the scope, and this
+ramp went from bright to dim.
 
 ### Window reception
 
@@ -63,6 +83,23 @@ The phone supplied no new lux samples during the window run and was paused at th
 
 The field decision is based on received adverts across the weak radio path. The dim-light bench intervals
 show the corresponding cost in advert cadence where reception is already good.
+
+The comparison rests on one tag of each. Across the window, 004's lead was 4 dB, the same as the power
+difference. On the bench it was 6–7 dB, so placement or antenna added to it there. Swapping the two tags' places
+would separate the tag from its setting.
+
+### Two regimes in one run
+
+The 20:22–20:38 CET recording shows both ways a tag can run:
+
+- **Restarting for each advert.** With the phone at about 4.9 klx, Hagalu-004's gaps were 17.7 s (or twice that,
+  after a missed advert) and Hagalu-003's about 13.7 s. That is the same ratio as in the ramp. The tags followed
+  the light, not their settings.
+- **Staying on.** From 20:36:34 to the end, Hagalu-003 sent every 3.0 s and Hagalu-004 every 6.0 s, exactly
+  their burned intervals. This confirms on air that 004 carries its 6 s setting. The phone read 230–250 lx then,
+  and the tags warmed from 14.5 to 19 °C, so the phone's reading no longer described the tags' light. What
+  changed isn't recorded. If the tags were still on solar, this is the first time a Hagalu tag was seen staying on.
+  The 22:05 same-lamp test below shows the same steady 3 s cadence from Hagalu-003 and -006.
 
 ## Hagalu-005 N6 startup check
 
@@ -77,6 +114,21 @@ That checks whether the N6 wakes before the capacitor holds enough charge for th
 
 The operator subsequently reported radio silence on the DC boot check and set the pilot aside.
 The failed DC boot leaves the solar-start mechanism unconfirmed.
+
+The Pi also heard seven adverts after a gap that fits the burn: nothing from 21:11:30 to 21:11:49.9, then adverts
+every 3 s until 21:12:07. The first came in the same second the programmer saved its output. If the Config Tool
+restarts the chip from OTP after burning, the burned image ran, and what failed is the N6 starting on its own. If
+those adverts came from the tool's RAM copy, the OTP contents are still unproven. The planned pre-burn CHIP_EN
+check (a 10 MΩ meter at C5 on the adapter) wasn't recorded.
+
+To tell these apart, power Hagalu-005 from regulated 3.3 V and read CHIP_EN at C5 and the supply current:
+
+- **CHIP_EN near VCC but no adverts:** the chip is enabled, so the burned image (or the chip) is at fault.
+- **CHIP_EN well below VCC:** something loads it, which is what the pre-burn check was for, and a 1 MΩ enable
+  won't do. Irulu V2's 100 kΩ enable is the hedge.
+
+Also try connecting with the programmer. Whether the chip still answers shows whether it is alive. Until this is
+known, the other N6 boards stay unburned.
 
 ## Hagalu-006 and Hagalu-003 same-lamp test
 
