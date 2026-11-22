@@ -4,6 +4,17 @@ What each programmed tag carries, so a burned tag can be traced back to its conf
 files hold secrets: they stay in the private key folder (`$GANTU_KEYS`; keep a backup) and never go into this repo.
 The hash identifies the exact file.
 
+## Hagalu-003 (Find My)
+
+| | |
+|---|---|
+| Board | Hagalu v8.3 S6L, third programmed PCBA |
+| Network | Apple Find My, OpenHaystack static key, temperature in the status byte (signed × 0.5 °C) |
+| Prepared config | `hagalu_003.findmy-temp.cfg` at 0 dBm, SHA-256 `59324deb53b326fd550c20a8af05fde92723a085192c436129251aa56470395e` |
+| OTP | 22 Nov 2026, tool output saved at 16:59 CET. The saved config matches the prepared variant apart from GUI metadata and the custom UUID field. |
+| Programmer output SHA-256 | `1a67bfbc62d650f3a9df800f8e72e1a0b8c0882dffb7933d75d5aa970f38be1d` |
+| Verified | 22 Nov 2026, 17:08–17:09 CET. The Pi received nine matching BLE advertisements. The last was at 17:09:34 CET and read −62 dBm and 21 °C. |
+
 ## Hagalu-002 (Hubble)
 
 | | |
@@ -19,11 +30,11 @@ The hash identifies the exact file.
 | OTP | burned 20 Nov 2026, 16:44. The tool's record of what it sent is byte-identical to the verified config. |
 | On its own | 20 Nov 2026, a walk through town on light only: 25 packets decoded by Hubble; those checked read 1.562 V, 22.3–28.5 °C, advert count 0 ([why 0](roadmap.md#stage-0-bench-work-on-the-v83-boards-now)) |
 
-## gantu_S6_01 (Find My)
+## Hagalu-001 (Find My)
 
 | | |
 |---|---|
-| Board | Hagalu v8.3 S6, the first bench tag |
+| Board | Hagalu v8.3 S6, the first bench tag. Burned as `gantu_S6_01`. |
 | Network | Apple Find My, OpenHaystack static key |
 | Private files | `gantu_S6_01.keys` |
 | Verified | 19 Nov 2026, from RAM: reported by Find My 3 times in 20 min (±76–102 m) |
