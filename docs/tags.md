@@ -4,6 +4,18 @@ What each programmed tag carries, so a burned tag can be traced back to its conf
 files hold secrets: they stay in the private key folder (`$GANTU_KEYS`; keep a backup) and never go into this repo.
 The hash identifies the exact file.
 
+## Hagalu-005 (Find My, N6 startup pilot)
+
+| | |
+|---|---|
+| Board | Hagalu v8.3 N6, the first N6 pilot |
+| Network | Apple Find My, OpenHaystack static key |
+| Programmed transmit power | **0 dBm** |
+| Programmed advertising interval | **3 s (3,000 ms)** |
+| OTP record | Burn confirmed by the operator on 22 Nov 2026. NanoBeacon programmer output saved at 21:11 CET. Chip readback is unverified. |
+| Programmer output SHA-256 | `82d788f32fd6dcc271b788aedf129f45996dff104acf64edc0a32aee988746ad` |
+| Observed startup | See [the N6 startup check](pi-bench.md#hagalu-005-n6-startup-check). |
+
 ## Hagalu-004 (Find My, field candidate)
 
 | | |

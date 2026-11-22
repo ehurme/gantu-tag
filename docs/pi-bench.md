@@ -64,6 +64,17 @@ The phone supplied no new lux samples during the window run and was paused at th
 The field decision is based on received adverts across the weak radio path. The dim-light bench intervals
 show the corresponding cost in advert cadence where reception is already good.
 
+## Hagalu-005 N6 startup check
+
+On 22 Nov 2026, the one-wire RAM run yielded 18 matching adverts over 57 s. Fifteen gaps were
+2.94–3.05 s and two were near 6 s. The median RSSI was −45 dBm. The operator then confirmed the OTP
+burn. The programmer output and its settings are in [the flash record](tags.md#hagalu-005-find-my-n6-startup-pilot).
+
+The Pi last heard Hagalu-005 at 21:12:07 CET. A recording begun at 21:14 CET heard zero adverts
+during the subsequent solar attempt. Confirm a fresh OTP boot on regulated 3.3 V and GND alone,
+then test from fully dark under bright, even light while scoping VCC across the tail's + and G pads.
+That checks whether the N6 wakes before the capacitor holds enough charge for the first burst.
+
 ## Program the next PCBA
 
 1. Read the variant printed under the board. In Gantumoote’s Flash history, select the next unburned tag and download its own config and key.
