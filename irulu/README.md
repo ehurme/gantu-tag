@@ -195,6 +195,9 @@ assembly library (checked for v8.0); a 47 µF 0603 as on v7 fits but halves the 
 These are estimates: the review's method with board copper, Murata's mass for C1 and TXC's for the crystal; the
 IN100 is estimated. Weigh the first tags.
 
+The route to a smaller Irulu (flex, a 47 µF 0603 C1, then a WLCSP IN100 on a board no bigger than the 337) is in
+[`../docs/roadmap.md`](../docs/roadmap.md).
+
 ## Circuit
 
 - **U1** IN100-Q1-R-RC1I (QFN18, C6062024). VCC and VDDQ tied to the cell. UART on GPIO0 (RXD) and GPIO1 (TXD).
@@ -303,7 +306,10 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
   offset on two or three tags.
 - *Find My* (default for the first units, OpenHaystack static key): non-connectable advertising with the payload
   `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`; static random address `key[0] | 0xC0, key[1..5]`.
-- *Hubble:* follow Hubble's IN100 guide. No hardware change is needed.
+- *Hubble:* see [programming](../docs/programming.md#network-payloads) (`tools/new_hubble_tag.py`; don't use the
+  Config Tool's own Hubble format). No hardware change is needed.
+- Ready-made configs for both networks are in [`../configs/`](../configs/); the whole sequence, with the jig, is in
+  the [build guide](../docs/guide.md).
 
 ## Bring-up
 
@@ -352,5 +358,5 @@ into the cell. V1's 100 ms enable delays start-up by 0.1 s after power: let it s
 
 ## License
 
-CC BY 4.0 for the hardware and documentation; MIT for the scripts. See [the licence section](../README.md#licence). No warranty: you build and use these at your own risk.
+Copyleft, with credit to the author required: CERN-OHL-S-2.0 for the hardware, CC BY-SA 4.0 for the documentation, AGPL-3.0-or-later for the scripts. See [the licence section](../README.md#licence) and [`NOTICE`](../NOTICE). No warranty: you build and use these at your own risk.
 No warranty: you build and use these at your own risk.

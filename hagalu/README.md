@@ -186,7 +186,10 @@ The programmer powers VCC at 3.3 V through J1. **It doesn't need to drive CHIP_E
 - *Find My* (default for the first units, OpenHaystack static key):
   - payload `1E FF 4C 00 12 19 00 <key bytes 6–27> <key[0] >> 6> 00`
   - static random address `key[0] | 0xC0, key[1..5]`
-- *Hubble:* follow Hubble's IN100 guide. Remember that the counter restarts every morning on this tag.
+- *Hubble:* see [programming](../docs/programming.md#network-payloads) (`tools/new_hubble_tag.py`; don't use the
+  Config Tool's own Hubble format). Remember that the counter restarts every morning on this tag.
+- Ready-made configs for both networks are in [`../configs/`](../configs/); the whole sequence, with the jig, is in
+  the [build guide](../docs/guide.md).
 
 ## Hand assembly
 
@@ -245,6 +248,10 @@ For comparison, the D1 battery tag is ≈ 0.13 g, or **≈ 0.26 g with a 337 cel
 | 40–50 mg | — | — | Needs flex plus lighter parts: a 47 µF 0603 (≈ 10 mg, but only ≈ 25–30 µF at 1.5 V, so it needs one-channel advertising), a WLCSP IN100 if JLC can place it, and fewer or smaller photodiodes |
 
 The 1 : 2 outline would carry over to any of these. These are estimates: weigh the first tags.
+
+**Measured (19 Nov 2026):** one S6, tail cut, with ≈ 30 mm of copper wire and no epoxy, weighs **0.242 g**, about
+35–50 mg above the estimate. A bare board from the panel will show whether the board or the parts account for it.
+Next steps are in [`../docs/roadmap.md`](../docs/roadmap.md).
 
 ## Ordering from JLCPCB
 
@@ -335,4 +342,4 @@ Same tools as D1:
 
 ## License
 
-CC BY 4.0 for the hardware and documentation; MIT for the scripts. See [the licence section](../README.md#licence). No warranty: you build and use these at your own risk.
+Copyleft, with credit to the author required: CERN-OHL-S-2.0 for the hardware, CC BY-SA 4.0 for the documentation, AGPL-3.0-or-later for the scripts. See [the licence section](../README.md#licence) and [`NOTICE`](../NOTICE). No warranty: you build and use these at your own risk.

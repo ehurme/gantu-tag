@@ -5,3 +5,16 @@ __pycache__/
 fp-info-cache
 *.kicad_prl
 *.lck
+
+# Tag keys and per-tag configs hold secrets: they live in $GANTU_KEYS (~/gantu-keys), never in git.
+# A local keys/ folder (or ~/gantu-keys linked to it) stays out of git entirely.
+/keys/
+*.keys
+*.key
+*.b64
+*.cfg
+!configs/*-template.cfg
+
+# built site (site/publish.sh)
+_site/
+

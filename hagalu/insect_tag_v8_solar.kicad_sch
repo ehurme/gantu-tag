@@ -2,7 +2,7 @@
 (uuid f96be150-7cb1-42f3-be2d-9a0674cea840)
 (paper "A3")
 (title_block (title "IN100 insect tag v8 D2: compact solar tag") (date "2026-11-02") (rev "8.3")
-  (comment 1 "Open hardware (CC BY 4.0). Derived from insect_tag_v7")
+  (comment 1 "Open hardware, CERN-OHL-S-2.0. (C) 2026 Pavan Kumar Kaushik. Derived from insect_tag_v7")
   (comment 2 "S6 / S6L / N6: six photodiodes straight onto 100 uF, 1.67 V start with hold, no battery"))
 (lib_symbols
   (symbol "Connector_Generic:Conn_01x04"
