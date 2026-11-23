@@ -29,7 +29,8 @@ gantu-ble --plot-day 2026-11-23 --tags h03 h04 h05 h06
 ```
 
 The minute history covers the whole day. The reception-gap panel uses detailed TSVs wherever they exist.
-Use Find My observation times when comparing against Pi receptions.
+Use Find My observation times when comparing against Pi receptions. Expand **Diagnostics** below the day
+plot to see actual Pi heartbeats, older service intervals, and Find My poll activity on the same time axis.
 
 From the Pi checkout:
 
