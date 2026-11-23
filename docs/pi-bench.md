@@ -19,7 +19,10 @@ an older run. See [the Gantumoote recorder instructions](https://github.com/pvnk
 for installation and light logging.
 
 For a day-long trace, use the boot-enabled `gantumoote-ble-recording.service`. It records keyed tags to
-a fresh private TSV every 24 hours. Review both local BLE and Find My using:
+a fresh private TSV every 24 hours while Bluetooth discovery keeps running. The monitor and recorder
+restart if the scan loop stalls. To review a day remotely, sign in to Gantumoote and open
+**Flash history & Pi BLE → View daily BLE and Find My plots**. Pick a date and enter tag names if needed.
+The same plot is available from the terminal:
 
 ```sh
 gantu-ble --plot-day 2026-11-23 --tags h03 h04 h05 h06
