@@ -18,6 +18,16 @@ viewer. The launcher saves the PNG in `~/Downloads/Gantu BLE`. Pass the exact TS
 an older run. See [the Gantumoote recorder instructions](https://github.com/pvnkmrksk/gantumoote#flash-history-and-pi-ble)
 for installation and light logging.
 
+For a day-long trace, use the boot-enabled `gantumoote-ble-recording.service`. It records keyed tags to
+a fresh private TSV every 24 hours. Review both local BLE and Find My using:
+
+```sh
+gantu-ble --plot-day 2026-11-23 --tags h03 h04 h05 h06
+```
+
+The minute history covers the whole day. The reception-gap panel uses detailed TSVs wherever they exist.
+Use Find My observation times when comparing against Pi receptions.
+
 From the Pi checkout:
 
 ```sh
