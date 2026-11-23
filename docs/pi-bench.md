@@ -13,9 +13,10 @@ gantu-ble -d h03 h04 h05 h06 --record
 
 Each column shows the last packet time, RSSI, decoded temperature and raw BLE advertising bytes.
 `--record` puts a private TSV and PNG beside each other in `~/blelog` on the Pi. Use the same command with
-`--plain` in a background job. Regenerate the plot from a saved TSV with `gantu-ble --plot` and the path
-printed by the logger. See [the Gantumoote recorder instructions](https://github.com/pvnkmrksk/gantumoote#flash-history-and-pi-ble)
-for light logging, plot details and installation.
+`--plain` in a background job. On the Mac, run `gantu-ble --plot latest` to open the newest recording in your image
+viewer. The launcher saves the PNG in `~/Downloads/Gantu BLE`. Pass the exact TSV path instead of `latest` to open
+an older run. See [the Gantumoote recorder instructions](https://github.com/pvnkmrksk/gantumoote#flash-history-and-pi-ble)
+for installation and light logging.
 
 From the Pi checkout:
 
