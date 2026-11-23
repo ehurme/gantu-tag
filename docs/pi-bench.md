@@ -8,11 +8,14 @@ Use the installed command in Terminal to list the Pi's known tags and stream sel
 
 ```sh
 gantu-ble -l
-gantu-ble -d h03 h04
+gantu-ble -d h03 h04 h05 h06 --record
 ```
 
 Each column shows the last packet time, RSSI, decoded temperature and raw BLE advertising bytes.
-Use `--plain` for timestamped lines that you can save to a private log. Keep raw captures until you have used them.
+`--record` puts a private TSV and PNG beside each other in `~/blelog` on the Pi. Use the same command with
+`--plain` in a background job. Regenerate the plot from a saved TSV with `gantu-ble --plot` and the path
+printed by the logger. See [the Gantumoote recorder instructions](https://github.com/pvnkmrksk/gantumoote#flash-history-and-pi-ble)
+for light logging, plot details and installation.
 
 From the Pi checkout:
 
