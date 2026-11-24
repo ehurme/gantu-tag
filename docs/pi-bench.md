@@ -29,8 +29,9 @@ gantu-ble --plot-day 2026-11-23 --tags h03 h04 h05 h06
 ```
 
 The minute history covers the whole day. The reception-gap panel uses detailed TSVs wherever they exist.
-Rings on the day plot mark one plausible Pi advert and crosses mark multiple candidates. Use **Advert matches CSV**
-below the plot to compare the Find My observation and Pi packet timestamps. Expand **Diagnostics** for Pi
+Faint guides mark Find My observation times. Hover, tap, or choose a report to inspect nearby adverts.
+Rings mark one plausible Pi advert and crosses mark several. Use **Advert matches CSV** below the plot
+to compare the Find My observation and Pi packet timestamps. Expand **Diagnostics** for Pi
 heartbeats, older service intervals, and Find My poll activity on the same time axis.
 
 From the Pi checkout:
