@@ -41,6 +41,8 @@ Both use XO cap code 8, which worked on the v8.3 boards, a 1 Mbps PHY and all th
 Then load the `.cfg` in the Config Tool, test it in RAM, and burn it: see the
 [build guide](../docs/guide.md#6-program-the-tag).
 
+The [IN100 CFG reference](../docs/in100-config.md) maps the UI to JSON and includes a key-free register byte-selection probe.
+
 ## Checked
 
 - `tools/new_hubble_tag.py` with Hagalu-002's key turns `hubble-template.cfg` into the config burned into that tag

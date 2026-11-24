@@ -6,6 +6,8 @@ often as you like, but writing it to the chip's one-time-programmable memory (**
 
 **A blank tag does not advertise.** Nothing shows up in a BLE scanner until you've loaded a configuration.
 
+See the [IN100 CFG reference](in100-config.md) for Advanced Settings and high-byte RAM probes, including [dual-network timing](in100-config.md#stagger-find-my-and-hubble-adverts) and [ball-switch activity](in100-config.md#count-activity-with-a-ball-switch).
+
 ## What you need
 
 - **A 3.3 V USB-to-serial adapter** (USB-UART or USB-TTL), such as a CP2102, CP2104, CH340 or FTDI board set to
