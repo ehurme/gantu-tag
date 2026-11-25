@@ -1,0 +1,13 @@
+(footprint "Cell_337_Contacts_Draft"
+  (version 20240108)
+  (generator "copperpour")
+  (layer "F.Cu")
+  (descr "Provisional underside contacts for a 4.8 mm cell; verify rim and insulation on the bench.")
+  (attr smd)
+  (fp_rect (start -1.04 -1.05) (end 2.36 1.05) (stroke (width 0.05) (type solid)) (fill none) (layer "B.CrtYd"))
+  (pad "1" smd oval (at 1.9 -0.5) (size 0.65 0.8) (layers "B.Cu" "B.Mask")  )
+  (pad "2" smd circle (at 0 0) (size 1.8 1.8) (layers "B.Cu" "B.Mask")  )
+  (fp_poly (pts (xy 0.5375 -0.1250) (xy 0.6875 -0.1250) (xy 0.7875 -0.0250) (xy 0.7875 0.1250) (xy 0.5375 0.1250)) (stroke (width 0.1) (type solid)) (fill none) (layer "F.Fab"))
+  (fp_text reference "REF**" (at 0.6625 -1.9500 0) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))
+  (fp_text value "Cell_337_Contacts_Draft" (at 0.6625 1.9500 0) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))
+)

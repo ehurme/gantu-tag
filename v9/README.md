@@ -1,12 +1,12 @@
 # v9 KiCad projects
 
-Open the `.kicad_pro` in KiCad 10. Each project has its own schematic, empty PCB, and local symbol, footprint and 3D model files. The schematics start from the v8.3 circuits. The [v8.3 bench checklist](../docs/roadmap.md#stage-0-bench-work-on-the-v83-boards-now) controls the PCB decisions. The v9 project files are their own source. The v8 generators still target the pilot boards.
+Open the `.kicad_pro` in KiCad 10. Each project has a schematic, a placed PCB draft with a removable programming tail, and local symbol, footprint and 3D model files. The [v8.3 bench checklist](../docs/roadmap.md#stage-0-bench-work-on-the-v83-boards-now) controls the remaining PCB decisions. The v9 project files are their own source. The v8 generators still target the pilot boards.
 
-| Project | Schematic | Before placement |
+| Project | Saved PCB draft | Before fabrication |
 |---|---|---|
-| [Hagalu S6 flex](hagalu/hagalu_v9_s6.kicad_pro) | Six harvest photodiodes, S6 enable with R2 at 3.3 MΩ, 100 µF C1, J1 with the provisional v8 footprint, and tail probe pads TP1 (VCC) and TP2 (CHIP_EN) | Qualify the 0.11 mm polyimide stackup, ½ oz copper, hatched ground and local radio/crystal stiffener. Choose the geometry and mechanical support for four pogo contacts. Keep a glued 0.10 mm wire as the reference and plan one printed-trace trial. Use bench data to decide on the 47 µF C1 and any alternate photodiode count. |
-| [Irulu 337](irulu-337/irulu_v9_337.kicad_pro) | One 337 (SR416), 100 µF C1, and the v8.3 V1 enable values as a reference. Start at 0 dBm on one network. | Target a 6 × 6.5 mm body. Choose V1 or V2 after the CHIP_EN measurements and qualify the 4.8 mm cell contacts. Compare rigid and flex for contact support. |
-| [Irulu larger cell](irulu-large-cell/irulu_v9_large_cell.kicad_pro) | A 7.9–9.5 mm cell placeholder, 100 µF C1 and the same enable reference. The +4 dBm, three-network profile is a bench target. | Choose the exact cell, provide an insulated positive pad and a strap to the can, and validate contact support and startup before assigning the battery footprint. |
+| [Hagalu S6 flex](hagalu/hagalu_v9_s6.kicad_pro) · [render](renders/hagalu-s6.png) | 7 × 14.6 mm body, nominal 0.11 mm polyimide stackup, 22 footprints, and series routes between the six harvest photodiodes. The tail has VCC and CHIP_EN probe pads beside the provisional programming connector. | Qualify the ½ oz copper stackup, radio/crystal stiffener, and supported pogo contacts. Design the hatched ground and the printed-trace trial alongside the glued 0.10 mm wire reference. Use bench data to decide on the 47 µF C1 and alternate photodiode counts. |
+| [Irulu 337](irulu-337/irulu_v9_337.kicad_pro) · [render](renders/irulu-337.png) | 6.36 × 6.5 mm body, 11 footprints, underside contacts for a 4.8 mm 337 (SR416), and a first VCC route. The v8.3 V1 enable is the reference at 0 dBm on one network. | Choose V1 or V2 after measuring CHIP_EN and qualify the rim contact and insulation. Choose rigid or flex for mechanical support. The saved PCB still uses the default 1.6 mm thickness as a placeholder. |
+| [Irulu larger cell](irulu-large-cell/irulu_v9_large_cell.kicad_pro) · [render](renders/irulu-larger-cell.png) | 10.1 × 10.1 mm body, 0.6 mm rigid draft, 11 footprints and initial VCC routing. The large cell contact has a negative pad underneath and a positive strap pad on top. | Choose the exact 7.9–9.5 mm cell, insulate the positive pad from the can, and verify contact support and startup. Qualify the +4 dBm, three-network profile on the bench. |
 
 ## Hagalu light-sensing trial
 
@@ -16,4 +16,6 @@ The QFN18 exposes the light-sensing input while retaining RXD and TXD. The DFN8 
 
 ## Check the projects
 
-Run schematic ERC in KiCad after any change. At setup, all three schematics had zero errors and the same library-version warnings as their v8.3 references. The empty PCBs use KiCad's default 1.6 mm thickness, and the project files inherit the v8.3 rigid-board rules and net classes. Replace and verify these placeholders against the selected fabrication stackup and rules before synchronizing footprints, placing parts and running DRC.
+The paired renders show the top and underside of each saved layout. Recreate them with `sh v9/render.sh` from the repository root using KiCad 10 and ImageMagick. Set `KICAD_CLI` if KiCad is installed in a custom location.
+
+Run ERC and DRC with schematic parity after each change. These drafts have partial routing. KiCad found no schematic-to-board mismatches on any of the three. Hagalu still needs clearance and mask checks at the U2 supervisor footprint. The projects inherit v8.3 rigid-board rules and net classes. Confirm the selected fabrication rules and stackups before releasing any board.
