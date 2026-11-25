@@ -157,7 +157,15 @@ order, and in dim light every advert is a start-up advert. Co-prime intervals an
   S6L lock above, now on every start (estimate; the Stage 0 test measures it).
 - **Gate Hubble on light instead.** A set can be triggered on VCC ([trigger settings](in100-config.md#other-settings-by-cfg-section)).
   Give Hubble a threshold of ≈ 2.0 V: 0.3 V above the start level, so a start-up never triggers it, and high enough that a Hubble advert plus a coincident Find My one (≈ 0.4 V) leaves the tag above the start level. Estimated from the [string model](../hagalu/README.md) with Find My at 3 s, VCC reaches 2.0 V from ≈ 6 klx at 25 °C and ≈ 10 klx at 40 °C; 2.2 V would need ≈ 15 klx on a warm day and leave Find My ungated: Hubble then goes out
-  only when the tag stays on in good light, which also keeps its uptime counter meaningful. Untested: whether the
+  only when the tag stays on in good light, which also keeps its uptime counter meaningful.
+- **The gate needs a tag that stays on.** On the 24 November balcony, only Hagalu-003 (S6L, 3 s) settled onto its
+  interval: 30–48% of its gaps were exactly 3.0 s in the brightest half-hours (11:00–11:30, 13:00). In the same light
+  Hagalu-006 (S6, 3 s) restarted as often as every 0.6 s and Hagalu-004 (S6L, 6 s) every 1.1 s, faster than their
+  intervals, and almost never settled. A tag that restarts for every advert spends its charge as it arrives, so VCC
+  can't climb to the gate. The pattern fits a hold effect: the tag settles only where its interval is shorter than
+  the CHIP_EN hold (3 s against S6L's ≈ 3.3 s; not 6 s on S6L or 3 s against S6's ≈ 1 s). Test S6L at +4 dBm and 3 s
+  in RAM with VCC and CHIP_EN on the tail before choosing the dual-network build. No tag locked: the only gaps over
+  150 s were at first and last light, and the mid-day gaps rose and fell together on all three tags. Untested: whether the
   trigger is checked before the first advert after a start, and the zero-key first Hubble packet seen in RAM with
   two sets.
 
