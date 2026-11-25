@@ -156,7 +156,7 @@ order, and in dim light every advert is a start-up advert. Co-prime intervals an
   that leaves ≈ 1.37 V before start-up costs, against the IN100's 1.1 V minimum, and less at +4 dBm. That is the
   S6L lock above, now on every start (estimate; the Stage 0 test measures it).
 - **Gate Hubble on light instead.** A set can be triggered on VCC ([trigger settings](in100-config.md#other-settings-by-cfg-section)).
-  Give Hubble a threshold well above the start level (try ≈ 2.2 V) and leave Find My ungated: Hubble then goes out
+  Give Hubble a threshold of ≈ 2.0 V: 0.3 V above the start level, so a start-up never triggers it, and high enough that a Hubble advert plus a coincident Find My one (≈ 0.4 V) leaves the tag above the start level. Estimated from the [string model](../hagalu/README.md) with Find My at 3 s, VCC reaches 2.0 V from ≈ 5 klx at 25 °C and ≈ 10 klx at 40 °C; 2.2 V would shut Hubble out of warm days below ≈ 20 klx and leave Find My ungated: Hubble then goes out
   only when the tag stays on in good light, which also keeps its uptime counter meaningful. Untested: whether the
   trigger is checked before the first advert after a start, and the zero-key first Hubble packet seen in RAM with
   two sets.
