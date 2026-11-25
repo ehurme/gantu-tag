@@ -74,6 +74,17 @@ Nothing new to order. Each item answers a question that the next revision depend
       Hagalu-002's packets locally in sun.
 - [ ] **Nitinol antenna and silver-epoxy joints:** see [below](#antenna-and-joints-without-solder). Glue nitinol
       wire to two tags of each kind and compare RSSI and range with copper on the same tags.
+- [ ] **Dip per advert:** on one S6, scope VCC and CHIP_EN on the tail through single adverts at 0 and +4 dBm, from
+      the bench supply through a large resistor and from the lamp. The dip and its recovery give C1's real
+      capacitance and the charge per advert, which set the VCC gate ([model](#spending-the-light-the-charge-model)).
+- [ ] **Two networks at start-up:** Find My ungated and Hubble gated on VCC on one S6, in RAM, from dark under a slow
+      light ramp, with VCC on the tail. Pass: no Hubble advert at a start, and no lock ([why](#a-second-network)).
+- [ ] **Hubble on a VCC trigger:** in RAM, gate the Hubble set on VCC and check that it stays silent while the tag
+      restarts for each advert and sends once the tag stays on ([how](#a-second-network)).
+- [ ] **Power against rate, again:** a second balcony day with Hagalu-003 and -004 swapped in place, to separate
+      +4 dBm from placement ([why](#detection-power-rate-and-channels)).
+- [ ] **One channel against three while restarting:** adverts per minute at the same light, in RAM. This shows how
+      much of each start-up cycle the radio really is.
 
 ### What each variant tests
 
@@ -90,6 +101,115 @@ current CHIP_EN draws. Each variant is a bet on one of them.
 | **Irulu V2** (8) | R1 100 kΩ / C2 10 nF and the OFF bridge on the tail: silent until the tail is cut | Cut-to-start, and the hedge if CHIP_EN loads a 1 MΩ enable (copes with a 150 kΩ pull-down or ≈ 5 µA) | Waiting for cells. Draws 15.5 µA while OFF is bridged (≈ 22 days on a 337) |
 
 S6 ↔ S6L is one 0402 resistor and V1 ↔ V2 two, so whichever wins, every S tag and every battery tag can follow it.
+
+## Detection: power, rate and channels
+
+Written 25 November 2026. The aim is the most Find My reports from an insect that spends most of its time away from
+people and only sometimes passes them, so a report a day already counts. Transmit power, interval and channels are
+all OTP settings; the question is which one to spend charge on.
+
+**The balcony run** ([record](pi-bench.md#south-facing-balcony-run-24-november-2026)), one tag per setting, one day:
+
+| Tag | Board and setting | Pi receptions | Median gap | Find My, 5-min windows |
+|---|---|---:|---:|---:|
+| Hagalu-003 | S6L, 0 dBm, 3 s | 4,012 | 5.49 s | 41% |
+| Hagalu-004 | S6L, +4 dBm, 6 s | 3,824 | 5.33 s | **57%** |
+| Hagalu-006 | S6, 0 dBm, 3 s | 5,833 | 3.40 s | 40% |
+
+- **Power helped; rate didn't.** Hagalu-006 sent about 45% more adverts than -003 and got the same coverage.
+  Hagalu-004 sent the fewest and got the most.
+- **The interval setting hardly mattered.** Hagalu-004's median gap is shorter than its 6 s setting, so it was mostly
+  restarting for each advert, where the light sets the rate, not the interval. Over the day it sent only 5% fewer
+  adverts than -003; under the lamp, where light alone set the pace, its gaps were 23–30% longer, and that is the
+  better measure of what +4 dBm costs.
+- **Find My doesn't report every advert.** About 4,000 receptions per tag became about 90 Find My observations. Near
+  a phone that already hears the tag, more adverts add little; more finders in range add reports.
+- **Caveats.** Hagalu-004's median RSSI at the Pi was 8 dB above -003's, twice the 4 dB setting, so placement or
+  antenna adds to its lead. 57% against 41% over the same 100 windows is about two standard errors. The swapped
+  repeat in Stage 0 separates the two. The tags' 0.5–1 °C temperature differences fit uncalibrated per-chip offsets:
+  at ≈ 10 µW average the tag can't measurably warm itself, at either power.
+
+**For an insect passing people**, the expected reports scale with the finders in range, times how long each stays in
+range, times adverts per second. Range enters twice: a wider strip of passers-by and a longer pass for each. +4 dB
+is about 1.6× the range in free space and 1.35× in clutter, so roughly 1.8–2.5× the reports for ≈ 20–25% fewer
+adverts while the light sets the rate: still ≈ 1.4–2× ahead. Rate enters once, and in dim light the light sets it anyway.
+
+**Channels.** Legacy advertising uses only channels 37, 38 and 39, and phones listen for Find My and Hubble only
+there. One 31-byte advert lasts ≈ 0.4 ms per channel at 1 Mbps, and the IN100 sends all three within ≈ 1–2 ms. A
+phone listens on one channel for a scan window (tens to hundreds of ms), then moves to the next. With three channels,
+whichever one it's on hears the advert; with one, about a third of the time. Missed adverts come mostly from phones
+that aren't scanning at that moment, not from the wrong channel. The estimate of ≈ 16 µC on three channels against
+≈ 6 µC on one would offset the loss only if all the saving became rate; while the tag restarts for each advert,
+part of each cycle is start-up, so the saving is smaller. Keep three channels unless the Stage 0 test says
+otherwise.
+
+### Spending the light: the charge model
+
+[`advert_budget.py`](../hagalu/tools/advert_budget.py) ([output](../hagalu/docs/advert_budget.txt)) puts the
+solar model's photodiode string and C1 (≈ 55 µF effective) together with the lamp ramp and the balcony logs. Its
+numbers are estimates until the Stage 0 scope trace measures the dip per advert.
+
+- **Charge per advert.** Fitting the lamp ramp's restart gaps gives ≈ 28 µC per start at 0 dBm and ≈ 36 µC at
+  +4 dBm, if a white LED gives a third of daylight's photocurrent per lux (≈ 20 and 25 µC if a quarter). Taking off
+  ≈ 4.5 µC of start-up leaves ≈ 24 and 32 µC per advert. **+4 dBm costs ≈ 27% more per advert** under either
+  calibration. On 55 µF one advert drops VCC by ≈ 0.44 V at 0 dBm and ≈ 0.57 V at +4 dBm, about 3× the 0.16 V
+  assumed from the 100 µF label. C1's real capacitance at 1.7–2.5 V is the biggest uncertainty here.
+- **Three regimes.** In dim light the tag restarts for every advert, as fast as the light recharges C1 (≈ 14 s at
+  2 klx, ≈ 2.7 s at 10 klx, ≈ 1.4 s at 20 klx, +4 dBm). The CHIP_EN hold sets a floor on how fast that can go: ≈ 0.6 s
+  on S6, ≈ 1.1–1.7 s on S6L (balcony). In strong light the tag stays on at its set interval, and anything the light
+  pays for beyond that interval charges C1 up towards the string's float voltage and is wasted.
+- **The most the light pays for while staying on** (+4 dBm, 25 °C): ≈ 0.36 adverts/s at 10 klx, 0.84 at 20 klx,
+  1.8 at 40 klx, 4.6 in full sun. It can stay on at all from ≈ 6 klx at 25 °C and ≈ 15 klx at 40 °C.
+- **To use all the light, set the interval short.** Restarting already spends all the light; staying on at a long
+  interval wastes what's left over. Find My at **1 s** keeps the tag restarting up to ≈ 24 klx (≈ 27 klx at 40 °C) and sending once a
+  second above that. This needs **S6**: on S6L the ≈ 3 s hold lets two or three adverts follow each start, which
+  takes VCC under 1.1 V in dim light (the lock).
+
+**Default for field tags:** S6, Find My at **+4 dBm, three channels, 1 s**.
+
+### A second network
+
+Two advertising sets run on independent intervals ([bench notes](in100-config.md#stagger-find-my-and-hubble-adverts)).
+While the IN100 stays on, jitter slides them past each other (closest pair seen: 13.5 ms). At start-up both sets
+advertise within 1.6–2.5 ms whatever their order, and in dim light every advert is a start-up advert, so co-prime
+intervals and set order can't separate them.
+
+- **A packet cut short is harmless.** Each channel's packet stands alone; one cut off by a voltage drop fails its CRC
+  and receivers ignore it. A restart is harmless too.
+- **The lock isn't.** Two +4 dBm adverts after a start take ≈ 1.1 V off C1, from 1.69 V to ≈ 0.55 V, well under the
+  IN100's 1.1 V. **Never run two ungated sets on Hagalu.**
+- **Gate the second network on VCC.** A set can be triggered on VCC
+  ([trigger settings](in100-config.md#other-settings-by-cfg-section)). Every start begins at ≈ 1.69 V, so a gate well
+  above that never fires at a start. At **≈ 2.3 V** (55 µF) a Hubble advert leaves the tag on, and a Hubble and a Find
+  My advert back to back stay clear of the lock. The gate moves with C1: ≈ 2.55 V at 45 µF, 2.15 V at 72 µF, 2.05 V
+  at 100 µF.
+- **When the gate opens.** With Find My at 1 s, VCC reaches 2.3 V from ≈ 24 klx at 25 °C (≈ 29 klx at 40 °C); with
+  Find My at 3 s, from ≈ 10 klx (≈ 20 klx). In full sun the spare light pays for a Hubble advert every ≈ 0.3 s, and
+  when a cloud comes VCC falls from 2.3 V to 1.67 V in ≈ 1 s at a 1 s Find My interval, so the gate closes before it
+  matters.
+- **Hubble's cap.** Hubble lists at most 1,024 adverts a day. A tag gated on sun sends a lot more than that at a
+  short interval: 1 s for 1.5 h is 5,400. Set the Hubble interval from the hours of strong sun at the site, e.g.
+  ≈ 11 s for 3 h, ≈ 22 s for 6 h, and ask Hubble what happens above 1,024 (a billing limit, a rejected packet, or a
+  reused sequence number).
+- **Steady sun keeps all three tags on.** On 25 November (Pi, per-minute receptions) Hagalu-003, -004 and -006
+  sent at their set intervals in 80–97% of minutes from 13:30 to 15:00 CET (≈ 17 of 20, 9 of 10 and 17.5 of 20 a
+  minute). In the rising and patchy light before that, -004 and -006 restarted faster than their intervals (-006 up
+  to 90 a minute, ≈ 0.7 s; -004 up to 35, ≈ 1.7 s), while -003 (S6L, 3 s) never went above its interval rate: its
+  hold keeps it on until the next advert. Neither day showed a lock: no tag dropped out while the others were
+  sending, and the only long silences were at first and last light.
+- **Untested:** whether the trigger is checked before the first advert after a start; whether a triggered set keeps
+  advertising at its interval while VCC stays above the threshold; the zero-key first Hubble packet seen in RAM with
+  two sets.
+
+### A third network: Google's Find Hub
+
+The IN100 has three advertising sets, so Find Hub (Google's network of Android phones) could be the third.
+GoogleFindMyTools registers custom trackers with a fixed advertisement key (ESP32 and Zephyr firmware so far), much
+as OpenHaystack does for Find My; a fixed Find Hub frame should fit an IN100 set. In most of the world Android
+phones far outnumber iPhones. Two limits: by default Android waits until several phones have heard a tracker before
+reporting it, which works against rare passes in the field, and the locations can only be read through the tool's
+Python script. Gate it like Hubble, or, where Android dominates, swap it with Find My as the ungated network.
+Hubble's satellites use their own protocol, so the IN100's ordinary adverts reach Hubble's phone gateways only.
 
 ## Stage 1: v9, flex (both tags)
 
