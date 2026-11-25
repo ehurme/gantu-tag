@@ -119,8 +119,9 @@ all OTP settings; the question is which one to spend charge on.
 - **Power helped; rate didn't.** Hagalu-006 sent about 45% more adverts than -003 and got the same coverage.
   Hagalu-004 sent the fewest and got the most.
 - **The interval setting hardly mattered.** Hagalu-004's median gap is shorter than its 6 s setting, so it was mostly
-  restarting for each advert, where the light sets the rate, not the interval. There, +4 dBm cost about 5% of the
-  adverts of the same board at 0 dBm.
+  restarting for each advert, where the light sets the rate, not the interval. Over the day it sent only 5% fewer
+  adverts than -003; under the lamp, where light alone set the pace, its gaps were 23–30% longer, and that is the
+  better measure of what +4 dBm costs.
 - **Find My doesn't report every advert.** About 4,000 receptions per tag became about 90 Find My observations. Near
   a phone that already hears the tag, more adverts add little; more finders in range add reports.
 - **Caveats.** Hagalu-004's median RSSI at the Pi was 8 dB above -003's, twice the 4 dB setting, so placement or
@@ -130,8 +131,8 @@ all OTP settings; the question is which one to spend charge on.
 
 **For an insect passing people**, the expected reports scale with the finders in range, times how long each stays in
 range, times adverts per second. Range enters twice: a wider strip of passers-by and a longer pass for each. +4 dB
-is about 1.6× the range in free space and 1.35× in clutter, so roughly 1.8–2.5× the reports for about 5% fewer
-adverts. Rate enters once, and in dim light the light sets it anyway.
+is about 1.6× the range in free space and 1.35× in clutter, so roughly 1.8–2.5× the reports for ≈ 20–25% fewer
+adverts while the light sets the rate: still ≈ 1.4–2× ahead. Rate enters once, and in dim light the light sets it anyway.
 
 **Channels.** Legacy advertising uses only channels 37, 38 and 39, and phones listen for Find My and Hubble only
 there. One 31-byte advert lasts ≈ 0.4 ms per channel at 1 Mbps, and the IN100 sends all three within ≈ 1–2 ms. A
