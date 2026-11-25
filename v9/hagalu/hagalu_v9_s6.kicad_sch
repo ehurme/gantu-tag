@@ -436,253 +436,289 @@
 				)
 			)
 		)
-		(symbol "Device:Crystal_GND24"
-			(pin_names
-				(offset 1.016) hide
-			)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "Y"
-				(at 3.175 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "Crystal_GND24"
-				(at 3.175 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					) hide
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					) hide
-				)
-			)
-			(property "ki_keywords" "quartz ceramic resonator oscillator"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					) hide
-				)
-			)
-			(property "ki_description" "Four pin crystal, GND on pins 2 and 4"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					) hide
-				)
-			)
-			(property "ki_fp_filters" "Crystal*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					) hide
-				)
-			)
-			(symbol "Crystal_GND24_0_1"
-				(rectangle
-					(start -1.143 2.54)
-					(end 1.143 -2.54)
-					(stroke
-						(width 0.3048)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 0) (xy -2.032 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 -1.27) (xy -2.032 1.27)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -3.81) (xy 0 -3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 3.556) (xy 0 3.81)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 -1.27) (xy 2.032 1.27)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 0) (xy 2.54 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -2.286) (xy -2.54 -3.556) (xy 2.54 -3.556) (xy 2.54 -2.286)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 2.286) (xy -2.54 3.556) (xy 2.54 3.556) (xy 2.54 2.286)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Crystal_GND24_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 1.27)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 5.08 270)
-					(length 1.27)
-					(name "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 1.27)
-					(name "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 1.27)
-					(name "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
+		(symbol
+		  "Device:Crystal_GND24"
+		  (pin_names
+		    (offset 1.016)
+		    (hide yes)
+		  )
+		  (exclude_from_sim no)
+		  (in_bom yes)
+		  (on_board yes)
+		  (in_pos_files yes)
+		  (duplicate_pin_numbers_are_jumpers no)
+		  (property "Reference" "Y"
+		    (at 3.175 5.08 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		      (justify left)
+		    )
+		  )
+		  (property "Value" "Crystal_GND24"
+		    (at 3.175 3.175 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		      (justify left)
+		    )
+		  )
+		  (property "Footprint" ""
+		    (at 0 0 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property "Datasheet" ""
+		    (at 0 0 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property "Description" "Four pin crystal, GND on pins 2 and 4"
+		    (at 0 0 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property private "KLC_S3.3" "The rectangle is not a symbol body but a graphical element"
+		    (at 0 -12.7 0)
+		    (show_name yes)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property private "KLC_S4.1" "Some pins are on 50mil grid to make the symbol small"
+		    (at 0 -15.24 0)
+		    (show_name yes)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property "ki_keywords" "quartz ceramic resonator oscillator"
+		    (at 0 0 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (property "ki_fp_filters" "Crystal*"
+		    (at 0 0 0)
+		    (show_name no)
+		    (do_not_autoplace no)
+		    (hide yes)
+		    (effects
+		      (font
+		        (size 1.27 1.27)
+		      )
+		    )
+		  )
+		  (symbol "Crystal_GND24_0_1"
+		    (polyline
+		      (pts
+		        (xy -2.54 2.286) (xy -2.54 3.556) (xy 2.54 3.556) (xy 2.54 2.286)
+		      )
+		      (stroke
+		        (width 0)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy -2.54 0) (xy -2.032 0)
+		      )
+		      (stroke
+		        (width 0)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy -2.54 -2.286) (xy -2.54 -3.556) (xy 2.54 -3.556) (xy 2.54 -2.286)
+		      )
+		      (stroke
+		        (width 0)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy -2.032 -1.27) (xy -2.032 1.27)
+		      )
+		      (stroke
+		        (width 0.508)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (rectangle
+		      (start -1.143 2.54)
+		      (end 1.143 -2.54)
+		      (stroke
+		        (width 0.3048)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy 0 -3.81) (xy 0 -3.556)
+		      )
+		      (stroke
+		        (width 0)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy 2.032 0) (xy 2.54 0)
+		      )
+		      (stroke
+		        (width 0)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		    (polyline
+		      (pts
+		        (xy 2.032 -1.27) (xy 2.032 1.27)
+		      )
+		      (stroke
+		        (width 0.508)
+		        (type default)
+		      )
+		      (fill
+		        (type none)
+		      )
+		    )
+		  )
+		  (symbol "Crystal_GND24_1_1"
+		    (pin passive line
+		      (at -3.81 0 0)
+		      (length 1.27)
+		      (name "1"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		      (number "1"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		    )
+		    (pin passive line
+		      (at 0 -5.08 90)
+		      (length 1.27)
+		      (name "G"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		      (number "2"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		    )
+		    (pin passive line
+		      (at 3.81 0 180)
+		      (length 1.27)
+		      (name "3"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		      (number "3"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		    )
+		    (pin passive line
+		      (at 0 -5.08 90)
+		      (length 1.27)
+		      (hide yes)
+		      (name "G"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		      (number "4"
+		        (effects
+		          (font
+		            (size 1.27 1.27)
+		          )
+		        )
+		      )
+		    )
+		  )
+		  (embedded_fonts no)
 		)
 		(symbol "Device:D_Photo"
 			(pin_numbers hide)
@@ -2108,10 +2144,6 @@
 		(uuid "19b67dc7-c883-45de-926e-df4b5ec7a3f0")
 	)
 	(no_connect
-		(at 133.35 106.68)
-		(uuid "dc9fe7a9-8aaa-4795-b3e8-6b43c72b1561")
-	)
-	(no_connect
 		(at 133.35 111.76)
 		(uuid "62e85ec3-a921-45dd-91b5-4b3925a5ba33")
 	)
@@ -2142,6 +2174,10 @@
 	(no_connect
 		(at 64.77 143.51)
 		(uuid "1a9ed37b-fd1f-4c7c-a636-ce20e1c287e7")
+	)
+	(no_connect
+		(at 133.35 109.22)
+		(uuid "c66d602f-2a77-48ed-a744-a6ed7c2d12fc")
 	)
 	(wire
 		(pts
@@ -2262,16 +2298,6 @@
 			(type default)
 		)
 		(uuid "71667363-7bac-4ef0-8d7a-4918ad36eaeb")
-	)
-	(wire
-		(pts
-			(xy 101.6 93.98) (xy 101.6 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "69559833-4b40-4790-9729-77b3031275fe")
 	)
 	(wire
 		(pts
@@ -2737,15 +2763,15 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 109.22) (xy 130.81 109.22)
-		)
-		(uuid "1d9c7381-6392-4946-b34f-e0ab65d105f1")
-	)
-	(wire
-		(pts
 			(xy 309.88 134.62) (xy 312.42 134.62)
 		)
 		(uuid "b0199ed9-c671-4e02-837b-ecb9717983e7")
+	)
+	(wire
+		(pts
+			(xy 133.35 106.68) (xy 130.81 106.68)
+		)
+		(uuid "c2fb7532-5026-475c-81ca-e4c4d9569a3b")
 	)
 	(text "Hagalu v9 S6 draft: six photodiodes, 100 uF reservoir, S6 start circuit."
 		(at 25.4 234.95 0)
@@ -3164,16 +3190,6 @@
 		(uuid "619ab731-f85e-4b92-bcb3-7956cc55d0f0")
 	)
 	(label "LIGHT_ADC"
-		(at 130.81 109.22 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "76ce6fa3-9623-4692-87e3-f92758166b97")
-	)
-	(label "LIGHT_ADC"
 		(at 312.42 134.62 0)
 		(effects
 			(font
@@ -3182,6 +3198,16 @@
 			(justify left bottom)
 		)
 		(uuid "59b53b09-3b14-466e-ac0b-8d33ffe6988c")
+	)
+	(label "LIGHT_ADC"
+		(at 130.81 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "9d817f09-7b3f-4314-b530-329a54be11f7")
 	)
 	(global_label "VCC"
 		(shape input)
@@ -3534,58 +3560,6 @@
 			(project "hagalu_v9_s6"
 				(path "/f96be150-7cb1-42f3-be2d-9a0674cea840"
 					(reference "Y1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 101.6 91.44 180)
-		(unit 1)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "d5ef8489-267c-45e7-bd03-aa61ab9854ab")
-		(property "Reference" "#PWR03"
-			(at 101.6 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				) hide
-			)
-		)
-		(property "Value" "GND"
-			(at 101.6 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 101.6 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				) hide
-			)
-		)
-		(property "Datasheet" "~"
-			(at 101.6 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				) hide
-			)
-		)
-		(pin "1"
-			(uuid 0b581920-d176-4eb8-8e32-5806eca93d77)
-		)
-		(instances
-			(project "hagalu_v9_s6"
-				(path "/f96be150-7cb1-42f3-be2d-9a0674cea840"
-					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -5447,7 +5421,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "insect_tag:ProgPads_2x02_P2.54mm_D1.6mm_THT_Tab"
+		(property "Footprint" "insect_tag:ProgPads_2x02_P1p80_D0p95_SMD"
 			(at 76.2 203.2 0)
 			(effects
 				(font
@@ -5463,7 +5437,7 @@
 				) hide
 			)
 		)
-		(property "Note" "2 x 2 pads on the cut-off tail: R(XD) T(XD) / G +. Programmer supplies 3.3 V"
+		(property "Note" "Four 0.95 mm pogo contacts on a 1.80 mm pitch; confirm jig support and alignment."
 			(at 76.2 203.2 0)
 			(effects
 				(font
