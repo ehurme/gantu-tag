@@ -1,0 +1,67 @@
+1. Calibration: restart gaps under the lamp, model vs measured (s)
+   LED = 1/3 daylight (solar_sim)
+     Hagalu-003 (0 dBm)   Q_cycle 28.5 uC (rms log error 0.15)  model    5.2   11.1   25.6  measured    4.3   11.1   30.6
+     Hagalu-004 (+4 dBm)  Q_cycle 36.1 uC (rms log error 0.15)  model    6.5   13.9   32.0  measured    5.3   14.4   37.8
+   LED = 1/4 daylight (check)
+     Hagalu-003 (0 dBm)   Q_cycle 19.7 uC (rms log error 0.10)  model    4.9   10.9   27.3  measured    4.3   11.1   30.6
+     Hagalu-004 (+4 dBm)  Q_cycle 25.1 uC (rms log error 0.11)  model    6.2   13.7   34.0  measured    5.3   14.4   37.8
+   +4 dBm costs 27% more per start under either calibration.
+   Used below: Q_adv 24.0 uC at 0 dBm, 31.6 uC at +4 dBm (3 channels); one advert drops VCC by 0.44 / 0.57 V on 55 uF.
+
+2. Restart regime (one advert per start): gap and adverts/s by daylight, 25 C
+   klx                   2       5      10      20      40     100
+   0 dBm   gap s     11.21    4.22    2.15    1.16    0.68    0.39
+   +4 dBm  gap s     14.04    5.28    2.67    1.42    0.81    0.44
+   Hold floor: S6 can't restart faster than ~0.6-0.7 s, S6L ~1.1-1.7 s (balcony minima).
+
+3. Staying on: fastest interval the light pays for with the trough above 1.67 V (s), and adverts/s
+   25 C     klx         2       5      10      20      40     100
+   0 dBm   T_min         -    4.82    1.91    0.87    0.42    0.16
+           adv/s         -    0.21    0.52    1.15    2.40    6.15
+   +4 dBm  T_min         -       -    2.75    1.18    0.56    0.22
+           adv/s         -       -    0.36    0.84    1.80    4.64
+   40 C     klx         2       5      10      20      40     100
+   0 dBm   T_min         -       -    2.66    0.97    0.43    0.16
+           adv/s         -       -    0.38    1.04    2.31    6.12
+   +4 dBm  T_min         -       -       -    1.53    0.60    0.22
+           adv/s         -       -       -    0.65    1.66    4.56
+
+4. Peak VCC while on (the gate reads about this), Find My only, +4 dBm
+   25 C     klx         2       5      10      20      40     100
+   T = 1 s             off     off     off     off    2.64    2.82
+   T = 2 s             off     off     off    2.50    2.65    2.82
+   T = 3 s             off     off    2.30    2.52    2.65    2.82
+   40 C     klx         2       5      10      20      40     100
+   T = 1 s             off     off     off     off    2.43    2.63
+   T = 2 s             off     off     off    2.29    2.45    2.63
+   T = 3 s             off     off     off    2.31    2.45    2.63
+
+5. Gate for a second network. A restart is harmless; a lock needs VCC under 1.1 V with CHIP_EN held.
+   V_gate keeps the tag on through a Hubble advert (trough >= 1.67 V) and clear of the lock through a
+   Hubble and a Find My advert back to back (>= 1.1 V), with 0.05 V margin. Both +4 dBm.
+   C1 effective  45 uF: 2.55 V  (stay on 2.42, no lock 2.55)
+   C1 effective  55 uF: 2.30 V  (stay on 2.29, no lock 2.30)
+   C1 effective  72 uF: 2.16 V  (stay on 2.16, no lock 2.03)
+   C1 effective 100 uF: 2.04 V  (stay on 2.04, no lock 1.78)
+
+6. With the gate at 2.30 V: lowest daylight (klx) at which Find My alone lifts the peak past it
+   25 C   Find My 1 s:  24.0   Find My 1.5 s:  17.0   Find My 2 s:  13.5   Find My 3 s:  10.5
+   40 C   Find My 1 s:  29.0   Find My 1.5 s:  23.0   Find My 2 s:  20.5   Find My 3 s:  19.5
+
+7. Hubble interval the spare light pays for while VCC is held at 2.30 V (s; '-' = gate stays shut)
+   25 C           klx         2       5      10      20      40     100
+   Find My T = 1   s           -       -       -       -     1.7     0.3
+   Find My T = 1.5 s           -       -       -       -     1.1     0.3
+   Find My T = 2   s           -       -       -     7.6     0.9     0.3
+   Find My T = 3   s           -       -       -     3.4     0.8     0.2
+   40 C           klx         2       5      10      20      40     100
+   Find My T = 1   s           -       -       -       -   331.6     0.3
+   Find My T = 1.5 s           -       -       -       -     3.0     0.3
+   Find My T = 2   s           -       -       -       -     2.0     0.3
+   Find My T = 3   s           -       -       -       -     1.5     0.3
+
+8. Falloff when the light goes: seconds from 2.30 V to 1.67 V in the dark (+4 dBm Find My)
+   Find My T = 1 s:   1.0 s
+   Find My T = 2 s:   1.8 s
+   Find My T = 3 s:   2.5 s
+   Find My T = 6 s:   4.1 s
