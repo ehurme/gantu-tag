@@ -133,6 +133,7 @@ On Irulu the 0.13 g cell is the floor; everything else can shrink to ≈ 0.03–
 |---|---|
 | [`hagalu/`](hagalu/) | Solar tag: KiCad project, the Python that generates it (`tools/design.py`), solar simulation, renders, review |
 | [`irulu/`](irulu/) | Battery tag: KiCad project, generator, burst simulation, renders, review |
+| [`v9/`](v9/) | Draft KiCad projects for Hagalu S6 flex, Irulu 337, and Irulu larger-cell |
 | [`panel/`](panel/) | The combined 0.6 mm JLC panel (KiKit layout, mixed-variant BOM/CPL) and its ordering README |
 | [`order/`](order/) | The exact files sent to JLCPCB, with a checksum |
 | [`configs/`](configs/) | Find My and Hubble config templates for InPlay's Config Tool: add your key |

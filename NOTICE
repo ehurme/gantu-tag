@@ -21,8 +21,8 @@ WHICH LICENCE COVERS WHAT
 
 Hardware: CERN Open Hardware Licence v2, Strongly Reciprocal (CERN-OHL-S-2.0), full text in
 LICENSE.
-    The KiCad projects, schematics, layouts, footprints, symbols and 3D models in hagalu/ and
-    irulu/; the panel in panel/; Gerbers, drill files, bills of materials and placement files;
+    The KiCad projects, schematics, layouts, footprints, symbols and 3D models in hagalu/,
+    irulu/ and v9/; the panel in panel/; Gerbers, drill files, bills of materials and placement files;
     the order files in order/; and the tag configurations in configs/.
 
 Documentation and media: Creative Commons Attribution-ShareAlike 4.0 International
