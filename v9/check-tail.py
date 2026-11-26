@@ -13,8 +13,8 @@ import pcbnew
 
 
 PROJECTS = (
-    ("hagalu/hagalu_v9_s6", 103.53, {"J1", "TP1", "TP2"}),
-    ("irulu-337/irulu_v9_337", 103.295, {"J1", "JP1"}),
+    ("hagalu/hagalu_v9_s6", 103.58, {"J1", "TP1", "TP2"}),
+    ("irulu-337/irulu_v9_337", 103.210767, {"J1", "JP1"}),
 )
 
 
